@@ -6,6 +6,12 @@
 /Assets/AssetStoreTools*
 /[Bb]in/
 
+# Other libraries
+/Assets/OSC/
+/Assets/OSC.meta
+/Assets/ViveSR/
+/Assets/ViveSR.meta
+
 # Assets
 *.psd
 
