@@ -5,12 +5,16 @@
 /[Bb]uilds/
 /Assets/AssetStoreTools*
 /[Bb]in/
+/[Rr]elease/
 
 # Other libraries
 /Assets/OSC/
 /Assets/OSC.meta
 /Assets/ViveSR/
 /Assets/ViveSR.meta
+
+# Runtime files
+preferences.json
 
 # Assets
 *.psd
@@ -37,6 +41,7 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+UpgradeLog.htm
 
 # Unity3D generated meta files
 *.pidb.meta
