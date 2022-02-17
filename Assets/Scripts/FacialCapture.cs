@@ -7,11 +7,13 @@ using System;
 public class FacialCapture : MonoBehaviour
 {
     public OSC osc;
-    private Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
+    Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
     [SerializeField]
-    private string addressRoot = "/avatar/parameters/";
+    string addressRoot = "/avatar/parameters/";
     [SerializeField]
-    private string prefix = "facial_";
+    string prefix = "facial_";
+
+    [Header("ViveSR Parameter Mapping")]
     [SerializeField] string Jaw_Right = "Jaw_Right";
     [SerializeField] string Jaw_Left = "Jaw_Left";
     [SerializeField] string Jaw_Forward = "Jaw_Forward";
@@ -49,33 +51,67 @@ public class FacialCapture : MonoBehaviour
     [SerializeField] string Tongue_UpRight_Morph = "Tongue_UpRight_Morph";
     [SerializeField] string Tongue_DownLeft_Morph = "Tongue_DownLeft_Morph";
     [SerializeField] string Tongue_DownRight_Morph = "Tongue_DownRight_Morph";
-    // Start is called before the first frame update
+
+    [Header("Additional Parameter Mapping")]
+    [SerializeField] string Mouth_Smile_Sad_Right = "Mouth_Smile_Sad_Right";
+    [SerializeField] string Mouth_Smile_Sad_Left = "Mouth_Smile_Sad_Left";
+    [SerializeField] string Mouth_Smile = "Mouth_Smile";
+    [SerializeField] string Mouth_Sad = "Mouth_Sad";
+
     void Start()
     {
-        
+        if (!SRanipal_Lip_Framework.Instance.EnableLip)
+        {
+            enabled = false;
+            return;
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-    //    SRanipal_Lip_v2.GetLipWeightings(out lipWeight);
+        if (SRanipal_Lip_Framework.Status != SRanipal_Lip_Framework.FrameworkStatus.WORKING) return;
+        SRanipal_Lip_v2.GetLipWeightings(out lipWeight);
 
-        foreach(var param in lipWeight)
+        foreach (var param in lipWeight)
         {
+            if (param.Key != LipShape_v2.Jaw_Open) continue;
             var key = GetMappedKey(param.Key);
             
             if (string.IsNullOrWhiteSpace(key)) continue;
 
-            var message = new OscMessage();
-            message.address = addressRoot + prefix + param.Key;
-            message.values.Add(param.Value);
-            //osc.Send(message);
+            Send(key, param.Value);
         }
-        var m = new OscMessage();
-        m.address = "/avatar/parameters/facial_JawOpen";
-        m.values.Add(Mathf.Sin(Time.time));
-        osc.Send(m);
+
+        SendBipolar(Mouth_Smile_Sad_Right, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Sad_Right]);
+        SendBipolar(Mouth_Smile_Sad_Left, lipWeight[LipShape_v2.Mouth_Smile_Left], lipWeight[LipShape_v2.Mouth_Sad_Left]);
+        SendAverage(Mouth_Smile, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Smile_Left]);
+        SendAverage(Mouth_Sad, lipWeight[LipShape_v2.Mouth_Sad_Right], lipWeight[LipShape_v2.Mouth_Sad_Left]);
+
     }
+
+    void Send(string address, float value)
+    {
+        var message = new OscMessage();
+        message.address = addressRoot + prefix + address;
+        message.values.Add(value);
+        osc.Send(message);
+    }
+
+    void SendBipolar(string address, float upperValue, float lowerValue)
+    {
+        Send(
+            address,
+            upperValue > lowerValue ? upperValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+        );
+    }
+    void SendAverage(string address, float value1, float value2)
+    {
+        Send(
+            address,
+            (value1 + value2) / 2.0f
+        );
+    }
+
     string GetMappedKey(LipShape_v2 key)
     {
         switch(key)

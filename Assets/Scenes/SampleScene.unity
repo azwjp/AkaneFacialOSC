@@ -194,11 +194,11 @@ MonoBehaviour:
   Mouth_Lower_Left: Mouth_Lower_Left
   Mouth_Upper_Overturn: Mouth_Upper_Overturn
   Mouth_Lower_Overturn: Mouth_Lower_Overturn
-  Mouth_Pout: Mouth_Pout
+  Mouth_Pout: MouthPucker
   Mouth_Smile_Right: MouthSmileRight
   Mouth_Smile_Left: MouthSmileLeft
-  Mouth_Sad_Right: Mouth_Sad_Right
-  Mouth_Sad_Left: Mouth_Sad_Left
+  Mouth_Sad_Right: MouthFrownRight
+  Mouth_Sad_Left: MouthFrownLeft
   Cheek_Puff_Right: Cheek_Puff_Right
   Cheek_Puff_Left: Cheek_Puff_Left
   Cheek_Suck: Cheek_Suck
@@ -206,8 +206,8 @@ MonoBehaviour:
   Mouth_Upper_UpLeft: Mouth_Upper_UpLeft
   Mouth_Lower_DownRight: Mouth_Lower_DownRight
   Mouth_Lower_DownLeft: Mouth_Lower_DownLeft
-  Mouth_Upper_Inside: Mouth_Upper_Inside
-  Mouth_Lower_Inside: Mouth_Lower_Inside
+  Mouth_Upper_Inside: MouthRollUpper
+  Mouth_Lower_Inside: MouthRollLower
   Mouth_Lower_Overlay: Mouth_Lower_Overlay
   Tongue_LongStep1: Tongue_LongStep1
   Tongue_LongStep2: Tongue_LongStep2
@@ -220,6 +220,68 @@ MonoBehaviour:
   Tongue_UpRight_Morph: Tongue_UpRight_Morph
   Tongue_DownLeft_Morph: Tongue_DownLeft_Morph
   Tongue_DownRight_Morph: Tongue_DownRight_Morph
+--- !u!1001 &365876637
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1827556865440936, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_Name
+      value: SRanipal Lip Framework
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953106396633158, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114413432704905738, guid: 86d935e0d01acbe44887f792476d36e5,
+        type: 3}
+      propertyPath: EnableLipVersion
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 86d935e0d01acbe44887f792476d36e5, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
