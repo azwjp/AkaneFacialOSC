@@ -5,9 +5,11 @@ using System.Linq;
 using System;
 using UnityEngine.UI;
 using System.IO;
+using ViveSR.anipal.Eye;
 
 namespace AZW.FaceOSC
 {
+    [RequireComponent(typeof(ValueRowsUI))]
     public class FacialCapture : MonoBehaviour
     {
         [Header("OSC")]
@@ -17,14 +19,13 @@ namespace AZW.FaceOSC
         string addressRoot = "/avatar/parameters/";
 
         [Header("UI Components")]
-        [SerializeField] GameObject rowPrefab;
-        [SerializeField] Transform parentView;
+        [SerializeField] ValueRowsUI uiRows;
         [SerializeField] SaveButton saveButton;
         [SerializeField] Toggle debugToggle;
 
 
         Dictionary<FaceKey, FaceDataPreferences> prefs = new Dictionary<FaceKey, FaceDataPreferences>();
-        Dictionary<FaceKey, FaceValueRow> valueRows = new Dictionary<FaceKey, FaceValueRow>();
+        ValueRowsUI vr;
         bool isDebug = false;
         const string PREF_FILE_PATH = "./preferences.json";
 
@@ -40,25 +41,18 @@ namespace AZW.FaceOSC
             }
         }
 
-
-
         void Start()
         {
             prefs = Load();
 
             foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
             {
-                var prefab = Instantiate(rowPrefab, parentView);
-                var faceVal = prefab.GetComponent<FaceValueRow>();
-
-                faceVal.manager = this;
-                faceVal.faceKey = key;
-
-                valueRows.Add(key, faceVal);
-                var val = new FaceDataPreferences();
-                prefs.Add(key, val);
-
-                faceVal.SetGain(val.gain);
+                if (!prefs.ContainsKey(key))
+                {
+                    var val = new FaceDataPreferences();
+                    prefs.Add(key, val);
+                    uiRows.SetGain(key, val.gain);
+                }
             }
 
             if (!SRanipal_Lip_Framework.Instance.EnableLip)
@@ -93,7 +87,6 @@ namespace AZW.FaceOSC
             }
             else
             {
-
                 if (SRanipal_Lip_Framework.Status != SRanipal_Lip_Framework.FrameworkStatus.WORKING) return false;
                 SRanipal_Lip_v2.GetLipWeightings(out lipWeight);
                 return true;
@@ -127,7 +120,7 @@ namespace AZW.FaceOSC
             {
                 var pref = prefs[key];
                 value *= pref.gain;
-                valueRows[key].SetValue(value);
+                uiRows.SetValue(key, value);
                 if (!pref.isSending) return;
             }
 
@@ -180,11 +173,16 @@ namespace AZW.FaceOSC
             try
             {
                 var json = File.ReadAllText(PREF_FILE_PATH);
-                return JsonUtility.FromJson<Dictionary<FaceKey, FaceDataPreferences>>(json);
+                var pref = JsonUtility.FromJson<Dictionary<FaceKey, FaceDataPreferences>>(json);
+                foreach(var e in pref)
+                {
+                    uiRows.SetGain(e.Key, e.Value.gain);
+                }
+                return pref;
             }
             catch (Exception e)
             {
-                return valueRows.Keys.ToDictionary(key => key, key => new FaceDataPreferences());
+                return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => new FaceDataPreferences());
             }
         }
 

@@ -135,7 +135,7 @@ MonoBehaviour:
   address: {fileID: 6940680430775404983}
   isSending: {fileID: 5033777342307792048}
   valueLabel: {fileID: 2603703298184317341}
-  gain: {fileID: 4725909268233821715}
+  gainSlider: {fileID: 4725909268233821715}
   gainValue: {fileID: 7264252781080216056}
 --- !u!1 &1656546716341905222
 GameObject:

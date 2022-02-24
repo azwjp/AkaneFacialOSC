@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 62405372}
   - component: {fileID: 62405371}
   - component: {fileID: 62405373}
+  - component: {fileID: 62405374}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -248,11 +249,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   osc: {fileID: 62405371}
   addressRoot: /avatar/parameters/
+  uiRows: {fileID: 62405374}
+  saveButton: {fileID: 1946669628}
+  debugToggle: {fileID: 306056906}
+--- !u!114 &62405374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62405370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9dd39372311dc8478b1e88f642889de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 62405373}
   rowPrefab: {fileID: 279609135188387592, guid: 68868ebd47f334b42b8b047853a62d05,
     type: 3}
   parentView: {fileID: 1383499865}
-  saveButton: {fileID: 1946669628}
-  debugToggle: {fileID: 306056906}
 --- !u!1 &67501558
 GameObject:
   m_ObjectHideFlags: 0

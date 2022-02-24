@@ -10,7 +10,7 @@ namespace AZW.FaceOSC
         [SerializeField] Text address;
         [SerializeField] Toggle isSending;
         [SerializeField] Text valueLabel;
-        [SerializeField] Slider gain;
+        [SerializeField] Slider gainSlider;
         [SerializeField] InputField gainValue;
 
         void Start()
@@ -18,24 +18,24 @@ namespace AZW.FaceOSC
             if (manager == null) manager = GetComponentInParent<FacialCapture>();
             address.text = faceKey.ToString();
             isSending.onValueChanged.AddListener(newVal => manager.UpdatePreference(faceKey, this));
-            gain.onValueChanged.AddListener(newVal =>
+            gainSlider.onValueChanged.AddListener(newVal =>
             {
                 gainValue.SetTextWithoutNotify(newVal.ToString());
                 manager.UpdatePreference(faceKey, this);
             });
             gainValue.onValueChanged.AddListener(newVal =>
             {
-                gain.SetValueWithoutNotify(float.Parse(newVal));
+                gainSlider.SetValueWithoutNotify(float.Parse(newVal));
                 manager.UpdatePreference(faceKey, this);
             });
         }
 
         public bool IsSending() { return isSending.isOn; }
 
-        public float GetGain() { return gain.value; }
+        public float GetGain() { return gainSlider.value; }
         public void SetGain(float value)
         {
-            gain.SetValueWithoutNotify(value);
+            gainSlider.SetValueWithoutNotify(value);
             gainValue.SetTextWithoutNotify(value.ToString());
         }
 
