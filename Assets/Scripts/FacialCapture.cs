@@ -6,6 +6,7 @@ using System;
 using UnityEngine.UI;
 using System.IO;
 using ViveSR.anipal.Eye;
+using System.Runtime.InteropServices;
 
 namespace AZW.FaceOSC
 {
@@ -14,7 +15,6 @@ namespace AZW.FaceOSC
     {
         [Header("OSC")]
         public OSC osc;
-        Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
         [SerializeField]
         string addressRoot = "/avatar/parameters/";
 
@@ -24,10 +24,16 @@ namespace AZW.FaceOSC
         [SerializeField] Toggle debugToggle;
 
 
+        Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
+        //Dictionary<EyeShape_v2, float> eyeWeight = new Dictionary<EyeShape_v2, float>();
+        static EyeData_v2 eyeData = new EyeData_v2();
+        bool isUsingEyeCallback = false;
+
         Dictionary<FaceKey, FaceDataPreferences> prefs = new Dictionary<FaceKey, FaceDataPreferences>();
         ValueRowsUI vr;
         bool isDebug = false;
         const string PREF_FILE_PATH = "./preferences.json";
+        public float maxAngle = 45f;
 
 
         bool _isDirty = false;
@@ -66,9 +72,98 @@ namespace AZW.FaceOSC
         {
             if (GetFacialData())
             {
-                FacialData();
-                ComputedData();
+                SendFacialData();
             }
+
+            if (GetEyeData())
+            {
+                SendEyeData();
+            }
+        }
+
+        bool GetEyeData()
+        {
+            if (SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING) return false;
+
+            if (!isUsingEyeCallback)
+            {
+                if (SRanipal_Eye_Framework.Instance.EnableEyeDataCallback)
+                {
+                    SRanipal_Eye_v2.WrapperRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
+                    isUsingEyeCallback = true;
+                }
+                else
+                {
+                    var error = SRanipal_Eye_API.GetEyeData_v2(ref eyeData);
+                    if (error != ViveSR.Error.WORK) return false;
+                }
+            }
+
+            return eyeData.no_user;
+        }
+
+        void SendEyeData()
+        {
+            // Get the current value
+            var leftEye = eyeData.verbose_data.left;
+            var rightEye = eyeData.verbose_data.right;
+            var leftExpression = eyeData.expression_data.left;
+            var rightExpression = eyeData.expression_data.right;
+
+            // Gaze
+            // Eye balls usually don't rotate by z-axis
+            // If invalid data such as closed eyes, return the centre
+            var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
+                ? new Vector2(
+                Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.right)),
+                Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.forward))
+                )
+                : Vector2.zero;
+            var rightRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
+                ? new Vector2(
+                    Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.right)),
+                    Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.forward))
+                )
+                : Vector2.zero;
+
+            // Pupil
+            // the same value with SRanipal_Eye_v2.GetPupilPosition
+            // If invalid data such as closed eyes, return the centre
+            var leftPupil = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
+                ? new Vector2(
+                    leftEye.pupil_position_in_sensor_area.x * 2 - 1,
+                    leftEye.pupil_position_in_sensor_area.y * -2 + 1
+                )
+                : Vector2.zero;
+            var rightPupil = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
+                ? new Vector2(
+                    rightEye.pupil_position_in_sensor_area.x * 2 - 1,
+                    rightEye.pupil_position_in_sensor_area.y * -2 + 1
+                )
+                : Vector2.zero;
+
+            // Openness
+            // If invalid data such as closed eyes, return 0 which means a closed eye
+            var leftOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? leftEye.eye_openness : 0;
+            var rightOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? rightEye.eye_openness : 0;
+
+            SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.y);
+            SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.x);
+            SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.y);
+            SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.x);
+            SendAverageRotation(FaceKey.Gaze_Horizontal, leftRot.y, rightRot.y);
+            SendAverageRotation(FaceKey.Gaze_Vertical, leftRot.x, rightRot.x);
+
+            // Weight
+            // the same value with SRanipal_Eye_v2.GetEyeWeightings
+            SendWithAverage(FaceKey.Eye_Left_Up, FaceKey.Eye_Right_Up, FaceKey.Eye_Up, leftExpression.eye_wide, rightExpression.eye_wide);
+            SendWithAverage(FaceKey.Eye_Left_Down, FaceKey.Eye_Right_Down, FaceKey.Eye_Down, leftRot.y < 0 ? leftRot.y : 0, rightRot.y < 0 ? rightRot.y : 0);
+            SendWithAverage(FaceKey.Eye_Left_Left, FaceKey.Eye_Right_Left, FaceKey.Eye_Left, Mathf.Max(-leftPupil.x, 0f), Mathf.Max(-rightPupil.x, 0f));
+            SendWithAverage(FaceKey.Eye_Left_Right, FaceKey.Eye_Right_Right, FaceKey.Eye_Right, Mathf.Max(leftPupil.x, 0f), Mathf.Max(rightPupil.x, 0f));
+            SendWithAverage(FaceKey.Eye_Left_Blink, FaceKey.Eye_Right_Blink, FaceKey.Eye_Blink, 1 - leftOpenness, 1 - rightOpenness);
+            SendWithAverage(FaceKey.Eye_Left_Wide, FaceKey.Eye_Right_Wide, FaceKey.Eye_Wide, leftExpression.eye_wide, rightExpression.eye_wide); // The same with Eye_Left_Up
+            SendWithAverage(FaceKey.Eye_Left_Frown, FaceKey.Eye_Right_Frown, FaceKey.Eye_Frown, leftExpression.eye_frown, rightExpression.eye_frown);
+            SendWithAverage(FaceKey.Eye_Left_Squeeze, FaceKey.Eye_Right_Squeeze, FaceKey.Eye_Squeeze, leftExpression.eye_squeeze, rightExpression.eye_squeeze);
         }
 
         bool GetFacialData()
@@ -93,7 +188,7 @@ namespace AZW.FaceOSC
             }
         }
 
-        bool FacialData()
+        void SendFacialData()
         {
             foreach (var param in lipWeight)
             {
@@ -104,10 +199,7 @@ namespace AZW.FaceOSC
                 Send(stringKey, key, value);
             }
 
-            return true;
-        }
-        void ComputedData()
-        {
+            // Computed Data
             SendBipolar(FaceKey.Mouth_Smile_Sad_Right, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Sad_Right]);
             SendBipolar(FaceKey.Mouth_Smile_Sad_Left, lipWeight[LipShape_v2.Mouth_Smile_Left], lipWeight[LipShape_v2.Mouth_Sad_Left]);
             SendAverage(FaceKey.Mouth_Smile, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Smile_Left]);
@@ -131,10 +223,14 @@ namespace AZW.FaceOSC
 
         }
 
+        void Send(FaceKey key, float value)
+        {
+            Send(key.ToString(), key, value);
+        }
+
         void SendBipolar(FaceKey key, float upperValue, float lowerValue)
         {
             Send(
-                key.ToString(),
                 key,
                 upperValue > lowerValue ? upperValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
             );
@@ -142,10 +238,32 @@ namespace AZW.FaceOSC
         void SendAverage(FaceKey key, float value1, float value2)
         {
             Send(
-                key.ToString(),
                 key,
                 (value1 + value2) / 2.0f
             );
+        }
+
+        void SendWithAverage(FaceKey key1, FaceKey key2, FaceKey keyAverage, float value1, float value2)
+        {
+            Send(key1, value1);
+            Send(key2, value2);
+            Send(
+                keyAverage,
+                (value1 + value2) / 2.0f
+            );
+        }
+
+        void SendRotation(FaceKey key, float rotation)
+        {
+            if (rotation > maxAngle) rotation = maxAngle;
+            else if (rotation < -maxAngle) rotation = -maxAngle;
+
+            Send(key, rotation / maxAngle);
+        }
+        void SendAverageRotation(FaceKey key, float rotation1, float rotation2)
+        {
+            var rotation = (rotation1 - rotation2) / 2.0f;
+            Send(key, rotation / maxAngle);
         }
 
         public void UpdatePreference(FaceKey key, FaceValueRow value)
@@ -189,6 +307,11 @@ namespace AZW.FaceOSC
         public void ToggleDebug()
         {
             isDebug = debugToggle.isOn;
+        }
+
+        static void EyeCallback(ref EyeData_v2 eye_data)
+        {
+            eyeData = eye_data;
         }
 
         [Serializable]

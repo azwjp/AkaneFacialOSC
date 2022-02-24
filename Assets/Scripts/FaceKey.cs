@@ -2,6 +2,44 @@
 {
     public enum FaceKey
     {
+        // Eye
+        Eye_Left_Blink,
+        Eye_Left_Wide,
+        Eye_Left_Right,
+        Eye_Left_Left,
+        Eye_Left_Up,
+        Eye_Left_Down,
+        Eye_Right_Blink,
+        Eye_Right_Wide,
+        Eye_Right_Right,
+        Eye_Right_Left,
+        Eye_Right_Up,
+        Eye_Right_Down,
+        Eye_Left_Frown,
+        Eye_Right_Frown,
+        Eye_Left_Squeeze,
+        Eye_Right_Squeeze,
+        // TODO: Add pupil data
+
+        // Gaze (Computed)
+        Gaze_Left_Vertical,
+        Gaze_Left_Horizontal,
+        Gaze_Right_Vertical,
+        Gaze_Right_Horizontal,
+        Gaze_Vertical, // not the combined data by SRanipal
+        Gaze_Horizontal,
+
+        // Computed Eye
+        Eye_Blink,
+        Eye_Wide,
+        Eye_Right,
+        Eye_Left,
+        Eye_Up,
+        Eye_Down,
+        Eye_Frown, // Originally in EyeShape_v2 but the actual data are separeted with the both eyes
+        Eye_Squeeze,
+
+        // Facial
         Jaw_Right,
         Jaw_Left,
         Jaw_Forward,
@@ -49,6 +87,9 @@
 
     public enum DataType
     {
+        Eye,
+        Gaze,
+        CalculatedEye,
         Facial,
         Calculated,
     }
@@ -59,6 +100,42 @@
         {
             switch (key)
             {
+                case FaceKey.Eye_Left_Blink:
+                case FaceKey.Eye_Left_Wide:
+                case FaceKey.Eye_Left_Right:
+                case FaceKey.Eye_Left_Left:
+                case FaceKey.Eye_Left_Up:
+                case FaceKey.Eye_Left_Down:
+                case FaceKey.Eye_Right_Blink:
+                case FaceKey.Eye_Right_Wide:
+                case FaceKey.Eye_Right_Right:
+                case FaceKey.Eye_Right_Left:
+                case FaceKey.Eye_Right_Up:
+                case FaceKey.Eye_Right_Down:
+                case FaceKey.Eye_Left_Frown:
+                case FaceKey.Eye_Right_Frown:
+                case FaceKey.Eye_Left_Squeeze:
+                case FaceKey.Eye_Right_Squeeze:
+                    return DataType.Eye;
+
+                case FaceKey.Gaze_Left_Vertical:
+                case FaceKey.Gaze_Left_Horizontal:
+                case FaceKey.Gaze_Right_Vertical:
+                case FaceKey.Gaze_Right_Horizontal:
+                case FaceKey.Gaze_Vertical:
+                case FaceKey.Gaze_Horizontal:
+                    return DataType.Gaze;
+
+                case FaceKey.Eye_Blink:
+                case FaceKey.Eye_Wide:
+                case FaceKey.Eye_Right:
+                case FaceKey.Eye_Left:
+                case FaceKey.Eye_Up:
+                case FaceKey.Eye_Down:
+                case FaceKey.Eye_Frown:
+                case FaceKey.Eye_Squeeze:
+                    return DataType.CalculatedEye;
+
                 case FaceKey.Jaw_Right:
                 case FaceKey.Jaw_Left:
                 case FaceKey.Jaw_Forward:
@@ -97,6 +174,7 @@
                 case FaceKey.Tongue_DownLeft_Morph:
                 case FaceKey.Tongue_DownRight_Morph:
                     return DataType.Facial;
+
                 default:
                     return DataType.Calculated;
             }
