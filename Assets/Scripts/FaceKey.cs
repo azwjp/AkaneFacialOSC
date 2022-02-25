@@ -1,5 +1,8 @@
-﻿namespace AZW.FaceOSC
+﻿using System;
+
+namespace AZW.FaceOSC
 {
+    [Serializable]
     public enum FaceKey
     {
         // Eye
@@ -79,10 +82,16 @@
         Tongue_DownRight_Morph,
 
         // Calculated
-        Mouth_Smile_Sad_Right,
-        Mouth_Smile_Sad_Left,
+        Mouth_Sad_Smile_Right,
+        Mouth_Sad_Smile_Left,
         Mouth_Smile,
         Mouth_Sad,
+        Mouth_Sad_Smile,
+        Mouth_Upper_Left_Right,
+        Mouth_Lower_Left_Right,
+        Mouth_Left_Right,
+        Cheek_Puff,
+        Cheek_Suck_Puff,
     }
 
     public enum DataType

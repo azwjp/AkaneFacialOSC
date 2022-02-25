@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.IO;
 using ViveSR.anipal.Eye;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace AZW.FaceOSC
 {
@@ -29,11 +30,11 @@ namespace AZW.FaceOSC
         static EyeData_v2 eyeData = new EyeData_v2();
         bool isUsingEyeCallback = false;
 
-        Dictionary<FaceKey, FaceDataPreferences> prefs = new Dictionary<FaceKey, FaceDataPreferences>();
+        Dictionary<FaceKey, FaceDataPreferences> facePrefs = new Dictionary<FaceKey, FaceDataPreferences>();
         ValueRowsUI vr;
         bool isDebug = false;
-        const string PREF_FILE_PATH = "./preferences.json";
-        public float maxAngle = 45f;
+        const string PREF_FILE_PATH = "/preferences.json";
+        public float maxAngle = Mathf.PI / 4.0f;
 
 
         bool _isDirty = false;
@@ -49,14 +50,14 @@ namespace AZW.FaceOSC
 
         void Start()
         {
-            prefs = Load();
+            facePrefs = Load();
 
             foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
             {
-                if (!prefs.ContainsKey(key))
+                if (!facePrefs.ContainsKey(key))
                 {
-                    var val = new FaceDataPreferences();
-                    prefs.Add(key, val);
+                    var val = new FaceDataPreferences(key);
+                    facePrefs.Add(key, val);
                     uiRows.SetGain(key, val.gain);
                 }
             }
@@ -115,11 +116,11 @@ namespace AZW.FaceOSC
             // If invalid data such as closed eyes, return the centre
             var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
-                Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.right)),
-                Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.forward))
+                    Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.right)),
+                    Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.forward))
                 )
                 : Vector2.zero;
-            var rightRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
+            var rightRot = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
                     Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.right)),
                     Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.forward))
@@ -190,27 +191,75 @@ namespace AZW.FaceOSC
 
         void SendFacialData()
         {
-            foreach (var param in lipWeight)
-            {
-                var stringKey = param.Key.ToString();
-                var key = (FaceKey)Enum.Parse(typeof(FaceKey), stringKey);
-                var value = param.Value;
+            Send(FaceKey.Jaw_Right, lipWeight[LipShape_v2.Jaw_Right]);
+            Send(FaceKey.Jaw_Left, lipWeight[LipShape_v2.Jaw_Left]);
+            Send(FaceKey.Jaw_Forward, lipWeight[LipShape_v2.Jaw_Forward]);
+            Send(FaceKey.Jaw_Open, lipWeight[LipShape_v2.Jaw_Open]);
 
-                Send(stringKey, key, value);
-            }
+            Send(FaceKey.Mouth_Upper_Right, lipWeight[LipShape_v2.Mouth_Upper_Right]);
+            Send(FaceKey.Mouth_Upper_Left, lipWeight[LipShape_v2.Mouth_Upper_Left]);
+            Send(FaceKey.Mouth_Lower_Right, lipWeight[LipShape_v2.Mouth_Lower_Right]);
+            Send(FaceKey.Mouth_Lower_Left, lipWeight[LipShape_v2.Mouth_Lower_Left]);
 
-            // Computed Data
-            SendBipolar(FaceKey.Mouth_Smile_Sad_Right, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Sad_Right]);
-            SendBipolar(FaceKey.Mouth_Smile_Sad_Left, lipWeight[LipShape_v2.Mouth_Smile_Left], lipWeight[LipShape_v2.Mouth_Sad_Left]);
-            SendAverage(FaceKey.Mouth_Smile, lipWeight[LipShape_v2.Mouth_Smile_Right], lipWeight[LipShape_v2.Mouth_Smile_Left]);
-            SendAverage(FaceKey.Mouth_Sad, lipWeight[LipShape_v2.Mouth_Sad_Right], lipWeight[LipShape_v2.Mouth_Sad_Left]);
+            Send(FaceKey.Mouth_Ape_Shape, lipWeight[LipShape_v2.Mouth_Ape_Shape]);
+
+            Send(FaceKey.Mouth_Upper_Overturn, lipWeight[LipShape_v2.Mouth_Upper_Overturn]);
+            Send(FaceKey.Mouth_Lower_Overturn, lipWeight[LipShape_v2.Mouth_Lower_Overturn]);
+
+            Send(FaceKey.Mouth_Pout, lipWeight[LipShape_v2.Mouth_Pout]);
+
+            // Smile
+            // Sad
+            // Suck
+            // Puff
+
+            Send(FaceKey.Mouth_Upper_UpRight, lipWeight[LipShape_v2.Mouth_Upper_UpRight]);
+            Send(FaceKey.Mouth_Upper_UpLeft, lipWeight[LipShape_v2.Mouth_Upper_UpLeft]);
+            Send(FaceKey.Mouth_Lower_DownRight, lipWeight[LipShape_v2.Mouth_Lower_DownRight]);
+            Send(FaceKey.Mouth_Lower_DownLeft, lipWeight[LipShape_v2.Mouth_Lower_DownLeft]);
+            Send(FaceKey.Mouth_Upper_Inside, lipWeight[LipShape_v2.Mouth_Upper_Inside]);
+            Send(FaceKey.Mouth_Lower_Inside, lipWeight[LipShape_v2.Mouth_Lower_Inside]);
+            Send(FaceKey.Mouth_Lower_Overlay, lipWeight[LipShape_v2.Mouth_Lower_Overlay]);
+
+            Send(FaceKey.Tongue_LongStep1, lipWeight[LipShape_v2.Tongue_LongStep1]);
+            Send(FaceKey.Tongue_LongStep2, lipWeight[LipShape_v2.Tongue_LongStep2]);
+            Send(FaceKey.Tongue_Down, lipWeight[LipShape_v2.Tongue_Down]);
+            Send(FaceKey.Tongue_Up, lipWeight[LipShape_v2.Tongue_Up]);
+            Send(FaceKey.Tongue_Right, lipWeight[LipShape_v2.Tongue_Right]);
+            Send(FaceKey.Tongue_Left, lipWeight[LipShape_v2.Tongue_Left]);
+            Send(FaceKey.Tongue_Roll, lipWeight[LipShape_v2.Tongue_Roll]);
+            Send(FaceKey.Tongue_UpLeft_Morph, lipWeight[LipShape_v2.Tongue_UpLeft_Morph]);
+            Send(FaceKey.Tongue_UpRight_Morph, lipWeight[LipShape_v2.Tongue_UpRight_Morph]);
+            Send(FaceKey.Tongue_DownLeft_Morph, lipWeight[LipShape_v2.Tongue_DownLeft_Morph]);
+            Send(FaceKey.Tongue_DownRight_Morph, lipWeight[LipShape_v2.Tongue_DownRight_Morph]);
+
+
+            // Calculated
+            SendWithAverageAndBipolar(
+                FaceKey.Mouth_Sad_Left, FaceKey.Mouth_Sad_Right, FaceKey.Mouth_Smile_Left, FaceKey.Mouth_Smile_Right,
+                FaceKey.Mouth_Sad_Smile_Left, FaceKey.Mouth_Sad_Smile_Right,
+                FaceKey.Mouth_Sad, FaceKey.Mouth_Smile,
+                FaceKey.Mouth_Sad_Smile,
+                lipWeight[LipShape_v2.Mouth_Sad_Left], lipWeight[LipShape_v2.Mouth_Sad_Right], lipWeight[LipShape_v2.Mouth_Smile_Left], lipWeight[LipShape_v2.Mouth_Smile_Right]
+            );
+
+            SendBipolar(FaceKey.Mouth_Upper_Left_Right, lipWeight[LipShape_v2.Mouth_Upper_Left], lipWeight[LipShape_v2.Mouth_Upper_Right]);
+            SendBipolar(FaceKey.Mouth_Lower_Left_Right, lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Right]);
+            SendAverageAndBipolar(FaceKey.Mouth_Left_Right, lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Right], lipWeight[LipShape_v2.Mouth_Lower_Right]);
+
+            Send(FaceKey.Cheek_Puff_Right, lipWeight[LipShape_v2.Cheek_Puff_Right]);
+            Send(FaceKey.Cheek_Puff_Left, lipWeight[LipShape_v2.Cheek_Puff_Left]);
+            Send(FaceKey.Cheek_Suck, lipWeight[LipShape_v2.Cheek_Suck]);
+            var cheekPuff = (lipWeight[LipShape_v2.Cheek_Puff_Left] + lipWeight[LipShape_v2.Cheek_Puff_Right]) / 2.0f;
+            Send(FaceKey.Cheek_Puff, cheekPuff);
+            SendBipolar(FaceKey.Cheek_Suck_Puff, lipWeight[LipShape_v2.Cheek_Suck], cheekPuff);
         }
 
         void Send(string stringKey, FaceKey key, float value)
         {
-            if (prefs.ContainsKey(key))
+            if (facePrefs.ContainsKey(key))
             {
-                var pref = prefs[key];
+                var pref = facePrefs[key];
                 value *= pref.gain;
                 uiRows.SetValue(key, value);
                 if (!pref.isSending) return;
@@ -228,13 +277,54 @@ namespace AZW.FaceOSC
             Send(key.ToString(), key, value);
         }
 
-        void SendBipolar(FaceKey key, float upperValue, float lowerValue)
+        void SendBipolar(FaceKey key, float lowerValue, float higherValue)
         {
             Send(
                 key,
-                upperValue > lowerValue ? upperValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
             );
         }
+        void SendWithAverageAndBipolar(
+            FaceKey lowerKey1, FaceKey lowerKey2, FaceKey higherKey1, FaceKey higherKey2,
+            FaceKey key1, FaceKey key2, FaceKey lowerKey, FaceKey higherKey,
+            FaceKey unitedKey,
+            float lower1, float lower2, float higher1, float higher2)
+        {
+            var higherValue = (higher1 + higher2) / 2.0f;
+            var lowerValue = (lower1 + lower2) / 2.0f;
+
+            // Single values
+            Send(higherKey1, higher1);
+            Send(higherKey2, higher2);
+            Send(lowerKey1, lower1);
+            Send(lowerKey2, lower2);
+
+            // Bipolar
+            SendBipolar(key1, lower1, higher1);
+            SendBipolar(key2, lower2, higher2);
+
+            // Average
+            Send(higherKey, higherValue);
+            Send(lowerKey, lowerValue);
+
+            // Bipolar with average
+            Send(
+                unitedKey,
+                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+            );
+        }
+
+        void SendAverageAndBipolar(FaceKey unitedKey, float lower1, float lower2, float higher1, float higher2)
+        {
+            var higherValue = (higher1 + higher2) / 2.0f;
+            var lowerValue = (lower1 + lower2) / 2.0f;
+
+            Send(
+                unitedKey,
+                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+            );
+        }
+
         void SendAverage(FaceKey key, float value1, float value2)
         {
             Send(
@@ -268,11 +358,11 @@ namespace AZW.FaceOSC
 
         public void UpdatePreference(FaceKey key, FaceValueRow value)
         {
-            var pref = prefs[key];
+            var pref = facePrefs[key];
             if (pref == null)
             {
-                pref = new FaceDataPreferences();
-                prefs.Add(key, pref);
+                pref = new FaceDataPreferences(key);
+                facePrefs.Add(key, pref);
             }
             pref.isSending = value.IsSending();
             pref.gain = value.GetGain();
@@ -281,8 +371,10 @@ namespace AZW.FaceOSC
 
         public void Save()
         {
-            var json = JsonUtility.ToJson(prefs);
-            File.WriteAllText(PREF_FILE_PATH, json);
+            var preferences = new Preferences();
+            preferences.faceDataPreferences = facePrefs.Values.ToArray();
+            var json = JsonUtility.ToJson(preferences, true);
+            File.WriteAllText(Application.persistentDataPath + PREF_FILE_PATH, json, Encoding.UTF8);
             isDirty = false;
         }
 
@@ -290,17 +382,18 @@ namespace AZW.FaceOSC
         {
             try
             {
-                var json = File.ReadAllText(PREF_FILE_PATH);
-                var pref = JsonUtility.FromJson<Dictionary<FaceKey, FaceDataPreferences>>(json);
-                foreach(var e in pref)
+                var json = File.ReadAllText(Application.persistentDataPath + PREF_FILE_PATH, Encoding.UTF8);
+                var preferences = JsonUtility.FromJson<Preferences>(json);
+                facePrefs = preferences.faceDataPreferences.ToDictionary(e => (FaceKey)Enum.Parse(typeof(FaceKey), e.key), e => new FaceDataPreferences(e.key, e.isSending, e.gain));
+                foreach(var e in facePrefs)
                 {
                     uiRows.SetGain(e.Key, e.Value.gain);
                 }
-                return pref;
+                return facePrefs;
             }
             catch (Exception e)
             {
-                return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => new FaceDataPreferences());
+                return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => new FaceDataPreferences(key));
             }
         }
 
@@ -314,18 +407,40 @@ namespace AZW.FaceOSC
             eyeData = eye_data;
         }
 
-        [Serializable]
-        class VSRKeyMapper
-        {
-            public LipShape_v2 lipShape;
-            public string target;
-        }
 
-        [System.Serializable]
-        class FaceDataPreferences
+    }
+    [Serializable]
+    public class VSRKeyMapper
+    {
+        public LipShape_v2 lipShape;
+        public string target;
+    }
+
+    [Serializable]
+    public class Preferences
+    {
+        [SerializeField] public FaceDataPreferences[] faceDataPreferences;
+    }
+    [Serializable]
+    public class FaceDataPreferences
+    {
+        public string key;
+        public bool isSending = true;
+        public float gain = 1;
+
+        public FaceDataPreferences(string key)
         {
-            public bool isSending = true;
-            public float gain = 1;
+            this.key = key;
+        }
+        public FaceDataPreferences(FaceKey key)
+        {
+            this.key = key.ToString();
+        }
+        public FaceDataPreferences(string key, bool isSending, float gain)
+        {
+            this.key = key;
+            this.isSending = isSending;
+            this.gain = gain;
         }
     }
 }
