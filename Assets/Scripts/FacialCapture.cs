@@ -19,10 +19,17 @@ namespace AZW.FaceOSC
         [SerializeField]
         string addressRoot = "/avatar/parameters/";
 
+        [Header("Tracking SDK")]
+        [SerializeField] SRanipal_Eye_Framework eyeFramework;
+        [SerializeField] SRanipal_Lip_Framework lipFramework;
+
         [Header("UI Components")]
         [SerializeField] ValueRowsUI uiRows;
         [SerializeField] SaveButton saveButton;
+        [SerializeField] Toggle useEyeTracking;
+        [SerializeField] Toggle useFacialTracking;
         [SerializeField] Toggle debugToggle;
+        [SerializeField] Dropdown eyeTrackingTypeList;
 
 
         Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
@@ -31,8 +38,7 @@ namespace AZW.FaceOSC
         bool isUsingEyeCallback = false;
 
         Dictionary<FaceKey, FaceDataPreferences> facePrefs = new Dictionary<FaceKey, FaceDataPreferences>();
-        ValueRowsUI vr;
-        bool isDebug = false;
+        //ValueRowsUI vr;
         const string PREF_FILE_PATH = "/preferences.json";
         public float maxAngle = Mathf.PI / 4.0f;
 
@@ -48,41 +54,38 @@ namespace AZW.FaceOSC
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by Unity")]
         void Start()
         {
-            facePrefs = Load();
+            eyeTrackingTypeList.options = Enum.GetValues(typeof(EyeTrackingType)).Cast<EyeTrackingType>().Select(x => new Dropdown.OptionData(x.ToString())).ToList();
 
-            foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
-            {
-                if (!facePrefs.ContainsKey(key))
-                {
-                    var val = new FaceDataPreferences(key);
-                    facePrefs.Add(key, val);
-                    uiRows.SetGain(key, val.gain);
-                }
-            }
+            facePrefs = Load();
 
             if (!SRanipal_Lip_Framework.Instance.EnableLip)
             {
                 enabled = false;
                 return;
             }
+            isDirty = false;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051", Justification = "Used by Unity")]
         void Update()
         {
-            if (GetFacialData())
+            var enableFace = lipFramework.EnableLip = useFacialTracking.isOn;
+            if (enableFace && GetFacialData())
             {
                 SendFacialData();
             }
 
-            if (GetEyeData())
+            var enableEye = eyeFramework.EnableEye = useEyeTracking.isOn;
+            if (enableEye && GetSRanipalEyeData())
             {
-                SendEyeData();
+                SendSRanipalEyeData();
             }
         }
 
-        bool GetEyeData()
+        bool GetSRanipalEyeData()
         {
             if (SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING) return false;
 
@@ -103,73 +106,87 @@ namespace AZW.FaceOSC
             return eyeData.no_user;
         }
 
-        void SendEyeData()
+        void SendSRanipalEyeData()
         {
-            // Get the current value
-            var leftEye = eyeData.verbose_data.left;
-            var rightEye = eyeData.verbose_data.right;
-            var leftExpression = eyeData.expression_data.left;
-            var rightExpression = eyeData.expression_data.right;
+            if (debugToggle.isOn)
+            {
+                Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>()
+                    .Where(faceKey => {
+                        var type = KeyUtils.GetDataType(faceKey);
+                        return type == DataType.Eye || type == DataType.ComputedEye;
+                    })
+                    .ToList()
+                    .ForEach(key => Send(key, Mathf.Sin(Time.fixedTime) / 2.0f + 0.5f));
+            }
+            else
+            {
+                // Get the current value
+                var leftEye = eyeData.verbose_data.left;
+                var rightEye = eyeData.verbose_data.right;
+                var leftExpression = eyeData.expression_data.left;
+                var rightExpression = eyeData.expression_data.right;
 
-            // Gaze
-            // Eye balls usually don't rotate by z-axis
-            // If invalid data such as closed eyes, return the centre
-            var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
-                ? new Vector2(
-                    Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.right)),
-                    Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.forward))
-                )
-                : Vector2.zero;
-            var rightRot = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
-                ? new Vector2(
-                    Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.right)),
-                    Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.forward))
-                )
-                : Vector2.zero;
+                // Gaze
+                // Eye balls usually don't rotate by z-axis
+                // If invalid data such as closed eyes, return the centre
+                var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
+                    ? new Vector2(
+                        Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.right)),
+                        Mathf.Acos(Vector3.Dot(leftEye.gaze_direction_normalized, Vector3.forward))
+                    )
+                    : Vector2.zero;
+                var rightRot = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
+                    ? new Vector2(
+                        Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.right)),
+                        Mathf.Acos(Vector3.Dot(rightEye.gaze_direction_normalized, Vector3.forward))
+                    )
+                    : Vector2.zero;
 
-            // Pupil
-            // the same value with SRanipal_Eye_v2.GetPupilPosition
-            // If invalid data such as closed eyes, return the centre
-            var leftPupil = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
-                ? new Vector2(
-                    leftEye.pupil_position_in_sensor_area.x * 2 - 1,
-                    leftEye.pupil_position_in_sensor_area.y * -2 + 1
-                )
-                : Vector2.zero;
-            var rightPupil = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
-                ? new Vector2(
-                    rightEye.pupil_position_in_sensor_area.x * 2 - 1,
-                    rightEye.pupil_position_in_sensor_area.y * -2 + 1
-                )
-                : Vector2.zero;
+                // Pupil
+                // the same value with SRanipal_Eye_v2.GetPupilPosition
+                // If invalid data such as closed eyes, return the centre
+                var leftPupil = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
+                    ? new Vector2(
+                        leftEye.pupil_position_in_sensor_area.x * 2 - 1,
+                        leftEye.pupil_position_in_sensor_area.y * -2 + 1
+                    )
+                    : Vector2.zero;
+                var rightPupil = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_PUPIL_POSITION_IN_SENSOR_AREA_VALIDITY)
+                    ? new Vector2(
+                        rightEye.pupil_position_in_sensor_area.x * 2 - 1,
+                        rightEye.pupil_position_in_sensor_area.y * -2 + 1
+                    )
+                    : Vector2.zero;
 
-            // Openness
-            // If invalid data such as closed eyes, return 0 which means a closed eye
-            var leftOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? leftEye.eye_openness : 0;
-            var rightOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? rightEye.eye_openness : 0;
+                // Openness
+                // If invalid data such as closed eyes, return 0 which means a closed eye
+                var leftOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? leftEye.eye_openness : 0;
+                var rightOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? rightEye.eye_openness : 0;
 
-            SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.y);
-            SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.x);
-            SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.y);
-            SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.x);
-            SendAverageRotation(FaceKey.Gaze_Horizontal, leftRot.y, rightRot.y);
-            SendAverageRotation(FaceKey.Gaze_Vertical, leftRot.x, rightRot.x);
+                SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.y);
+                SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.x);
+                SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.y);
+                SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.x);
+                SendAverageRotation(FaceKey.Gaze_Horizontal, leftRot.y, rightRot.y);
+                SendAverageRotation(FaceKey.Gaze_Vertical, leftRot.x, rightRot.x);
 
-            // Weight
-            // the same value with SRanipal_Eye_v2.GetEyeWeightings
-            SendWithAverage(FaceKey.Eye_Left_Up, FaceKey.Eye_Right_Up, FaceKey.Eye_Up, leftExpression.eye_wide, rightExpression.eye_wide);
-            SendWithAverage(FaceKey.Eye_Left_Down, FaceKey.Eye_Right_Down, FaceKey.Eye_Down, leftRot.y < 0 ? leftRot.y : 0, rightRot.y < 0 ? rightRot.y : 0);
-            SendWithAverage(FaceKey.Eye_Left_Left, FaceKey.Eye_Right_Left, FaceKey.Eye_Left, Mathf.Max(-leftPupil.x, 0f), Mathf.Max(-rightPupil.x, 0f));
-            SendWithAverage(FaceKey.Eye_Left_Right, FaceKey.Eye_Right_Right, FaceKey.Eye_Right, Mathf.Max(leftPupil.x, 0f), Mathf.Max(rightPupil.x, 0f));
-            SendWithAverage(FaceKey.Eye_Left_Blink, FaceKey.Eye_Right_Blink, FaceKey.Eye_Blink, 1 - leftOpenness, 1 - rightOpenness);
-            SendWithAverage(FaceKey.Eye_Left_Wide, FaceKey.Eye_Right_Wide, FaceKey.Eye_Wide, leftExpression.eye_wide, rightExpression.eye_wide); // The same with Eye_Left_Up
-            SendWithAverage(FaceKey.Eye_Left_Frown, FaceKey.Eye_Right_Frown, FaceKey.Eye_Frown, leftExpression.eye_frown, rightExpression.eye_frown);
-            SendWithAverage(FaceKey.Eye_Left_Squeeze, FaceKey.Eye_Right_Squeeze, FaceKey.Eye_Squeeze, leftExpression.eye_squeeze, rightExpression.eye_squeeze);
+                // Weight
+                // the same value with SRanipal_Eye_v2.GetEyeWeightings
+                SendWithAverage(FaceKey.Eye_Left_Up, FaceKey.Eye_Right_Up, FaceKey.Eye_Up, leftExpression.eye_wide, rightExpression.eye_wide);
+                SendWithAverage(FaceKey.Eye_Left_Down, FaceKey.Eye_Right_Down, FaceKey.Eye_Down, leftRot.y < 0 ? leftRot.y : 0, rightRot.y < 0 ? rightRot.y : 0);
+                SendWithAverage(FaceKey.Eye_Left_Left, FaceKey.Eye_Right_Left, FaceKey.Eye_Left, Mathf.Max(-leftPupil.x, 0f), Mathf.Max(-rightPupil.x, 0f));
+                SendWithAverage(FaceKey.Eye_Left_Right, FaceKey.Eye_Right_Right, FaceKey.Eye_Right, Mathf.Max(leftPupil.x, 0f), Mathf.Max(rightPupil.x, 0f));
+                SendWithAverage(FaceKey.Eye_Left_Blink, FaceKey.Eye_Right_Blink, FaceKey.Eye_Blink, 1 - leftOpenness, 1 - rightOpenness);
+                SendWithAverage(FaceKey.Eye_Left_Wide, FaceKey.Eye_Right_Wide, FaceKey.Eye_Wide, leftExpression.eye_wide, rightExpression.eye_wide); // The same with Eye_Left_Up
+                SendWithAverage(FaceKey.Eye_Left_Frown, FaceKey.Eye_Right_Frown, FaceKey.Eye_Frown, leftExpression.eye_frown, rightExpression.eye_frown);
+                SendWithAverage(FaceKey.Eye_Left_Squeeze, FaceKey.Eye_Right_Squeeze, FaceKey.Eye_Squeeze, leftExpression.eye_squeeze, rightExpression.eye_squeeze);
+            }
+
         }
 
         bool GetFacialData()
         {
-            if (isDebug)
+            if (debugToggle.isOn)
             {
                 lipWeight = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>()
                     .Where(faceKey => KeyUtils.GetDataType(faceKey) == DataType.Facial)
@@ -255,12 +272,12 @@ namespace AZW.FaceOSC
             SendBipolar(FaceKey.Cheek_Suck_Puff, lipWeight[LipShape_v2.Cheek_Suck], cheekPuff);
         }
 
-        void Send(string stringKey, FaceKey key, float value)
+        void Send(string stringKey, FaceKey key, float value, float center = 0)
         {
             if (facePrefs.ContainsKey(key))
             {
                 var pref = facePrefs[key];
-                value *= pref.gain;
+                value = (value - center) * pref.gain + center;
                 uiRows.SetValue(key, value);
                 if (!pref.isSending) return;
             }
@@ -272,18 +289,20 @@ namespace AZW.FaceOSC
 
         }
 
-        void Send(FaceKey key, float value)
+        void Send(FaceKey key, float value, float center = 0)
         {
-            Send(key.ToString(), key, value);
+            Send(key.ToString(), key, value, center);
         }
 
         void SendBipolar(FaceKey key, float lowerValue, float higherValue)
         {
             Send(
                 key,
-                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f,
+                0.5f
             );
         }
+
         void SendWithAverageAndBipolar(
             FaceKey lowerKey1, FaceKey lowerKey2, FaceKey higherKey1, FaceKey higherKey2,
             FaceKey key1, FaceKey key2, FaceKey lowerKey, FaceKey higherKey,
@@ -364,7 +383,7 @@ namespace AZW.FaceOSC
                 pref = new FaceDataPreferences(key);
                 facePrefs.Add(key, pref);
             }
-            pref.isSending = value.IsSending();
+            pref.isSending = value.isSending;
             pref.gain = value.GetGain();
             isDirty = true;
         }
@@ -373,6 +392,9 @@ namespace AZW.FaceOSC
         {
             var preferences = new Preferences();
             preferences.faceDataPreferences = facePrefs.Values.ToArray();
+            preferences.useEyeTracking = useEyeTracking;
+            preferences.useFacialTracking = useFacialTracking;
+            preferences.eyeTrackingType = eyeTrackingTypeList.itemText.text;
             var json = JsonUtility.ToJson(preferences, true);
             File.WriteAllText(Application.persistentDataPath + PREF_FILE_PATH, json, Encoding.UTF8);
             isDirty = false;
@@ -387,8 +409,27 @@ namespace AZW.FaceOSC
                 facePrefs = preferences.faceDataPreferences.ToDictionary(e => (FaceKey)Enum.Parse(typeof(FaceKey), e.key), e => new FaceDataPreferences(e.key, e.isSending, e.gain));
                 foreach(var e in facePrefs)
                 {
-                    uiRows.SetGain(e.Key, e.Value.gain);
+                    uiRows.InitRow(e.Key, e.Value.isSending, e.Value.gain);
                 }
+                // Add absent keys with the default values
+                foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
+                {
+                    if (!facePrefs.ContainsKey(key))
+                    {
+                        var val = new FaceDataPreferences(key);
+                        facePrefs.Add(key, val);
+                        uiRows.InitRow(key, val.isSending, val.gain);
+                    }
+                }
+                debugToggle.isOn = preferences.isDebug;
+                useEyeTracking.isOn = preferences.useEyeTracking;
+                useFacialTracking.isOn = preferences.useFacialTracking;
+                try // parsing the value as a enum, and not change if the value does not exist
+                {
+                    var trackingTypeIndex = (int)Enum.Parse(typeof(EyeTrackingType), preferences.eyeTrackingType);
+                    if (Enum.IsDefined(typeof(EyeTrackingType), trackingTypeIndex)) eyeTrackingTypeList.value = trackingTypeIndex;
+                } catch {}
+                uiRows.RefreshView();
                 return facePrefs;
             }
             catch (Exception e)
@@ -397,9 +438,9 @@ namespace AZW.FaceOSC
             }
         }
 
-        public void ToggleDebug()
+        public void MakeDirty()
         {
-            isDebug = debugToggle.isOn;
+            isDirty = true;
         }
 
         static void EyeCallback(ref EyeData_v2 eye_data)
@@ -419,8 +460,13 @@ namespace AZW.FaceOSC
     [Serializable]
     public class Preferences
     {
-        [SerializeField] public FaceDataPreferences[] faceDataPreferences;
+        public FaceDataPreferences[] faceDataPreferences;
+        public bool isDebug = false;
+        public bool useEyeTracking = true;
+        public bool useFacialTracking = true;
+        public string eyeTrackingType;
     }
+
     [Serializable]
     public class FaceDataPreferences
     {
@@ -442,5 +488,10 @@ namespace AZW.FaceOSC
             this.isSending = isSending;
             this.gain = gain;
         }
+    }
+
+    public enum EyeTrackingType
+    {
+        ViveSRanipal,
     }
 }

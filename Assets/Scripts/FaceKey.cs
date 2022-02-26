@@ -98,9 +98,9 @@ namespace AZW.FaceOSC
     {
         Eye,
         Gaze,
-        CalculatedEye,
+        ComputedEye,
         Facial,
-        Calculated,
+        ComputedFacial,
     }
 
     public class KeyUtils
@@ -143,7 +143,7 @@ namespace AZW.FaceOSC
                 case FaceKey.Eye_Down:
                 case FaceKey.Eye_Frown:
                 case FaceKey.Eye_Squeeze:
-                    return DataType.CalculatedEye;
+                    return DataType.ComputedEye;
 
                 case FaceKey.Jaw_Right:
                 case FaceKey.Jaw_Left:
@@ -185,7 +185,7 @@ namespace AZW.FaceOSC
                     return DataType.Facial;
 
                 default:
-                    return DataType.Calculated;
+                    return DataType.ComputedFacial;
             }
         }
     }

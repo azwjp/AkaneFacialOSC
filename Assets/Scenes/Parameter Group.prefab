@@ -131,9 +131,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
+  rows: {fileID: 0}
   faceKey: 0
   address: {fileID: 6940680430775404983}
-  isSending: {fileID: 5033777342307792048}
+  isSendingToggle: {fileID: 5033777342307792048}
   valueLabel: {fileID: 2603703298184317341}
   gainSlider: {fileID: 4725909268233821715}
   gainValue: {fileID: 7264252781080216056}
@@ -220,7 +221,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6011900176972056898}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 4
+  m_MaxValue: 2
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -869,7 +870,18 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6153289290142925834}
+        m_MethodName: OnChangedIsSending
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &6635443507383210376
 GameObject:

@@ -6,18 +6,31 @@ namespace AZW.FaceOSC
     public class FaceValueRow : MonoBehaviour
     {
         public FacialCapture manager;
+        public ValueRowsUI rows;
         public FaceKey faceKey;
         [SerializeField] Text address;
-        [SerializeField] Toggle isSending;
+        [SerializeField] Toggle isSendingToggle;
         [SerializeField] Text valueLabel;
         [SerializeField] Slider gainSlider;
         [SerializeField] InputField gainValue;
+
+        public bool isSending
+        {
+            get
+            {
+                return isSendingToggle.isOn;
+            }
+            set
+            {
+                isSendingToggle.SetIsOnWithoutNotify(value);
+            }
+        }
 
         void Start()
         {
             if (manager == null) manager = GetComponentInParent<FacialCapture>();
             address.text = faceKey.ToString();
-            isSending.onValueChanged.AddListener(newVal => manager.UpdatePreference(faceKey, this));
+            isSendingToggle.onValueChanged.AddListener(newVal => manager.UpdatePreference(faceKey, this));
             gainSlider.onValueChanged.AddListener(newVal =>
             {
                 gainValue.SetTextWithoutNotify(newVal.ToString());
@@ -30,7 +43,10 @@ namespace AZW.FaceOSC
             });
         }
 
-        public bool IsSending() { return isSending.isOn; }
+        public void OnChangedIsSending()
+        {
+            rows.OnChildCheckboxStateChanged();
+        }
 
         public float GetGain() { return gainSlider.value; }
         public void SetGain(float value)
