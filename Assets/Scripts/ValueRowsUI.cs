@@ -51,7 +51,7 @@ namespace AZW.FaceOSC
 
         public void ShowComputedEye()
         {
-            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedEye));
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedEye || KeyUtils.GetDataType(valueRow.faceKey) == DataType.Gaze));
             RefreshView();
         }
         public void ShowFacial()
