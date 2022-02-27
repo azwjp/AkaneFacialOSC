@@ -31,6 +31,7 @@ namespace AZW.FaceOSC
         [SerializeField] Toggle debugToggle;
         [SerializeField] Dropdown eyeTrackingTypeList;
         [SerializeField] InputField maxAngle;
+        [SerializeField] I18nLangChanger language;
 
 
         Dictionary<LipShape_v2, float> lipWeight = new Dictionary<LipShape_v2, float>();
@@ -434,6 +435,7 @@ namespace AZW.FaceOSC
             preferences.eyeTrackingType = eyeTrackingTypeList.itemText.text;
             preferences.isDebug = debugToggle.isOn;
             preferences.maxAngle = int.Parse(maxAngle.text);
+            preferences.language = language.language;
             var json = JsonUtility.ToJson(preferences, true);
             File.WriteAllText(Application.persistentDataPath + PREF_FILE_PATH, json, Encoding.UTF8);
             isDirty = false;
@@ -464,11 +466,14 @@ namespace AZW.FaceOSC
                 useEyeTracking.isOn = preferences.useEyeTracking;
                 useFacialTracking.isOn = preferences.useFacialTracking;
                 maxAngle.text = preferences.maxAngle.ToString();
+
                 try // parsing the value as a enum, and not change if the value does not exist
                 {
                     var trackingTypeIndex = (int)Enum.Parse(typeof(EyeTrackingType), preferences.eyeTrackingType);
                     if (Enum.IsDefined(typeof(EyeTrackingType), trackingTypeIndex)) eyeTrackingTypeList.value = trackingTypeIndex;
-                } catch {}
+                } catch { }
+
+                language.language = preferences.language;
                 uiRows.RefreshView();
                 return facePrefs;
             }
@@ -506,6 +511,7 @@ namespace AZW.FaceOSC
         public bool useFacialTracking = true;
         public string eyeTrackingType;
         public float maxAngle = 45f;
+        public string language = "";
     }
 
     [Serializable]

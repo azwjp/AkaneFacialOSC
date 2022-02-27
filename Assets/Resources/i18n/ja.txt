@@ -1,0 +1,11 @@
+Use eye-tracking=アイトラッキングを使用
+Eye-tracking type=トラッキングデバイス
+Gaze max angle (degee)=視線最大角度
+Use facial tracking=フェイストラッキングを使用
+Debug Mode=デバッグモード
+Save=保存
+Gain=値の調整
+Value=値
+OSC Key=OSCキー
+Essential=主要データ
+All=全て表示
