@@ -72,7 +72,7 @@ namespace AZW.FaceOSC
         public void OnChildCheckboxStateChanged()
         {
             bool isAllTrue = valueRows.Values.Where(valueRow => valueRow.gameObject.activeInHierarchy).All(valueRow => valueRow.isSending);
-            allCheck.SetIsOnWithoutNotify(isAllTrue);            
+            allCheck.SetIsOnWithoutNotify(isAllTrue);
         }
 
         public void SetGain(FaceKey key, float val)

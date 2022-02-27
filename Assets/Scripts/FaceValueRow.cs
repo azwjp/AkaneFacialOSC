@@ -22,7 +22,7 @@ namespace AZW.FaceOSC
             }
             set
             {
-                isSendingToggle.SetIsOnWithoutNotify(value);
+                isSendingToggle.isOn = value;
             }
         }
 
@@ -30,7 +30,9 @@ namespace AZW.FaceOSC
         {
             if (manager == null) manager = GetComponentInParent<FacialCapture>();
             address.text = faceKey.ToString();
-            isSendingToggle.onValueChanged.AddListener(newVal => manager.UpdatePreference(faceKey, this));
+            isSendingToggle.onValueChanged.AddListener(newVal => {
+                manager.UpdatePreference(faceKey, this);
+            });
             gainSlider.onValueChanged.AddListener(newVal =>
             {
                 gainValue.SetTextWithoutNotify(newVal.ToString());
