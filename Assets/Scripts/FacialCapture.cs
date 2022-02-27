@@ -201,10 +201,10 @@ namespace AZW.FaceOSC
             var leftOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? leftEye.eye_openness : 0;
             var rightOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? rightEye.eye_openness : 0;
 
-            SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.y);
-            SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.x);
-            SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.y);
-            SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.x);
+            SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.x);
+            SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.y);
+            SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.x);
+            SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.y);
             SendAverageRotation(FaceKey.Gaze_Horizontal, leftRot.y, rightRot.y);
             SendAverageRotation(FaceKey.Gaze_Vertical, leftRot.x, rightRot.x);
 
