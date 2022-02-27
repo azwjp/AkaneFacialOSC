@@ -12,12 +12,14 @@ public class I18n : MonoBehaviour
     static string lang = "en";
 
     [SerializeField] string key;
+    string defaultText;
     Text text;
 
     void Start()
     {
         i18nComponents.Add(this);
         text = GetComponent<Text>();
+        defaultText = text.text;
 
         Load(false);
         RefreshText();
@@ -26,8 +28,11 @@ public class I18n : MonoBehaviour
     void RefreshText()
     {
         if (text == null) text = GetComponent<Text>();
+        if (defaultText == null) defaultText = text.text;
+
         string labelText;
         if (dict != null && dict.TryGetValue(key, out labelText)) text.text = labelText;
+        else text.text = defaultText;
     }
 
     void Reset()

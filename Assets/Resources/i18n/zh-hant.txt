@@ -1,0 +1,7 @@
+Use eye-tracking=使用眼球追蹤
+Eye-tracking type=眼球追蹤器
+Gaze max angle (degee)=最大注視角度
+Use facial tracking=使用表情偵測
+Debug Mode=調試模式
+Essential=主要項目
+All=全部項目
