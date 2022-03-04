@@ -47,6 +47,10 @@ public class I18nLangChanger : MonoBehaviour
         {
             case SystemLanguage.Japanese:
                 return "ja";
+            case SystemLanguage.Korean:
+                return "ko";
+            case SystemLanguage.Chinese:
+                return "zh-hans";
             default:
                 return "en";
         }
