@@ -110,7 +110,7 @@ namespace AZW.FaceOSC
         ComputedFacial,
     }
 
-    public class KeyUtils
+    public class FaceKeyUtils
     {
         public static DataType GetDataType(FaceKey key)
         {

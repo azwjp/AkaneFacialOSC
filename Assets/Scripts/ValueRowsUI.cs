@@ -71,23 +71,23 @@ namespace AZW.FaceOSC
         }
         public void ShowEye()
         {
-            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.Eye));
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(FaceKeyUtils.GetDataType(valueRow.faceKey) == DataType.Eye));
             RefreshView();
         }
 
         public void ShowComputedEye()
         {
-            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedEye || KeyUtils.GetDataType(valueRow.faceKey) == DataType.Gaze));
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(FaceKeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedEye || FaceKeyUtils.GetDataType(valueRow.faceKey) == DataType.Gaze));
             RefreshView();
         }
         public void ShowFacial()
         {
-            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.Facial));
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(FaceKeyUtils.GetDataType(valueRow.faceKey) == DataType.Facial));
             RefreshView();
         }
         public void ShowComputedFacial()
         {
-            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(KeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedFacial));
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(FaceKeyUtils.GetDataType(valueRow.faceKey) == DataType.ComputedFacial));
             RefreshView();
         }
         public void OnAllCheckChanged(bool newValue)

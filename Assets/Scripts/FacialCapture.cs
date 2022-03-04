@@ -226,7 +226,7 @@ namespace AZW.FaceOSC
             if (debugToggle.isOn)
             {
                 lipWeight = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>()
-                    .Where(faceKey => KeyUtils.GetDataType(faceKey) == DataType.Facial)
+                    .Where(faceKey => FaceKeyUtils.GetDataType(faceKey) == DataType.Facial)
                     .Select(faceKey => (LipShape_v2)Enum.Parse(typeof(LipShape_v2), faceKey.ToString()))
                     .ToDictionary(
                         e => e,
