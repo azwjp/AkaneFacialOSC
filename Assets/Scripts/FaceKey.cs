@@ -82,6 +82,7 @@ namespace AZW.FaceOSC
         Tongue_DownRight_Morph,
 
         // Calculated
+        Jaw_Left_Right,
         Mouth_Sad_Smile_Right,
         Mouth_Sad_Smile_Left,
         Mouth_Smile,
@@ -90,8 +91,14 @@ namespace AZW.FaceOSC
         Mouth_Upper_Left_Right,
         Mouth_Lower_Left_Right,
         Mouth_Left_Right,
+        Mouth_Upper_Inside_Overturn,
+        Mouth_Lower_Inside_Overturn,
         Cheek_Puff,
         Cheek_Suck_Puff,
+        Mouth_Upper_Up,
+        Mouth_Lower_Down,
+        Tongue_Left_Right,
+        Tongue_Down_Up,
     }
 
     public enum DataType

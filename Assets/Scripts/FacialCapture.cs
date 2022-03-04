@@ -289,6 +289,7 @@ namespace AZW.FaceOSC
 
 
             // Calculated
+            SendBipolar(FaceKey.Jaw_Left_Right, lipWeight[LipShape_v2.Jaw_Left], lipWeight[LipShape_v2.Jaw_Right]);
             SendWithAverageAndBipolar(
                 FaceKey.Mouth_Sad_Left, FaceKey.Mouth_Sad_Right, FaceKey.Mouth_Smile_Left, FaceKey.Mouth_Smile_Right,
                 FaceKey.Mouth_Sad_Smile_Left, FaceKey.Mouth_Sad_Smile_Right,
@@ -301,12 +302,23 @@ namespace AZW.FaceOSC
             SendBipolar(FaceKey.Mouth_Lower_Left_Right, lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Right]);
             SendAverageAndBipolar(FaceKey.Mouth_Left_Right, lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Left], lipWeight[LipShape_v2.Mouth_Lower_Right], lipWeight[LipShape_v2.Mouth_Lower_Right]);
 
+
+            SendBipolar(FaceKey.Mouth_Upper_Inside_Overturn, lipWeight[LipShape_v2.Mouth_Upper_Inside], lipWeight[LipShape_v2.Mouth_Upper_Overturn]);
+            SendBipolar(FaceKey.Mouth_Lower_Inside_Overturn, lipWeight[LipShape_v2.Mouth_Lower_Inside], lipWeight[LipShape_v2.Mouth_Lower_Overturn]);
+
             Send(FaceKey.Cheek_Puff_Right, lipWeight[LipShape_v2.Cheek_Puff_Right]);
             Send(FaceKey.Cheek_Puff_Left, lipWeight[LipShape_v2.Cheek_Puff_Left]);
             Send(FaceKey.Cheek_Suck, lipWeight[LipShape_v2.Cheek_Suck]);
             var cheekPuff = (lipWeight[LipShape_v2.Cheek_Puff_Left] + lipWeight[LipShape_v2.Cheek_Puff_Right]) / 2.0f;
             Send(FaceKey.Cheek_Puff, cheekPuff);
             SendBipolar(FaceKey.Cheek_Suck_Puff, lipWeight[LipShape_v2.Cheek_Suck], cheekPuff);
+
+            SendAverage(FaceKey.Mouth_Upper_Up, lipWeight[LipShape_v2.Mouth_Upper_UpLeft], lipWeight[LipShape_v2.Mouth_Upper_UpRight]);
+
+            SendAverage(FaceKey.Mouth_Lower_Down, lipWeight[LipShape_v2.Mouth_Lower_DownLeft], lipWeight[LipShape_v2.Mouth_Lower_DownRight]);
+
+            SendBipolar(FaceKey.Tongue_Left_Right, lipWeight[LipShape_v2.Tongue_Left], lipWeight[LipShape_v2.Tongue_Right]);
+            SendBipolar(FaceKey.Tongue_Down_Up, lipWeight[LipShape_v2.Tongue_Down], lipWeight[LipShape_v2.Tongue_Right]);
         }
 
         void Send(string stringKey, FaceKey key, float value, float center = 0)
