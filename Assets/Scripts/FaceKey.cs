@@ -195,5 +195,36 @@ namespace AZW.FaceOSC
                     return DataType.ComputedFacial;
             }
         }
+        public static bool IsEssential(FaceKey key)
+        {
+            switch (key)
+            {
+                case FaceKey.Eye_Left_Blink:
+                case FaceKey.Eye_Right_Blink:
+                case FaceKey.Gaze_Horizontal:
+                case FaceKey.Gaze_Vertical:
+                case FaceKey.Jaw_Left_Right:
+                case FaceKey.Jaw_Open:
+                case FaceKey.Mouth_Pout:
+                case FaceKey.Mouth_Smile:
+                case FaceKey.Mouth_Sad:
+                case FaceKey.Mouth_Sad_Smile:
+                case FaceKey.Mouth_Upper_Left_Right:
+                case FaceKey.Mouth_Lower_Left_Right:
+                case FaceKey.Mouth_Left_Right:
+                case FaceKey.Mouth_Upper_Inside_Overturn:
+                case FaceKey.Mouth_Lower_Inside_Overturn:
+                case FaceKey.Cheek_Puff:
+                case FaceKey.Cheek_Suck:
+                case FaceKey.Mouth_Upper_Up:
+                case FaceKey.Mouth_Lower_Down:
+                case FaceKey.Tongue_LongStep1:
+                case FaceKey.Tongue_Left_Right:
+                case FaceKey.Tongue_Down_Up:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

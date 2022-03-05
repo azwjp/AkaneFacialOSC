@@ -45,28 +45,7 @@ namespace AZW.FaceOSC
         }
         public void ShowEssentials ()
         {
-            valueRows.Values.ToList().ForEach(valueRow => {
-                switch (valueRow.faceKey)
-                {
-                    case FaceKey.Eye_Left_Blink:
-                    case FaceKey.Eye_Right_Blink:
-                    case FaceKey.Gaze_Horizontal:
-                    case FaceKey.Gaze_Vertical:
-                    case FaceKey.Jaw_Open:
-                    case FaceKey.Mouth_Pout:
-                    case FaceKey.Mouth_Smile:
-                    case FaceKey.Mouth_Sad:
-                    case FaceKey.Mouth_Sad_Smile:
-                    case FaceKey.Cheek_Puff:
-                    case FaceKey.Cheek_Suck:
-                    case FaceKey.Tongue_LongStep1:
-                        valueRow.gameObject.SetActive(true);
-                        return;
-                    default:
-                        valueRow.gameObject.SetActive(false);
-                        return;
-                }
-            });
+            valueRows.Values.ToList().ForEach(valueRow => valueRow.gameObject.SetActive(FaceKeyUtils.IsEssential(valueRow.faceKey)));
             RefreshView();
         }
         public void ShowEye()
