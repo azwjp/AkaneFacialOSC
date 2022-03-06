@@ -9,3 +9,4 @@ Value=値
 OSC Key=OSCキー
 Essential=主要データ
 All=全て表示
+Reset the center of gaze=現在の視線を中央に設定

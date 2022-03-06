@@ -5,3 +5,4 @@ Use facial tracking=使用表情偵測
 Debug Mode=調試模式
 Essential=主要項目
 All=全部項目
+Reset the center of gaze=校准注視中心

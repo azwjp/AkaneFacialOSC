@@ -226,5 +226,132 @@ namespace AZW.FaceOSC
                     return false;
             }
         }
+        public static bool IsBipolar(FaceKey key)
+        {
+            switch (key)
+            {
+                case FaceKey.Jaw_Left_Right:
+                case FaceKey.Mouth_Sad_Smile_Right:
+                case FaceKey.Mouth_Sad_Smile_Left:
+                case FaceKey.Mouth_Sad_Smile:
+                case FaceKey.Mouth_Upper_Left_Right:
+                case FaceKey.Mouth_Lower_Left_Right:
+                case FaceKey.Mouth_Left_Right:
+                case FaceKey.Mouth_Upper_Inside_Overturn:
+                case FaceKey.Mouth_Lower_Inside_Overturn:
+                case FaceKey.Cheek_Suck_Puff:
+                case FaceKey.Tongue_Left_Right:
+                case FaceKey.Tongue_Down_Up:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public static float DefaultValue(FaceKey key)
+        {
+            switch (key)
+            {
+                case FaceKey.Eye_Left_Blink:
+                case FaceKey.Eye_Left_Wide:
+                case FaceKey.Eye_Left_Right:
+                case FaceKey.Eye_Left_Left:
+                case FaceKey.Eye_Left_Up:
+                case FaceKey.Eye_Left_Down:
+                case FaceKey.Eye_Right_Blink:
+                case FaceKey.Eye_Right_Wide:
+                case FaceKey.Eye_Right_Right:
+                case FaceKey.Eye_Right_Left:
+                case FaceKey.Eye_Right_Up:
+                case FaceKey.Eye_Right_Down:
+                case FaceKey.Eye_Left_Frown:
+                case FaceKey.Eye_Right_Frown:
+                case FaceKey.Eye_Left_Squeeze:
+                case FaceKey.Eye_Right_Squeeze:
+                    return 0;
+
+                case FaceKey.Gaze_Left_Vertical:
+                case FaceKey.Gaze_Left_Horizontal:
+                case FaceKey.Gaze_Right_Vertical:
+                case FaceKey.Gaze_Right_Horizontal:
+                case FaceKey.Gaze_Vertical:
+                case FaceKey.Gaze_Horizontal:
+                    return .5f;
+
+                case FaceKey.Eye_Blink:
+                case FaceKey.Eye_Wide:
+                case FaceKey.Eye_Right:
+                case FaceKey.Eye_Left:
+                case FaceKey.Eye_Up:
+                case FaceKey.Eye_Down:
+                case FaceKey.Eye_Frown:
+                case FaceKey.Eye_Squeeze:
+                    return 0;
+
+                case FaceKey.Jaw_Right:
+                case FaceKey.Jaw_Left:
+                case FaceKey.Jaw_Forward:
+                case FaceKey.Jaw_Open:
+                case FaceKey.Mouth_Ape_Shape:
+                case FaceKey.Mouth_Upper_Right:
+                case FaceKey.Mouth_Upper_Left:
+                case FaceKey.Mouth_Lower_Right:
+                case FaceKey.Mouth_Lower_Left:
+                case FaceKey.Mouth_Upper_Overturn:
+                case FaceKey.Mouth_Lower_Overturn:
+                case FaceKey.Mouth_Pout:
+                case FaceKey.Mouth_Smile_Right:
+                case FaceKey.Mouth_Smile_Left:
+                case FaceKey.Mouth_Sad_Right:
+                case FaceKey.Mouth_Sad_Left:
+                case FaceKey.Cheek_Puff_Right:
+                case FaceKey.Cheek_Puff_Left:
+                case FaceKey.Cheek_Suck:
+                case FaceKey.Mouth_Upper_UpRight:
+                case FaceKey.Mouth_Upper_UpLeft:
+                case FaceKey.Mouth_Lower_DownRight:
+                case FaceKey.Mouth_Lower_DownLeft:
+                case FaceKey.Mouth_Upper_Inside:
+                case FaceKey.Mouth_Lower_Inside:
+                case FaceKey.Mouth_Lower_Overlay:
+                case FaceKey.Tongue_LongStep1:
+                case FaceKey.Tongue_LongStep2:
+                case FaceKey.Tongue_Down:
+                case FaceKey.Tongue_Up:
+                case FaceKey.Tongue_Right:
+                case FaceKey.Tongue_Left:
+                case FaceKey.Tongue_Roll:
+                case FaceKey.Tongue_UpLeft_Morph:
+                case FaceKey.Tongue_UpRight_Morph:
+                case FaceKey.Tongue_DownLeft_Morph:
+                case FaceKey.Tongue_DownRight_Morph:
+                    return 0;
+                case FaceKey.Jaw_Left_Right:
+                case FaceKey.Mouth_Sad_Smile_Right:
+                case FaceKey.Mouth_Sad_Smile_Left:
+                    return .5f;
+                case FaceKey.Mouth_Smile:
+                case FaceKey.Mouth_Sad:
+                    return 0;
+                case FaceKey.Mouth_Sad_Smile:
+                    return .5f;
+                case FaceKey.Mouth_Upper_Left_Right:
+                case FaceKey.Mouth_Lower_Left_Right:
+                case FaceKey.Mouth_Left_Right:
+                case FaceKey.Mouth_Upper_Inside_Overturn:
+                case FaceKey.Mouth_Lower_Inside_Overturn:
+                    return .5f;
+                case FaceKey.Cheek_Puff:
+                    return 0;
+                case FaceKey.Cheek_Suck_Puff:
+                    return .5f;
+                case FaceKey.Mouth_Upper_Up:
+                case FaceKey.Mouth_Lower_Down:
+                    return 0;
+                case FaceKey.Tongue_Left_Right:
+                case FaceKey.Tongue_Down_Up:
+                    return .5f;
+            }
+            return 0;
+        }
     }
 }

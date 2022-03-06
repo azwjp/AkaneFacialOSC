@@ -13,17 +13,18 @@ namespace AZW.FaceOSC
         [SerializeField] Text valueLabel;
         [SerializeField] Slider gainSlider;
         [SerializeField] InputField gainValue;
+        [SerializeField] Toggle clip;
 
         public bool isSending
         {
-            get
-            {
-                return isSendingToggle.isOn;
-            }
-            set
-            {
-                isSendingToggle.isOn = value;
-            }
+            get { return isSendingToggle.isOn; }
+            set { isSendingToggle.isOn = value; }
+        }
+
+        public bool isClipping
+        {
+            get { return clip.isOn; }
+            set { clip.isOn = value; }
         }
 
         void Start()
@@ -41,6 +42,10 @@ namespace AZW.FaceOSC
             gainValue.onValueChanged.AddListener(newVal =>
             {
                 gainSlider.SetValueWithoutNotify(float.Parse(newVal));
+                manager.UpdatePreference(faceKey, this);
+            });
+            clip.onValueChanged.AddListener(newVal =>
+            {
                 manager.UpdatePreference(faceKey, this);
             });
         }

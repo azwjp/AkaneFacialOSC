@@ -8,6 +8,7 @@ using System.IO;
 using ViveSR.anipal.Eye;
 using System.Runtime.InteropServices;
 using System.Text;
+using Pimax.EyeTracking;
 
 namespace AZW.FaceOSC
 {
@@ -30,6 +31,7 @@ namespace AZW.FaceOSC
         [SerializeField] Toggle useFacialTracking;
         [SerializeField] Toggle debugToggle;
         [SerializeField] Dropdown eyeTrackingTypeList;
+        [SerializeField] Button calibrationButton;
         [SerializeField] InputField maxAngle;
         [SerializeField] I18nLangChanger language;
 
@@ -40,9 +42,15 @@ namespace AZW.FaceOSC
         bool isUsingEyeCallback = false;
 
         Dictionary<FaceKey, FaceDataPreferences> facePrefs = new Dictionary<FaceKey, FaceDataPreferences>();
-        //ValueRowsUI vr;
         const string PREF_FILE_PATH = "/preferences.json";
         public float maxAngleRadian = 45.0f / 180.0f * Mathf.PI;
+
+        static readonly Vector2 halfVector = new Vector2(0.5f, 0.5f);
+        // Pimax Asee
+        EyeTracker pimaxAseeEye;
+        long pimaxAseeLastUpdateTime = 0;
+        Vector2 pimaxAseeCenterLeft = halfVector;
+        Vector2 pimaxAseeCenterRight = halfVector;
 
 
         bool _isDirty = false;
@@ -83,9 +91,17 @@ namespace AZW.FaceOSC
             }
 
             var enableEye = eyeFramework.EnableEye = useEyeTracking.isOn;
-            if (enableEye && GetSRanipalEyeData())
+            if (enableEye)
             {
-                SendSRanipalEyeData();
+                switch (eyeTrackingTypeList.value)
+                {
+                    case (int)EyeTrackingType.ViveSRanipal:
+                        if (GetSRanipalEyeData())  SendSRanipalEyeData();
+                        break;
+                    case (int)EyeTrackingType.PimaxAsee:
+                        if (GetPimaxDroolonEyeData()) SendPimaxDroolonEyeData();
+                        break;
+                }
             }
         }
 
@@ -148,6 +164,34 @@ namespace AZW.FaceOSC
                 return eyeData.no_user;
             }
         }
+
+        bool GetPimaxDroolonEyeData()
+        {
+            if (pimaxAseeEye == null)
+            {
+                pimaxAseeEye = new EyeTracker();
+                pimaxAseeEye.Start();
+                return false;
+            }
+            if (!pimaxAseeEye.Active) return false;
+
+            if (pimaxAseeLastUpdateTime == 0)
+            {
+                pimaxAseeLastUpdateTime = pimaxAseeEye.Timestamp;
+                return false;
+            }
+            else if (pimaxAseeLastUpdateTime >= pimaxAseeEye.Timestamp)
+            {
+                return false;
+            }
+            else
+            {
+                pimaxAseeLastUpdateTime = pimaxAseeEye.Timestamp;
+                return true;
+            }
+
+        }
+
         void Release()
         {
             if (isUsingEyeCallback)
@@ -155,6 +199,32 @@ namespace AZW.FaceOSC
                 SRanipal_Eye.WrapperUnRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
                 isUsingEyeCallback = false;
             }
+            if (pimaxAseeEye != null && pimaxAseeEye.Active)
+            {
+                pimaxAseeEye.Stop();
+            }
+        }
+
+        public void OnEyeTrackerChanged()
+        {
+            Release();
+            switch((EyeTrackingType)eyeTrackingTypeList.value)
+            {
+                case EyeTrackingType.ViveSRanipal:
+                    maxAngle.gameObject.SetActive(true);
+                    calibrationButton.gameObject.SetActive(false);
+                    break;
+                case EyeTrackingType.PimaxAsee:
+                    maxAngle.gameObject.SetActive(false);
+                    calibrationButton.gameObject.SetActive(true);
+                    break;
+            }
+        }
+
+        public void ResetCenter()
+        {
+            pimaxAseeCenterLeft = pimaxAseeEye.LeftEye.Expression.PupilCenter;
+            pimaxAseeCenterRight = pimaxAseeEye.RightEye.Expression.PupilCenter;
         }
 
         void SendSRanipalEyeData()
@@ -202,12 +272,8 @@ namespace AZW.FaceOSC
             var leftOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? leftEye.eye_openness : 0;
             var rightOpenness = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_EYE_OPENNESS_VALIDITY) ? rightEye.eye_openness : 0;
 
-            SendRotation(FaceKey.Gaze_Left_Horizontal, leftRot.x);
-            SendRotation(FaceKey.Gaze_Left_Vertical, leftRot.y);
-            SendRotation(FaceKey.Gaze_Right_Horizontal, rightRot.x);
-            SendRotation(FaceKey.Gaze_Right_Vertical, rightRot.y);
-            SendAverageRotation(FaceKey.Gaze_Horizontal, leftRot.y, rightRot.y);
-            SendAverageRotation(FaceKey.Gaze_Vertical, leftRot.x, rightRot.x);
+            SendRotationWithAverage(FaceKey.Gaze_Left_Horizontal, FaceKey.Gaze_Right_Horizontal, FaceKey.Gaze_Horizontal, leftRot.x, rightRot.x);
+            SendRotationWithAverage(FaceKey.Gaze_Left_Vertical, FaceKey.Gaze_Right_Vertical, FaceKey.Gaze_Vertical, leftRot.y, rightRot.y);
 
             // Weight
             // the same value with SRanipal_Eye_v2.GetEyeWeightings
@@ -219,6 +285,16 @@ namespace AZW.FaceOSC
             SendWithAverage(FaceKey.Eye_Left_Wide, FaceKey.Eye_Right_Wide, FaceKey.Eye_Wide, leftExpression.eye_wide, rightExpression.eye_wide); // The same with Eye_Left_Up
             SendWithAverage(FaceKey.Eye_Left_Frown, FaceKey.Eye_Right_Frown, FaceKey.Eye_Frown, leftExpression.eye_frown, rightExpression.eye_frown);
             SendWithAverage(FaceKey.Eye_Left_Squeeze, FaceKey.Eye_Right_Squeeze, FaceKey.Eye_Squeeze, leftExpression.eye_squeeze, rightExpression.eye_squeeze);
+        }
+
+        void SendPimaxDroolonEyeData()
+        {
+            var leftRot = (pimaxAseeEye.LeftEye.Expression.PupilCenter - pimaxAseeCenterLeft + halfVector);
+            var rightRot = (pimaxAseeEye.RightEye.Expression.PupilCenter - pimaxAseeCenterRight + halfVector);
+
+            SendWithAverage(FaceKey.Gaze_Left_Horizontal, FaceKey.Gaze_Right_Horizontal, FaceKey.Gaze_Horizontal, leftRot.x, rightRot.x);
+            SendWithAverage(FaceKey.Gaze_Left_Vertical, FaceKey.Gaze_Right_Vertical, FaceKey.Gaze_Vertical, leftRot.y, rightRot.y);
+            SendWithAverage(FaceKey.Eye_Left_Blink, FaceKey.Eye_Right_Blink, FaceKey.Eye_Blink, 1 - pimaxAseeEye.LeftEye.Expression.Openness, 1 - pimaxAseeEye.RightEye.Expression.Openness);
         }
 
         bool GetFacialData()
@@ -327,6 +403,7 @@ namespace AZW.FaceOSC
             {
                 var pref = facePrefs[key];
                 value = (value - center) * pref.gain + center;
+                if (pref.isClipping) Mathf.Clamp(value, 0.0f, 1.0f);
                 uiRows.SetValue(key, value);
                 if (!pref.isSending) return;
             }
@@ -419,10 +496,12 @@ namespace AZW.FaceOSC
 
             Send(key, rotation / maxAngleRadian);
         }
-        void SendAverageRotation(FaceKey key, float rotation1, float rotation2)
+        void SendRotationWithAverage(FaceKey key1, FaceKey key2, FaceKey keyAvarage, float rotation1, float rotation2)
         {
-            var rotation = (rotation1 - rotation2) / 2.0f;
-            Send(key, rotation / maxAngleRadian);
+            var rotation = (rotation1 + rotation2) / 2.0f;
+            SendRotation(key1, rotation1);
+            SendRotation(key2, rotation2);
+            SendRotation(keyAvarage, rotation);
         }
 
         public void UpdatePreference(FaceKey key, FaceValueRow value)
@@ -435,6 +514,7 @@ namespace AZW.FaceOSC
             }
             pref.isSending = value.isSending;
             pref.gain = value.GetGain();
+            pref.isClipping = value.isClipping;
             isDirty = true;
         }
 
@@ -444,7 +524,7 @@ namespace AZW.FaceOSC
             preferences.faceDataPreferences = facePrefs.Values.ToArray();
             preferences.useEyeTracking = useEyeTracking;
             preferences.useFacialTracking = useFacialTracking;
-            preferences.eyeTrackingType = eyeTrackingTypeList.itemText.text;
+            preferences.eyeTrackingType = eyeTrackingTypeList.options[eyeTrackingTypeList.value].text;
             preferences.isDebug = debugToggle.isOn;
             preferences.maxAngle = int.Parse(maxAngle.text);
             preferences.language = language.language;
@@ -459,10 +539,10 @@ namespace AZW.FaceOSC
             {
                 var json = File.ReadAllText(Application.persistentDataPath + PREF_FILE_PATH, Encoding.UTF8);
                 var preferences = JsonUtility.FromJson<Preferences>(json);
-                facePrefs = preferences.faceDataPreferences.ToDictionary(e => (FaceKey)Enum.Parse(typeof(FaceKey), e.key), e => new FaceDataPreferences(e.key, e.isSending, e.gain));
+                facePrefs = preferences.faceDataPreferences.ToDictionary(e => (FaceKey)Enum.Parse(typeof(FaceKey), e.key), e => new FaceDataPreferences(e.key, e.isSending, e.gain, e.isClipping));
                 foreach(var e in facePrefs)
                 {
-                    uiRows.InitRow(e.Key, e.Value.isSending, e.Value.gain);
+                    uiRows.InitRow(e.Key, e.Value.isSending, e.Value.gain, e.Value.isClipping);
                 }
                 // Add absent keys with the default values
                 foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
@@ -471,7 +551,7 @@ namespace AZW.FaceOSC
                     {
                         var val = new FaceDataPreferences(key);
                         facePrefs.Add(key, val);
-                        uiRows.InitRow(key, val.isSending, val.gain);
+                        uiRows.InitRow(key, val.isSending, val.gain, val.isClipping);
                     }
                 }
                 debugToggle.isOn = preferences.isDebug;
@@ -484,12 +564,13 @@ namespace AZW.FaceOSC
                     var trackingTypeIndex = (int)Enum.Parse(typeof(EyeTrackingType), preferences.eyeTrackingType);
                     if (Enum.IsDefined(typeof(EyeTrackingType), trackingTypeIndex)) eyeTrackingTypeList.value = trackingTypeIndex;
                 } catch { }
+                OnEyeTrackerChanged();
 
                 language.language = preferences.language;
                 uiRows.RefreshView();
                 return facePrefs;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => new FaceDataPreferences(key));
             }
@@ -532,6 +613,7 @@ namespace AZW.FaceOSC
         public string key;
         public bool isSending = true;
         public float gain = 1;
+        public bool isClipping = true;
 
         public FaceDataPreferences(string key)
         {
@@ -541,16 +623,18 @@ namespace AZW.FaceOSC
         {
             this.key = key.ToString();
         }
-        public FaceDataPreferences(string key, bool isSending, float gain)
+        public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping)
         {
             this.key = key;
             this.isSending = isSending;
             this.gain = gain;
+            this.isClipping = isClipping;
         }
     }
 
     public enum EyeTrackingType
     {
         ViveSRanipal,
+        PimaxAsee,
     }
 }
