@@ -9,6 +9,7 @@ using ViveSR.anipal.Eye;
 using System.Runtime.InteropServices;
 using System.Text;
 using Pimax.EyeTracking;
+using System.Threading.Tasks;
 
 namespace AZW.FaceOSC
 {
@@ -27,8 +28,8 @@ namespace AZW.FaceOSC
         [Header("UI Components")]
         [SerializeField] ValueRowsUI uiRows;
         [SerializeField] SaveButton saveButton;
-        [SerializeField] Toggle useEyeTracking;
-        [SerializeField] Toggle useFacialTracking;
+        [SerializeField] ToggleWithStatus useEyeTracking;
+        [SerializeField] ToggleWithStatus useFacialTracking;
         [SerializeField] Toggle debugToggle;
         [SerializeField] Dropdown eyeTrackingTypeList;
         [SerializeField] Button calibrationButton;
@@ -52,6 +53,8 @@ namespace AZW.FaceOSC
         Vector2 pimaxAseeCenterLeft = halfVector;
         Vector2 pimaxAseeCenterRight = halfVector;
 
+        DeviceState enableFace = DeviceState.Disbled;
+        DeviceState enableEye = DeviceState.Disbled;
 
         bool _isDirty = false;
         public bool isDirty
@@ -69,13 +72,8 @@ namespace AZW.FaceOSC
         {
             eyeTrackingTypeList.options = Enum.GetValues(typeof(EyeTrackingType)).Cast<EyeTrackingType>().Select(x => new Dropdown.OptionData(x.ToString())).ToList();
 
-            facePrefs = Load();
 
-            if (!SRanipal_Lip_Framework.Instance.EnableLip)
-            {
-                enabled = false;
-                return;
-            }
+            facePrefs = Load();
             isDirty = false;
         }
 
@@ -84,14 +82,66 @@ namespace AZW.FaceOSC
         {
             maxAngleRadian = int.Parse(maxAngle.text) / 180.0f * Mathf.PI;
 
-            var enableFace = lipFramework.EnableLip = useFacialTracking.isOn;
-            if (enableFace && GetFacialData())
+
+            switch (eyeTrackingTypeList.value)
+            {
+                case (int)EyeTrackingType.ViveSRanipal:
+                    if (SRanipal_Lip_Framework.Instance == null) useEyeTracking.SetState(DeviceState.Unavailable);
+                    else
+                    {
+                        switch (SRanipal_Eye_Framework.Status)
+                        {
+                            case SRanipal_Eye_Framework.FrameworkStatus.STOP:
+                                if (enableEye == DeviceState.Starting) useEyeTracking.SetState(DeviceState.Starting);
+                                else useEyeTracking.SetState(DeviceState.Disbled);
+                                break;
+                            case SRanipal_Eye_Framework.FrameworkStatus.START:
+                                useEyeTracking.SetState(DeviceState.Starting);
+                                break;
+                            case SRanipal_Eye_Framework.FrameworkStatus.WORKING:
+                                useEyeTracking.SetState(DeviceState.Enabled);
+                                break;
+                            case SRanipal_Eye_Framework.FrameworkStatus.ERROR:
+                            default:
+                                useEyeTracking.SetState(DeviceState.Unavailable);
+                                break;
+                        }
+                    }
+                    break;
+                case (int)EyeTrackingType.PimaxAsee:
+                    if (pimaxAseeEye?.Active == true) useEyeTracking.SetState(DeviceState.Enabled);
+                    else useEyeTracking.SetState(enableEye);
+                    break;
+            }
+
+            if (SRanipal_Lip_Framework.Instance == null) useFacialTracking.SetState(DeviceState.Unavailable);
+            else
+            {
+                switch (SRanipal_Lip_Framework.Status)
+                {
+                    case SRanipal_Lip_Framework.FrameworkStatus.STOP:
+                        if (enableFace == DeviceState.Starting) useFacialTracking.SetState(DeviceState.Starting);
+                        else useFacialTracking.SetState(DeviceState.Disbled);
+                        break;
+                    case SRanipal_Lip_Framework.FrameworkStatus.START:
+                        useFacialTracking.SetState(DeviceState.Starting);
+                        break;
+                    case SRanipal_Lip_Framework.FrameworkStatus.WORKING:
+                        useFacialTracking.SetState(DeviceState.Enabled);
+                        break;
+                    case SRanipal_Lip_Framework.FrameworkStatus.ERROR:
+                    default:
+                        useFacialTracking.SetState(DeviceState.Unavailable);
+                        break;
+                }
+            }
+
+            if (useFacialTracking.toggle.isOn && GetFacialData())
             {
                 SendFacialData();
             }
 
-            var enableEye = eyeFramework.EnableEye = useEyeTracking.isOn;
-            if (enableEye)
+            if (useEyeTracking.toggle.isOn)
             {
                 switch (eyeTrackingTypeList.value)
                 {
@@ -105,10 +155,67 @@ namespace AZW.FaceOSC
             }
         }
 
+        async void SwitchFacialTracker(bool enable)
+        {
+            await Task.Run(() =>
+            {
+                enableFace = enable ? DeviceState.Starting : DeviceState.Stopping;
+                lipFramework.EnableLip = enable;
+                if (enable) lipFramework.StartFramework();
+                else lipFramework.StopFramework();
+                enableFace = enable ? DeviceState.Enabled : DeviceState.Disbled;
+            });
+        }
+
+        public void OnFacialTrackerSwitched(bool isOn)
+        {
+            if (!isOn)
+            {
+                SwitchFacialTracker(false);
+            }
+        }
+
+        public void OnEyeTrackerSwitched(bool isOn)
+        {
+            if (!isOn)
+            {
+                Release();
+                SwitchEyeTracker((EyeTrackingType)eyeTrackingTypeList.value, false);
+            }
+        }
+
+        async void SwitchEyeTracker(EyeTrackingType device, bool enable)
+        {
+            await Task.Run(() =>
+            {
+                enableEye = enable ? DeviceState.Starting : DeviceState.Stopping;
+                switch (device)
+                {
+                    case EyeTrackingType.ViveSRanipal:
+                        eyeFramework.EnableEye = enable;
+                        if (enable) eyeFramework.StartFramework();
+                        else eyeFramework.StopFramework();
+                        break;
+                    case EyeTrackingType.PimaxAsee:
+                        if (pimaxAseeEye != null)
+                        {
+                            if (enable) pimaxAseeEye.Start();
+                            else pimaxAseeEye.Stop();
+                        }
+                        break;
+                    default: throw new NotImplementedException();
+
+                }
+                enableEye = enable ? DeviceState.Enabled : DeviceState.Disbled;
+            });
+        }
+
         bool GetSRanipalEyeData()
         {
             if (debugToggle.isOn)
             {
+                if (enableEye == DeviceState.Enabled) SwitchEyeTracker(EyeTrackingType.ViveSRanipal, false);
+
                 if (isUsingEyeCallback && SRanipal_Eye_Framework.Instance.EnableEyeDataCallback)
                 {
                     SRanipal_Eye_v2.WrapperUnRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
@@ -145,7 +252,12 @@ namespace AZW.FaceOSC
             }
             else
             {
-                if (SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING) return false;
+                if (useEyeTracking.toggle.isOn && enableEye == DeviceState.Disbled) SwitchEyeTracker(EyeTrackingType.ViveSRanipal, true);
+                else if (!useEyeTracking.toggle.isOn && enableEye == DeviceState.Enabled) SwitchEyeTracker(EyeTrackingType.ViveSRanipal, false);
+
+                if (enableEye != DeviceState.Enabled
+                    || !eyeFramework.enabled
+                    || SRanipal_Eye_Framework.Status != SRanipal_Eye_Framework.FrameworkStatus.WORKING) return false;
 
                 if (!isUsingEyeCallback)
                 {
@@ -170,10 +282,14 @@ namespace AZW.FaceOSC
             if (pimaxAseeEye == null)
             {
                 pimaxAseeEye = new EyeTracker();
-                pimaxAseeEye.Start();
+                SwitchEyeTracker(EyeTrackingType.PimaxAsee, true);
                 return false;
             }
-            if (!pimaxAseeEye.Active) return false;
+            if (!pimaxAseeEye.Active)
+            {
+                if (enableEye != DeviceState.Starting) SwitchEyeTracker(EyeTrackingType.PimaxAsee, true);
+                return false;
+            }
 
             if (pimaxAseeLastUpdateTime == 0)
             {
@@ -198,6 +314,7 @@ namespace AZW.FaceOSC
             {
                 SRanipal_Eye.WrapperUnRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
                 isUsingEyeCallback = false;
+                eyeFramework.StopFramework();
             }
             if (pimaxAseeEye != null && pimaxAseeEye.Active)
             {
@@ -301,6 +418,8 @@ namespace AZW.FaceOSC
         {
             if (debugToggle.isOn)
             {
+                if (enableFace == DeviceState.Enabled) SwitchFacialTracker(false);
+
                 lipWeight = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>()
                     .Where(faceKey => FaceKeyUtils.GetDataType(faceKey) == DataType.Facial)
                     .Select(faceKey => (LipShape_v2)Enum.Parse(typeof(LipShape_v2), faceKey.ToString()))
@@ -313,7 +432,12 @@ namespace AZW.FaceOSC
             }
             else
             {
-                if (SRanipal_Lip_Framework.Status != SRanipal_Lip_Framework.FrameworkStatus.WORKING) return false;
+                if (useFacialTracking.toggle.isOn && enableFace == DeviceState.Disbled) SwitchFacialTracker(true);
+                else if (!useFacialTracking.toggle.isOn && enableFace == DeviceState.Enabled) SwitchFacialTracker(false);
+
+                if (enableFace != DeviceState.Enabled
+                    || !lipFramework.enabled
+                    || SRanipal_Lip_Framework.Status != SRanipal_Lip_Framework.FrameworkStatus.WORKING) return false;
                 SRanipal_Lip_v2.GetLipWeightings(out lipWeight);
                 return true;
             }
@@ -522,8 +646,8 @@ namespace AZW.FaceOSC
         {
             var preferences = new Preferences();
             preferences.faceDataPreferences = facePrefs.Values.ToArray();
-            preferences.useEyeTracking = useEyeTracking;
-            preferences.useFacialTracking = useFacialTracking;
+            preferences.useEyeTracking = useEyeTracking.toggle.isOn;
+            preferences.useFacialTracking = useEyeTracking.toggle.isOn;
             preferences.eyeTrackingType = eyeTrackingTypeList.options[eyeTrackingTypeList.value].text;
             preferences.isDebug = debugToggle.isOn;
             preferences.maxAngle = int.Parse(maxAngle.text);
@@ -555,8 +679,8 @@ namespace AZW.FaceOSC
                     }
                 }
                 debugToggle.isOn = preferences.isDebug;
-                useEyeTracking.isOn = preferences.useEyeTracking;
-                useFacialTracking.isOn = preferences.useFacialTracking;
+                useEyeTracking.toggle.isOn = preferences.useEyeTracking;
+                useFacialTracking.toggle.isOn = preferences.useFacialTracking;
                 maxAngle.text = preferences.maxAngle.ToString();
 
                 try // parsing the value as a enum, and not change if the value does not exist
@@ -585,6 +709,7 @@ namespace AZW.FaceOSC
         {
             eyeData = eye_data;
         }
+
 
 
     }
@@ -632,6 +757,10 @@ namespace AZW.FaceOSC
         }
     }
 
+    public enum DeviceState
+    {
+        Stopping, Disbled, Starting, Enabled, Unavailable
+    }
     public enum EyeTrackingType
     {
         ViveSRanipal,
