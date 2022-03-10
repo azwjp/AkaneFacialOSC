@@ -6,6 +6,7 @@ Debug Mode=デバッグモード
 Save=保存
 Gain=値の調整
 Value=値
+Center=中心
 OSC Key=OSCキー
 Essential=主要データ
 All=全て表示

@@ -16,6 +16,8 @@ namespace AZW.FaceOSC
     [RequireComponent(typeof(ValueRowsUI))]
     public class FacialCapture : MonoBehaviour
     {
+        const int VERSION = 1;
+
         [Header("OSC")]
         public OSC osc;
         [SerializeField]
@@ -72,7 +74,6 @@ namespace AZW.FaceOSC
         {
             eyeTrackingTypeList.options = Enum.GetValues(typeof(EyeTrackingType)).Cast<EyeTrackingType>().Select(x => new Dropdown.OptionData(x.ToString())).ToList();
 
-
             facePrefs = Load();
             isDirty = false;
         }
@@ -81,7 +82,6 @@ namespace AZW.FaceOSC
         void Update()
         {
             maxAngleRadian = int.Parse(maxAngle.text) / 180.0f * Mathf.PI;
-
 
             switch (eyeTrackingTypeList.value)
             {
@@ -577,9 +577,10 @@ namespace AZW.FaceOSC
             Send(lowerKey, lowerValue);
 
             // Bipolar with average
+            var center = facePrefs.ContainsKey(unitedKey) ? facePrefs[unitedKey].centerValue : 0.5f; // to make the centre value is 0.5 or the configured value
             Send(
                 unitedKey,
-                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+                higherValue > lowerValue ? higherValue / 2.0f + center : -lowerValue / 2.0f + center
             );
         }
 
@@ -588,9 +589,10 @@ namespace AZW.FaceOSC
             var higherValue = (higher1 + higher2) / 2.0f;
             var lowerValue = (lower1 + lower2) / 2.0f;
 
+            var center = facePrefs.ContainsKey(unitedKey) ? facePrefs[unitedKey].centerValue : 0.5f; // to make the centre value is 0.5 or the configured value
             Send(
                 unitedKey,
-                higherValue > lowerValue ? higherValue / 2.0f + 0.5f : -lowerValue / 2.0f + 0.5f
+                higherValue > lowerValue ? higherValue / 2.0f + center : -lowerValue / 2.0f + center
             );
         }
 
@@ -616,7 +618,7 @@ namespace AZW.FaceOSC
         {
             if (rotation > maxAngleRadian) rotation = maxAngleRadian;
             else if (rotation < -maxAngleRadian) rotation = -maxAngleRadian;
-            rotation += 0.5f; // to make the centre value is 0.5
+            rotation += facePrefs.ContainsKey(key) ? facePrefs[key].centerValue : 0.5f; // to make the centre value is 0.5 or the configured value
 
             Send(key, rotation / maxAngleRadian);
         }
@@ -639,12 +641,14 @@ namespace AZW.FaceOSC
             pref.isSending = value.isSending;
             pref.gain = value.GetGain();
             pref.isClipping = value.isClipping;
+            pref.center = value.center;
             isDirty = true;
         }
 
         public void Save()
         {
             var preferences = new Preferences();
+            preferences.version = VERSION;
             preferences.faceDataPreferences = facePrefs.Values.ToArray();
             preferences.useEyeTracking = useEyeTracking.toggle.isOn;
             preferences.useFacialTracking = useEyeTracking.toggle.isOn;
@@ -663,10 +667,20 @@ namespace AZW.FaceOSC
             {
                 var json = File.ReadAllText(Application.persistentDataPath + PREF_FILE_PATH, Encoding.UTF8);
                 var preferences = JsonUtility.FromJson<Preferences>(json);
-                facePrefs = preferences.faceDataPreferences.ToDictionary(e => (FaceKey)Enum.Parse(typeof(FaceKey), e.key), e => new FaceDataPreferences(e.key, e.isSending, e.gain, e.isClipping));
+
+                // Updater
+                if (preferences.version < 1)
+                {
+                    preferences.faceDataPreferences = preferences.faceDataPreferences.Select(p => {
+                        p.centerValue = 0.5f;
+                        return p;
+                    }).ToArray();
+                }
+
+                facePrefs = preferences.faceDataPreferences.ToDictionary(e => e.faceKey, e => e);
                 foreach(var e in facePrefs)
                 {
-                    uiRows.InitRow(e.Key, e.Value.isSending, e.Value.gain, e.Value.isClipping);
+                    uiRows.InitRow(e.Key, e.Value.isSending, e.Value.gain, e.Value.isClipping, e.Value.center);
                 }
                 // Add absent keys with the default values
                 foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
@@ -675,12 +689,13 @@ namespace AZW.FaceOSC
                     {
                         var val = new FaceDataPreferences(key);
                         facePrefs.Add(key, val);
-                        uiRows.InitRow(key, val.isSending, val.gain, val.isClipping);
+                        uiRows.InitRow(key, val.isSending, val.gain, val.isClipping, val.center);
                     }
                 }
                 debugToggle.isOn = preferences.isDebug;
-                useEyeTracking.toggle.isOn = preferences.useEyeTracking;
-                useFacialTracking.toggle.isOn = preferences.useFacialTracking;
+                // Disabled because Lip Tracker won't gently start
+                // useEyeTracking.toggle.isOn = preferences.useEyeTracking;
+                // useFacialTracking.toggle.isOn = preferences.useFacialTracking;
                 maxAngle.text = preferences.maxAngle.ToString();
 
                 try // parsing the value as a enum, and not change if the value does not exist
@@ -690,8 +705,15 @@ namespace AZW.FaceOSC
                 } catch { }
                 OnEyeTrackerChanged();
 
+                //if (!preferences.isDebug && preferences.useFacialTracking) SwitchFacialTracker(true);
+
                 language.language = preferences.language;
                 uiRows.RefreshView();
+
+                if (preferences.version < VERSION)
+                {
+                    Save();
+                }
                 return facePrefs;
             }
             catch (Exception)
@@ -709,9 +731,6 @@ namespace AZW.FaceOSC
         {
             eyeData = eye_data;
         }
-
-
-
     }
     [Serializable]
     public class VSRKeyMapper
@@ -723,6 +742,7 @@ namespace AZW.FaceOSC
     [Serializable]
     public class Preferences
     {
+        public int version;
         public FaceDataPreferences[] faceDataPreferences;
         public bool isDebug = false;
         public bool useEyeTracking = true;
@@ -739,6 +759,40 @@ namespace AZW.FaceOSC
         public bool isSending = true;
         public float gain = 1;
         public bool isClipping = true;
+        public float centerValue = 0.5f;
+
+        public FaceKey faceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
+        public Center center
+        {
+            get
+            {
+                var def = FaceKeyUtils.DefaultValue(faceKey);
+                if (0.5f - 0.0009765625f < def && def < 0.5f + 0.0009765625)
+                {
+                    return centerValue < float.Epsilon ? Center.Zero : Center.Half;
+                }
+                else
+                {
+                    return Center.Fixed;
+                }
+            }
+            set
+            {
+                switch (value) {
+                    case Center.Fixed:
+                        centerValue = 0.5f;
+                        return;
+                    case Center.Zero:
+                        centerValue = 0;
+                        return;
+                    case Center.Half:
+                        centerValue = 0.5f;
+                        return;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
 
         public FaceDataPreferences(string key)
         {
@@ -748,12 +802,13 @@ namespace AZW.FaceOSC
         {
             this.key = key.ToString();
         }
-        public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping)
+        public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping, float centerValue)
         {
             this.key = key;
             this.isSending = isSending;
             this.gain = gain;
             this.isClipping = isClipping;
+            this.centerValue = centerValue;
         }
     }
 

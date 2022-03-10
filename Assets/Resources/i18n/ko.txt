@@ -9,6 +9,7 @@ Value=송신치
 OSC Key=OSC 티
 Essential=주된데이터
 All=전부 표시
+Value=중심
 Reset the center of gaze=현재의 시선을 중심로 설정
 Stopped=정지
 Starting...=기동중…

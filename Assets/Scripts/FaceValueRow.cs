@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace AZW.FaceOSC
@@ -14,6 +15,8 @@ namespace AZW.FaceOSC
         [SerializeField] Slider gainSlider;
         [SerializeField] InputField gainValue;
         [SerializeField] Toggle clip;
+        [SerializeField] Button centerChanger;
+
 
         public bool isSending
         {
@@ -25,6 +28,29 @@ namespace AZW.FaceOSC
         {
             get { return clip.isOn; }
             set { clip.isOn = value; }
+        }
+
+        Center _center;
+        public Center center
+        {
+            get { return _center; }
+            set {
+                _center = value;
+                switch (value)
+                {
+                    case Center.Fixed:
+                        centerChanger.gameObject.SetActive(false);
+                        break;
+                    case Center.Zero:
+                        centerChanger.gameObject.SetActive(true);
+                        centerChanger.GetComponentInChildren<Text>().text = "0";
+                        break;
+                    case Center.Half:
+                        centerChanger.gameObject.SetActive(true);
+                        centerChanger.GetComponentInChildren<Text>().text = "0.5";
+                        break;
+                }
+            }
         }
 
         void Start()
@@ -48,6 +74,23 @@ namespace AZW.FaceOSC
             {
                 manager.UpdatePreference(faceKey, this);
             });
+            centerChanger.onClick.AddListener(() =>
+            {
+                switch (center)
+                {
+                    case Center.Fixed:
+                        return;
+                    case Center.Zero:
+                        center = Center.Half;
+                        break;
+                    case Center.Half:
+                        center = Center.Zero;
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                manager.UpdatePreference(faceKey, this);
+            });
         }
 
         public void OnChangedIsSending()
@@ -63,5 +106,10 @@ namespace AZW.FaceOSC
         }
 
         public void SetValue(float value) { valueLabel.text = value.ToString("0.00"); }
+
+    }
+
+    public enum Center{
+        Fixed, Zero, Half, 
     }
 }

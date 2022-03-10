@@ -97,12 +97,13 @@ namespace AZW.FaceOSC
             }
         }
 
-        public void InitRow(FaceKey key, bool isOn, float gain, bool isClipping)
+        public void InitRow(FaceKey key, bool isOn, float gain, bool isClipping, Center center)
         {
             var row = valueRows[key];
             row.isSending = isOn;
             row.SetGain(gain);
             row.isClipping = isClipping;
+            row.center = center;
         }
     }
 }
