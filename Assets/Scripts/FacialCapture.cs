@@ -322,6 +322,14 @@ namespace AZW.FaceOSC
             }
         }
 
+        void OnDestroy()
+        {
+            Release();
+            lipFramework.StopFramework();
+            lipFramework.EnableLip = false;
+            eyeFramework.EnableEye = false;
+        }
+
         public void OnEyeTrackerChanged()
         {
             Release();
@@ -355,15 +363,16 @@ namespace AZW.FaceOSC
             // Gaze
             // Eye balls usually don't rotate by z-axis
             // If invalid data such as closed eyes, return the centre
+            // The data from tracler is right-handed coordinate system
             var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
-                    (leftEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(leftEye.gaze_direction_normalized.x, leftEye.gaze_direction_normalized.z).normalized, Vector2.up)),
+                    (leftEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(-leftEye.gaze_direction_normalized.x, leftEye.gaze_direction_normalized.z).normalized, Vector2.up)),
                     (leftEye.gaze_direction_normalized.y > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(leftEye.gaze_direction_normalized.y, leftEye.gaze_direction_normalized.z).normalized, Vector2.up))
                 )
                 : Vector2.zero;
             var rightRot = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
-                    (rightEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(rightEye.gaze_direction_normalized.x, rightEye.gaze_direction_normalized.z).normalized, Vector2.up)),
+                    (rightEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(-rightEye.gaze_direction_normalized.x, rightEye.gaze_direction_normalized.z).normalized, Vector2.up)),
                     (rightEye.gaze_direction_normalized.y > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(rightEye.gaze_direction_normalized.y, rightEye.gaze_direction_normalized.z).normalized, Vector2.up))
                 )
                 : Vector2.zero;
@@ -518,7 +527,7 @@ namespace AZW.FaceOSC
             SendAverage(FaceKey.Mouth_Lower_Down, lipWeight[LipShape_v2.Mouth_Lower_DownLeft], lipWeight[LipShape_v2.Mouth_Lower_DownRight]);
 
             SendBipolar(FaceKey.Tongue_Left_Right, lipWeight[LipShape_v2.Tongue_Left], lipWeight[LipShape_v2.Tongue_Right]);
-            SendBipolar(FaceKey.Tongue_Down_Up, lipWeight[LipShape_v2.Tongue_Down], lipWeight[LipShape_v2.Tongue_Right]);
+            SendBipolar(FaceKey.Tongue_Down_Up, lipWeight[LipShape_v2.Tongue_Down], lipWeight[LipShape_v2.Tongue_Up]);
         }
 
         void Send(string stringKey, FaceKey key, float value, float center = 0)
