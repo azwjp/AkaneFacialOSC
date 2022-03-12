@@ -727,7 +727,11 @@ namespace AZW.FaceOSC
             }
             catch (Exception)
             {
-                return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => new FaceDataPreferences(key));
+                return Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().ToDictionary(key => key, key => {
+                    var p = new FaceDataPreferences(key);
+                    if (FaceKeyUtils.GetDataType(key) == DataType.Gaze) p.centerValue = 0;
+                    return p;
+                });
             }
         }
 
