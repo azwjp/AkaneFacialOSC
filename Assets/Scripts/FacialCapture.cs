@@ -366,13 +366,13 @@ namespace AZW.FaceOSC
             // The data from tracler is right-handed coordinate system
             var leftRot = leftEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
-                    (leftEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(-leftEye.gaze_direction_normalized.x, leftEye.gaze_direction_normalized.z).normalized, Vector2.up)),
+                    (leftEye.gaze_direction_normalized.x > 0 ? -1 : 1) * Mathf.Acos(Vector2.Dot(new Vector2(leftEye.gaze_direction_normalized.x, leftEye.gaze_direction_normalized.z).normalized, Vector2.up)),
                     (leftEye.gaze_direction_normalized.y > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(leftEye.gaze_direction_normalized.y, leftEye.gaze_direction_normalized.z).normalized, Vector2.up))
                 )
                 : Vector2.zero;
             var rightRot = rightEye.GetValidity(SingleEyeDataValidity.SINGLE_EYE_DATA_GAZE_DIRECTION_VALIDITY)
                 ? new Vector2(
-                    (rightEye.gaze_direction_normalized.x > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(-rightEye.gaze_direction_normalized.x, rightEye.gaze_direction_normalized.z).normalized, Vector2.up)),
+                    (rightEye.gaze_direction_normalized.x > 0 ? -1 : 1) * Mathf.Acos(Vector2.Dot(new Vector2(rightEye.gaze_direction_normalized.x, rightEye.gaze_direction_normalized.z).normalized, Vector2.up)),
                     (rightEye.gaze_direction_normalized.y > 0 ? 1 : -1) * Mathf.Acos(Vector2.Dot(new Vector2(rightEye.gaze_direction_normalized.y, rightEye.gaze_direction_normalized.z).normalized, Vector2.up))
                 )
                 : Vector2.zero;
