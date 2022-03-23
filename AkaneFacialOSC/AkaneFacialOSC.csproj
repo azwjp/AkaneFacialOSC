@@ -11,6 +11,13 @@
     <UseWinUI>true</UseWinUI>
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="libHTC_License.dll" />
+    <None Remove="nanomsg.dll" />
+    <None Remove="SRanipal.dll" />
+    <None Remove="SRWorks_Log.dll" />
+    <None Remove="ViveSR_Client.dll" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -20,6 +27,11 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="libHTC_License.dll" />
+    <Content Include="nanomsg.dll" />
+    <Content Include="SRanipal.dll" />
+    <Content Include="SRWorks_Log.dll" />
+    <Content Include="ViveSR_Client.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +44,6 @@
        Tools extension to be activated for this project even if the Windows App SDK Nuget
        package has not yet been restored -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
-    <ProjectCapability Include="Msix"/>
+    <ProjectCapability Include="Msix" />
   </ItemGroup>
 </Project>

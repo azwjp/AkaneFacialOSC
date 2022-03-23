@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ViveSR.anipal.Eye;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -30,6 +31,7 @@ namespace AkaneFacialOSC
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
+            ViveSR.anipal.SRanipal_API.Initial(SRanipal_Eye.ANIPAL_TYPE_EYE_V2, IntPtr.Zero);
             myButton.Content = "Clicked";
         }
     }
