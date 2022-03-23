@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AkaneFacialOSC (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AkaneFacialOSC (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
