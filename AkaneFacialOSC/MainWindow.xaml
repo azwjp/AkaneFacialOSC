@@ -1,77 +1,12 @@
-﻿<Window
-    x:Class="AZW.FacialOSC.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:AZW.FacialOSC"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-        <ListView  x:Name="SignalList" Margin="5,0,5,0" ItemsSource="{Binding}">
-            <ListView.Resources>
-                <local:CenterToLabelConverter x:Key="CenterToLabel"/>
-                <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
-            </ListView.Resources>
-            <ListView.Header>
-                <StackPanel Orientation="Horizontal" BorderThickness="0,0,0,2">
-                    <TextBlock Text="Race Date" Margin="5,0,0,0" />
-                    <TextBlock Text="Circuit" Margin="5,0,0,0"/>
-                    <TextBlock Text="Circuit" Margin="5,0,0,0"/>
-                    <TextBlock Text="Laps" Grid.Column="2" Margin="0,0,5,0" HorizontalAlignment="Right"/>
-                </StackPanel> 
-            </ListView.Header>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox 
-                            Width="240"
-                            Content="{Binding Key}"
-                            IsChecked="{Binding IsSending}" />
-                        <Slider
-                            Width="200"
-                            Maximum="4"
-                            Value="{Binding Gain,UpdateSourceTrigger=PropertyChanged}"
-                            ValueChanged="Slider_Gain_ValueChanged"
-                            Name="gainSlider"
-                            SnapsTo="StepValues"
-                            StepFrequency="0.1"
-                            Margin="5,0,5,0"
-                            LargeChange="0.1"
-                            SmallChange="0.01"
-                            TickFrequency="1"
-                            Tag="x" />
-                        <TextBox
-                            Width="40"
-                            MinWidth="40"
-                            Text="{Binding Value, ElementName=gainSlider}"
-                            LostFocus="GainValue_Inputted"
-                            TextWrapping="NoWrap"/>
-                        <Button
-                            x:Name="centerButton"
-                            Width="50"
-                            MinWidth="50"
-                            Click="centerButton_Click"
-                            Visibility="{Binding Center, Converter={StaticResource CenterToVisibility}}"
-                            Content="{Binding Center, Converter={StaticResource CenterToLabel}}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-            <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
+﻿<Window x:Class="AkaneFacialOSC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AkaneFacialOSC"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
 
-            <Button
-                x:Name="centerButton"
-                Width="60"
-                Click="centerButton_Click">
-                <Grid>
-                    <Border BorderThickness="10">
-                        <TextBlock x:Name="Name" Text="aa"/>
-                    </Border>
-                    <Line Grid.Column="0" X2="1" Stretch="Fill" StrokeThickness="3" Margin="5" Stroke="#4CFFFF"/>
-                </Grid>
-            </Button>
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </Window>
-   

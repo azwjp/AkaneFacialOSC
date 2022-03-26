@@ -1,55 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
-    <RootNamespace>AZW.FacialOSC</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x64</Platforms>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
-    <UseWinUI>true</UseWinUI>
-    <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-    <Authors>$(AssemblyName)</Authors>
-    <AssemblyName>AkaneFacialOSC</AssemblyName>
-    <Nullable>annotations</Nullable>
-    <WindowsPackageType>None</WindowsPackageType>
-    <UseWindowsForms>False</UseWindowsForms>
-    <UseWPF>False</UseWPF>
-    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="libHTC_License.dll" />
-    <None Remove="nanomsg.dll" />
-    <None Remove="SRanipal.dll" />
-    <None Remove="SRWorks_Log.dll" />
-    <None Remove="ViveSR_Client.dll" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="libHTC_License.dll" />
-    <Content Include="nanomsg.dll" />
-    <Content Include="SRanipal.dll" />
-    <Content Include="SRWorks_Log.dll" />
-    <Content Include="ViveSR_Client.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
-
-  <!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-       Tools extension to be activated for this project even if the Windows App SDK Nuget
-       package has not yet been restored -->
-  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
-    <ProjectCapability Include="Msix" />
-  </ItemGroup>
 </Project>
