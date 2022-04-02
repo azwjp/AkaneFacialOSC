@@ -1,16 +1,32 @@
-﻿<Application x:Class="AkaneFacialOSC.App"
+﻿<Application x:Class="AZW.FacialOSC.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:AkaneFacialOSC"
+             xmlns:local="clr-namespace:AZW.FacialOSC"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:AZW.FacialOSC.Properties"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Pink" SecondaryColor="Lime" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
 
+            </ResourceDictionary.MergedDictionaries>
+            <!-- primary -->
+            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#f997b6" />
+            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="#fdd835" />
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#e05a8d" /><!-- default: e91e63 -->
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#DDFFFFFF" />
+            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="#bb002f" />
+            <!--<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="#fdd835" />-->
+            <!-- accent -->
+            <SolidColorBrush x:Key="SecondaryHueMidBrush" Color="#304ffe" />
+            <SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="#ff6d00" />
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Source Han Sans" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+            </Style>
+            <FontFamily x:Key="ContentControlThemeFontFamily">Yu Gothic</FontFamily>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

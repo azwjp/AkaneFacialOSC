@@ -1,12 +1,308 @@
-﻿<Window x:Class="AkaneFacialOSC.MainWindow"
+﻿<Window x:Class="AZW.FacialOSC.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AkaneFacialOSC"
+        xmlns:local="clr-namespace:AZW.FacialOSC"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        xmlns:app="clr-namespace:AZW.FacialOSC"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        xmlns:vm="clr-namespace:AZW.FacialOSC"
+        xmlns:properties="clr-namespace:AZW.FacialOSC.Properties"
+        Title="AkaneFacialOSC v2.0.0" Height="450" Width="1200" MinWidth="1100">
+    <Window.Resources>
+        <local:CenterToLabelConverter x:Key="CenterToLabel"/>
+        <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
+        <local:DeviceStatusToColorConverter x:Key="DeviceStatusToColor"/>
+        <local:DeviceStatusToLabelConverter x:Key="DeviceStatusToLabel"/>
+        <local:DirtyToLabelConverter x:Key="DirtyToLabel"/>
+        <local:NegationConverter x:Key="Negation"/>
+    </Window.Resources>
+    <Grid Name="mainPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="2*" MinWidth="640"/>
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*" MinWidth="180"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="2*" MinWidth="160"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Name="dummyWidthCheckBox"></Border>
+            <Border Grid.Column="1" Name="dummyWidthKey"></Border>
+            <Border Grid.Column="2" Name="dummyWidthValue"></Border>
+            <Border Grid.Column="3" Name="dummyWidthGain"></Border>
+            <Border Grid.Column="4" Name="dummyWidthCenter"></Border>
+        </Grid>
+        <ListBox x:Name="FilterList" ItemsSource="{Binding}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked"/>
+        <ListView Grid.Row="0"
+                  Grid.Column="1"
+                  x:Name="SignalList" Focusable="False"
+                  ItemsSource="{Binding}"
+                  BorderThickness="0"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
+                    <Setter 
+                        Property="VerticalContentAlignment" 
+                        Value="Stretch" 
+                    />
+                    <Setter Property="Focusable" Value="false"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="checkBoxColumn"
+                                    Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}">
+                        <GridViewColumnHeader Padding="7 6 0 6"> <!-- the default is 14 6 14 6. https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/73b0d6725922f936986532b1809f5a5045e9fb39/MaterialDesignThemes.Wpf/Themes/MaterialDesignTheme.ListBox.xaml#L35 -->
+                            <CheckBox Width="16" Content=""/>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox VerticalContentAlignment="Stretch"
+                                         Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
+                                          Content=""
+                                          VerticalAlignment="Center"
+                                        IsChecked="{Binding IsSending}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn x:Name="keyColumn" Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}">
+                        <GridViewColumnHeader Padding="7 6 7 6" HorizontalAlignment="Center">
+                            <TextBlock Padding="0"
+                                       Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
+                                       Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderKey, Mode=OneWay}"/>
+                        </GridViewColumnHeader>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
+                                           Text="{Binding Key}"
+                                           VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn  Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderValue, Mode=OneWay}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center"
+                                         Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}"
+                                        Text="{Binding Value}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderGain, Mode=OneWay}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*" MinWidth="160"/>
+                                        <ColumnDefinition Width="1*" MinWidth="40"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Slider Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Maximum="4"
+                                            Value="{Binding Gain,UpdateSourceTrigger=PropertyChanged}"
+                                            ValueChanged="Slider_Gain_ValueChanged"
+                                            Name="gainSlider"
+                                            Margin="10,0,20,0"
+                                            LargeChange="0.1"
+                                            SmallChange="0.01"
+                                            TickFrequency="1" />
+                                    <TextBox Grid.Column="1"
+                                             Text="{Binding Value, ElementName=gainSlider}"
+                                             LostFocus="GainValue_Inputted"
+                                             TextWrapping="NoWrap"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding ElementName=dummyWidthCenter, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderCenter, Mode=OneWay}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button x:Name="centerButton"
+                                        Width="56"
+                                        Click="centerButton_Click"
+                                        Visibility="{Binding ValueRange, Converter={StaticResource CenterToVisibility}}"
+                                        Content="{Binding ValueRange, Converter={StaticResource CenterToLabel}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Grid.Row="0"
+                    Grid.Column="2"
+                    VerticalAlignment="Stretch"
+                    Height="Auto"
+                    Margin="8,8,8,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="0"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button Width="92"
+                            Margin="0 0 2 0"
+                            IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
+                            Content="{Binding Path=IsDirty, Converter={StaticResource DirtyToLabel}, Mode=OneWay}"
+                            Click="SaveButton_Click"
+                            Cursor="Hand"/>
+                    <Button Width="92"
+                            Margin="2 0 2 0"
+                            IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
+                            Content="{Binding Path=IsDirty, Converter={StaticResource DirtyToLabel}, Mode=OneWay}"
+                            Click="SaveButton_Click"
+                            Cursor="Hand"/>
+                    <Button Width="92"
+                            Margin="2 0 0 0"
+                            Cursor="Hand">
+                        About
+                    </Button>
+                </StackPanel>
+                <TextBlock Grid.Column="0"
+                           Grid.Row="1"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ConfigLanguage, Mode=OneWay}"/>
+                <ComboBox Grid.Column="1"
+                          Grid.Row="1"
+                          x:Name="language"
+                          SelectionChanged="Language_SelectionChanged"
+                          ItemsSource="{Binding LanguageList}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          SelectedValuePath="Key"
+                          DisplayMemberPath="Value" />
+            </Grid>
+            <Grid Grid.Row="1" VerticalAlignment="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <CheckBox Grid.Column="0"
+                          Grid.Row="0"
+                          VerticalContentAlignment="Stretch"
+                          Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
+                          Content="Debug Mode"
+                          VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0"
+                           Grid.Row="1"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ConfigEyeTracker, Mode=OneWay}"/>
+                <ComboBox Grid.Column="1"
+                          Grid.Row="1"
+                          x:Name="eyeType"
+                          SelectionChanged="EyeTrackerType_SelectionChanged"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding EyeTrackerList}"
+                          SelectedValuePath="Key"
+                          DisplayMemberPath="Value" />
+            </Grid>
+            <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,32,0,0">
+                <StackPanel Orientation="Horizontal" Height="Auto">
+                    <Button
+                            Margin="0,0,2,0"
+                            x:Name="eyeTrackerButton"
+                            Width="140"
+                            Height="60"
+                            BorderThickness="4"
+                            Click="eyeTrackerButton_Clicked"
+                            Cursor="Hand" >
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
+                                <GradientStop Color="#eeeeee" Offset="0.95" />
+                                <GradientStop Color="#eeeeee" Offset="1" />
+                                <GradientStop Color="#eeeeee" Offset="0.8" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <Button.BorderBrush>
+                            <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
+                                <GradientStop Color="#03dac6" Offset="0" />
+                                <GradientStop Color="#eeeeee" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.BorderBrush>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock x:Name="Name"
+                                   FontWeight="Medium"
+                                   Foreground="#006666"
+                                   Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.EyeTrackingButton, Mode=OneWay}"
+                                   HorizontalAlignment="Center"/>
+                            <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,8,0,4" Stroke="{Binding EyeTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
+                            <TextBlock
+                                   Foreground="Black"
+                                   Text="{Binding EyeTrackingStatus, Converter={StaticResource DeviceStatusToLabel}}"
+                            HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="facialTrackerButton"
+                            Margin="2,0,0,0"
+                            Width="140"
+                            Height="60"
+                            BorderThickness="4"
+                            Click="facialTrackerButton_Clicked"
+                            Cursor="Hand" >
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
+                                <GradientStop Color="#eeeeee" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <Button.BorderBrush>
+                            <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
+                                <GradientStop Color="#ff7597" Offset="0" />
+                                <GradientStop Color="#eeeeee" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.BorderBrush>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                            <TextBlock
+                                   Foreground="#880e4f"
+                                   Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.FaceTrackingButton, Mode=OneWay}"
+                                   HorizontalAlignment="Center" />
+                            <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,6,0,4" Stroke="{Binding LipTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
+                            <TextBlock
+                                   Foreground="Black"
+                                   Text="{Binding Path=LipTrackingStatus, Converter={StaticResource DeviceStatusToLabel}, Mode=OneWay}"
+                            HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
 
+
+        </Grid>
     </Grid>
 </Window>
