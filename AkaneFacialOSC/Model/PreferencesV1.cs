@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
-namespace AZW.FacialOSC.Model
+namespace Azw.FacialOsc.Model
 {
     [Serializable]
-    internal class PreferencesV1
+    public class PreferencesV1
     {
         public int version;
-        public FaceDataPreferencesV1[]? faceDataPreferences;
+        public FaceDataPreferences[]? faceDataPreferences;
         public bool isDebug = false;
         public bool useEyeTracking = true;
         public bool useFacialTracking = true;
@@ -68,85 +68,79 @@ namespace AZW.FacialOSC.Model
 
         [DllImport("shell32.dll")]
         static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr pszPath);
-    }
-
-    [Serializable]
-    public class FaceDataPreferencesV1
-    {
-        public string key;
-        public bool isSending = true;
-        public float gain = 1;
-        public bool isClipping = true;
-        public float centerValue = 0.5f;
-
-        public FaceKey faceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
-        public Range center
+        [Serializable]
+        public class FaceDataPreferences
         {
-            get
+            public string key;
+            public bool isSending = true;
+            public float gain = 1;
+            public bool isClipping = true;
+            public float centerValue = 0.5f;
+
+            public FaceKey faceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
+            public ValueRange center
             {
-                var def = FaceKeyUtils.DefaultValue(faceKey);
-                if (0.5f - 0.0009765625f < def && def < 0.5f + 0.0009765625)
+                get
                 {
-                    return centerValue < float.Epsilon ? Range.ZeroCentered : Range.HalfCentered;
+                    var def = FaceKeyUtils.DefaultValue(faceKey);
+                    if (0.5f - 0.0009765625f < def && def < 0.5f + 0.0009765625)
+                    {
+                        return centerValue < float.Epsilon ? ValueRange.ZeroCentered : ValueRange.HalfCentered;
+                    }
+                    else
+                    {
+                        return ValueRange.Fixed;
+                    }
+                }
+                set
+                {
+                    centerValue = value switch
+                    {
+                        ValueRange.Fixed => centerValue = 0.5f,
+                        ValueRange.ZeroCentered => centerValue = 0,
+                        ValueRange.HalfCentered => centerValue = 0.5f,
+                        _ => throw new UnexpectedEnumValueException(value),
+                    };
+                }
+            }
+
+            public FaceDataPreferences(string key)
+            {
+                this.key = key;
+            }
+            public FaceDataPreferences(FaceKey key)
+            {
+                this.key = key.ToString();
+            }
+            public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping, float centerValue)
+            {
+                this.key = key;
+                this.isSending = isSending;
+                this.gain = gain;
+                this.isClipping = isClipping;
+                this.centerValue = centerValue;
+            }
+            public PreferencesV2.FaceDataPreferences UpgradeToV2()
+            {
+                var v2 = new PreferencesV2.FaceDataPreferences(key);
+                v2.isSending = isSending;
+                v2.gain = gain;
+                v2.isClipping = isClipping;
+                var defaultValue = FaceKeyUtils.DefaultValue(faceKey);
+
+                if (0.5f - 0.0009765625f < defaultValue && defaultValue < 0.5f + 0.0009765625)
+                {
+                    v2.range = (centerValue < float.Epsilon ? ValueRange.ZeroCentered : ValueRange.HalfCentered).ToString();
                 }
                 else
                 {
-                    return Range.Fixed;
+                    v2.range = ValueRange.Fixed.ToString();
                 }
-            }
-            set
-            {
-                switch (value)
-                {
-                    case Range.Fixed:
-                        centerValue = 0.5f;
-                        return;
-                    case Range.ZeroCentered:
-                        centerValue = 0;
-                        return;
-                    case Range.HalfCentered:
-                        centerValue = 0.5f;
-                        return;
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-        }
 
-        public FaceDataPreferencesV1(string key)
-        {
-            this.key = key;
-        }
-        public FaceDataPreferencesV1(FaceKey key)
-        {
-            this.key = key.ToString();
-        }
-        public FaceDataPreferencesV1(string key, bool isSending, float gain, bool isClipping, float centerValue)
-        {
-            this.key = key;
-            this.isSending = isSending;
-            this.gain = gain;
-            this.isClipping = isClipping;
-            this.centerValue = centerValue;
-        }
-        public FaceDataPreferencesV2 UpgradeToV2()
-        {
-            var v2 = new FaceDataPreferencesV2(key);
-            v2.isSending = isSending;
-            v2.gain = gain;
-            v2.isClipping = isClipping;
-            var defaultValue = FaceKeyUtils.DefaultValue(faceKey);
-
-            if (0.5f - 0.0009765625f < defaultValue && defaultValue < 0.5f + 0.0009765625)
-            {
-                v2.range = (centerValue < float.Epsilon ? Range.ZeroCentered : Range.HalfCentered).ToString();
+                return v2;
             }
-            else
-            {
-                v2.range = Range.Fixed.ToString();
-            }
-
-            return v2;
         }
     }
+
+
 }

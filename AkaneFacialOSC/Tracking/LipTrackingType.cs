@@ -1,9 +1,8 @@
 ﻿namespace Azw.FacialOsc
 {
-    public enum EyeTrackingType
+    public enum LipTrackingType
     {
         ViveSRanipal,
-        PimaxAsee,
         Debug,
     }
 }

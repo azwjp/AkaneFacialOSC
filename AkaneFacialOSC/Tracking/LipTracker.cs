@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using ViveSR;
-using ViveSR.anipal.Lip;
 
-namespace AZW.FacialOSC.Tracking
+namespace Azw.FacialOsc.Tracking
 {
-    internal abstract class LipTracker : Tracker<LipData_v2>
+    internal abstract class LipTracker : Tracker
     {
         static LipTracker? instance = null;
 
@@ -25,10 +19,20 @@ namespace AZW.FacialOSC.Tracking
             }
             else
             {
-                await instance.Stop().ConfigureAwait(false);
-                var handler = instance.updatedHandler;
+                await instance.Stop();
+
+                var old = instance;
                 instance = Activator.CreateInstance<T>();
-                instance.updatedHandler += handler;
+                instance.updatedHandler = old.updatedHandler;
+                instance.checkedHandler = old.checkedHandler;
+                instance.statusChangedHandler = old.statusChangedHandler;
+                instance.targetInterval = old.targetInterval;
+                instance.IsAutoFpsEnabled = old.IsAutoFpsEnabled;
+
+                old.updatedHandler = null;
+                old.statusChangedHandler = null;
+
+
                 return instance;
             }
         }

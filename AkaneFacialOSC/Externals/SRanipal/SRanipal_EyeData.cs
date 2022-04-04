@@ -37,7 +37,7 @@
 // or tort (including negligence or otherwise) arising in any way out of
 // the use of this software, even if advised of the possibility of such damage.
 //
-using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 namespace ViveSR
 {
@@ -45,20 +45,6 @@ namespace ViveSR
     {
         namespace Eye
         {
-            [StructLayout(LayoutKind.Sequential)]
-            public struct Vector3
-            {
-                public float x;
-                public float y;
-                public float z;
-            }
-
-            [StructLayout(LayoutKind.Sequential)]
-            public struct Vector2
-            {
-                public float x;
-                public float y;
-            }
 
             #region VerboseData
             public enum EyeIndex { LEFT, RIGHT, }

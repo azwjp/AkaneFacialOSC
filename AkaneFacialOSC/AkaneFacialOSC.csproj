@@ -5,21 +5,25 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<RootNamespace>AZW.FacialOSC</RootNamespace>
+	<RootNamespace>Azw.FacialOsc</RootNamespace>
+	<StartupObject>Azw.FacialOsc.App</StartupObject>
+	<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+	<PackageId>Azw.FacialOsc</PackageId>
+	<VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>RC1</VersionSuffix>
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Properties\Resources.en-US.resx" />
-    <None Remove="Properties\Resources.ja-JP.resx" />
+    <None Remove="Resources\AppLogo.png" />
   </ItemGroup>
   
 	<ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="MaterialDesignThemes" Version="4.4.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.2.1" />
     <PackageReference Include="Rug.Osc" Version="1.2.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,31 +64,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="libHTC_License.dll">
+    <None Update="Externals\PimaxEyeTracker\PimaxEyeTracker.dll">
+      <Link>PimaxEyeTracker.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="nanomsg.dll">
+    <None Update="Externals\SRanipal\libHTC_License.dll">
+      <Link>libHTC_License.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Externals\SRanipal\nanomsg.dll">
+      <Link>nanomsg.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Update="SRanipal.dll">
+    <None Update="Externals\SRanipal\SRanipal.dll">
+      <Link>SRanipal.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SRWorks_Log.dll">
+    <None Update="Externals\SRanipal\SRWorks_Log.dll">
+      <Link>SRWorks_Log.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ViveSR_Client.dll">
+    <None Update="Externals\SRanipal\ViveSR_Client.dll">
+      <Link>ViveSR_Client.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
-    <Page Update="i18n\Strings.ja-JP.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+  	  <_Parameter1>AkaneFacialOSCTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AppLogo.png" />
   </ItemGroup>
 </Project>

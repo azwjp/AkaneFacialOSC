@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AZW.FacialOSC
+namespace Azw.FacialOsc
 {
     internal class SwitchableObservableCollection<T> : ObservableCollection<T>
     {

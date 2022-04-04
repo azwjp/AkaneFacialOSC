@@ -1,7 +1,7 @@
-﻿namespace AZW.FacialOSC.Tracking
+﻿namespace Azw.FacialOsc.Tracking
 {
     public enum DeviceStatus
     {
-        Stopping, Disbled, Starting, Running, Unavailable
+        Disbled, Stopping, Starting, Running, Unavailable
     }
 }

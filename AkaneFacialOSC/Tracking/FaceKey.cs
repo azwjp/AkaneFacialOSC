@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AZW.FacialOSC
+namespace Azw.FacialOsc
 {
     public enum FaceKey
     {
@@ -98,6 +98,10 @@ namespace AZW.FacialOSC
         Mouth_Lower_Down,
         Tongue_Left_Right,
         Tongue_Down_Up,
+
+
+        Mouth_Left,
+        Mouth_Right,
     }
 
     public enum DataType

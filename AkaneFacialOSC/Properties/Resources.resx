@@ -117,6 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppVersion" xml:space="preserve">
+    <value>2.0.0</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ButtonConfig" xml:space="preserve">
+    <value>Config</value>
+  </data>
+  <data name="ButtonEyeTracking" xml:space="preserve">
+    <value>Eye Tracking</value>
+  </data>
+  <data name="ButtonFaceTracking" xml:space="preserve">
+    <value>Facial Tracking</value>
+  </data>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ButtonResetAll" xml:space="preserve">
+    <value>Reset All</value>
+  </data>
+  <data name="ButtonRevert" xml:space="preserve">
+    <value>Undo All</value>
+  </data>
   <data name="ConfigButtonSave" xml:space="preserve">
     <value>Save</value>
   </data>
@@ -124,19 +151,55 @@
     <value>Save (*)</value>
   </data>
   <data name="ConfigEyeTracker" xml:space="preserve">
-    <value>Eye-tracker</value>
+    <value>Eye tracker</value>
+  </data>
+  <data name="ConfigEyeTrackerAutoFps" xml:space="preserve">
+    <value>Auto fps adjusting for the eye tracker</value>
+  </data>
+  <data name="ConfigEyeTrackerTargetFps" xml:space="preserve">
+    <value>Eye tracker target FPS</value>
   </data>
   <data name="ConfigLanguage" xml:space="preserve">
     <value>Language</value>
   </data>
-  <data name="EyeTrackingButton" xml:space="preserve">
-    <value>Eye-tracking</value>
+  <data name="ConfigLipTracker" xml:space="preserve">
+    <value>Lip tracker</value>
   </data>
-  <data name="FaceTrackingButton" xml:space="preserve">
-    <value>Facial-Tracking</value>
+  <data name="ConfigLipTrackerAutoFps" xml:space="preserve">
+    <value>Auto fps adjusting for the facial tracker</value>
   </data>
-  <data name="OSCHeaderCenter" xml:space="preserve">
-    <value>Range</value>
+  <data name="ConfigLipTrackerTargetFps" xml:space="preserve">
+    <value>Faciel tracker target FPS</value>
+  </data>
+  <data name="ConfigMaxGazeAngle" xml:space="preserve">
+    <value>Max gaze angle (degree)</value>
+  </data>
+  <data name="ConfigTheme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="DialogResetAllMessage" xml:space="preserve">
+    <value>Reset all configurations to the default value.</value>
+  </data>
+  <data name="DialogRevertMessage" xml:space="preserve">
+    <value>Undo all changes to the startup</value>
+  </data>
+  <data name="MessageCalibrationRequired" xml:space="preserve">
+    <value>Your Vive Pro Eye need to be calibrated. The device might not able to use until calibration.</value>
+  </data>
+  <data name="MessageDeviceError" xml:space="preserve">
+    <value>An error has occured when starting the device: </value>
+  </data>
+  <data name="MessageNotProEye" xml:space="preserve">
+    <value>Vive Pro Eye is not connected. Please check your device or switch the target device.</value>
+  </data>
+  <data name="MessageUpdateExists" xml:space="preserve">
+    <value>The new version has been released:</value>
+  </data>
+  <data name="MessageUpdateFailed" xml:space="preserve">
+    <value>Checking the update failed</value>
+  </data>
+  <data name="OSCHeaderClip" xml:space="preserve">
+    <value>Clip</value>
   </data>
   <data name="OSCHeaderGain" xml:space="preserve">
     <value>Gain</value>
@@ -144,8 +207,17 @@
   <data name="OSCHeaderKey" xml:space="preserve">
     <value>OSC Key</value>
   </data>
+  <data name="OSCHeaderRange" xml:space="preserve">
+    <value>Range</value>
+  </data>
   <data name="OSCHeaderValue" xml:space="preserve">
     <value>Val</value>
+  </data>
+  <data name="ThemeAkane" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="ThemeSimple" xml:space="preserve">
+    <value>Block-and-White</value>
   </data>
   <data name="TrackingDisabled" xml:space="preserve">
     <value>Stopped</value>
@@ -161,5 +233,17 @@
   </data>
   <data name="TrackingUnavailable" xml:space="preserve">
     <value>Unavailable</value>
+  </data>
+  <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
+    <value>Tracking Configurations</value>
+  </data>
+  <data name="WindowHeaderGeneralConfigs" xml:space="preserve">
+    <value>General Configurations</value>
+  </data>
+  <data name="WindowTitleConfig" xml:space="preserve">
+    <value>AkaneFacialOSC: Config</value>
+  </data>
+  <data name="WindowTitleMainWindow" xml:space="preserve">
+    <value>AkaneFacialOSC</value>
   </data>
 </root>

@@ -1,0 +1,177 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using Azw.FacialOsc.Tracking;
+
+namespace Azw.FacialOsc.Model
+{
+    internal class TrackingStatus : INotifyPropertyChanged
+    {
+        public Controller? Controller;
+        void SetDirty() { Controller?.MarkDirty(); }
+
+        private DeviceStatus eyeTrackingStatus;
+        public DeviceStatus EyeTrackingStatus
+        {
+            get { return eyeTrackingStatus; }
+            set
+            {
+                eyeTrackingStatus = value;
+                NotifyPropertyChanged(nameof(EyeTrackingStatus));
+            }
+        }
+
+        private DeviceStatus lipTrackingStatus;
+        public DeviceStatus LipTrackingStatus
+        {
+            get { return lipTrackingStatus; }
+            set
+            {
+                lipTrackingStatus = value;
+                NotifyPropertyChanged(nameof(LipTrackingStatus));
+            }
+        }
+
+
+        private ObservableCollection<SignalProperty> displayingSignalList = new ObservableCollection<SignalProperty>();
+        public ObservableCollection<SignalProperty> DisplayingSignalList
+        {
+            get { return displayingSignalList; }
+            set
+            {
+                if (displayingSignalList == value) return;
+                displayingSignalList = value;
+                NotifyPropertyChanged(nameof(DisplayingSignalList));
+            }
+        }
+
+        public Dictionary<EyeTrackingType, string> EyeTrackerList { get; set; } = Enum.GetValues(typeof(EyeTrackingType)).Cast<EyeTrackingType>().ToDictionary(t => t, t => t.ToString());
+        public Dictionary<LipTrackingType, string> LipTrackerList { get; set; } = Enum.GetValues(typeof(LipTrackingType)).Cast<LipTrackingType>().ToDictionary(t => t, t => t.ToString());
+        public ObservableCollection<OSCDataFilter> FilterList { get; set; } = new ObservableCollection<OSCDataFilter>(Enum.GetValues(typeof(OSCDataFilter)).Cast<OSCDataFilter>().ToList());
+
+
+        private EyeTrackingType eyeType;
+        public EyeTrackingType EyeType
+        {
+            get { return eyeType; }
+            set
+            {
+                if (eyeType == value) return;
+                eyeType = value;
+                NotifyPropertyChanged(nameof(EyeType));
+                SetDirty();
+            }
+        }
+
+        private LipTrackingType lipType;
+        public LipTrackingType LipType
+        {
+            get { return lipType; }
+            set
+            {
+                if (lipType == value) return;
+                lipType = value;
+                NotifyPropertyChanged(nameof(LipType));
+                SetDirty();
+            }
+        }
+
+        private bool eyeTrackerAutoFps;
+        public bool EyeTrackerAutoFps
+        {
+            get { return eyeTrackerAutoFps; }
+            set
+            {
+                if (eyeTrackerAutoFps == value) return;
+                eyeTrackerAutoFps = value;
+                Controller?.SetAutoFps(TrackingType.Eye, value);
+                NotifyPropertyChanged(nameof(EyeTrackerAutoFps));
+                SetDirty();
+            }
+        }
+
+        private double eyeTrackerTargetFps;
+        public double EyeTrackerTargetFps
+        {
+            get { return eyeTrackerTargetFps; }
+            set
+            {
+                if (eyeTrackerTargetFps == value) return;
+                eyeTrackerTargetFps = value;
+                Controller?.SetEyeFps(value);
+                NotifyPropertyChanged(nameof(EyeTrackerTargetFps));
+                SetDirty();
+            }
+        }
+        private bool lipTrackerAutoFps;
+        public bool LipTrackerAutoFps
+        {
+            get { return lipTrackerAutoFps; }
+            set
+            {
+                if (lipTrackerAutoFps == value) return;
+                lipTrackerAutoFps = value;
+                Controller?.SetAutoFps(TrackingType.Lip, value);
+                NotifyPropertyChanged(nameof(LipTrackerAutoFps));
+                SetDirty();
+            }
+        }
+
+        private double lipTrackerTargetFps;
+        public double LipTrackerTargetFps
+        {
+            get { return lipTrackerTargetFps; }
+            set
+            {
+                if (lipTrackerTargetFps == value) return;
+                lipTrackerTargetFps = value;
+                Controller?.SetLipFps(value);
+                NotifyPropertyChanged(nameof(LipTrackerTargetFps));
+                SetDirty();
+            }
+        }
+
+        private float maxAngle = 45;
+        public float MaxAngle
+        {
+            get { return maxAngle; }
+            set
+            {
+                if (maxAngle == value) return;
+                maxAngle = value;
+                NotifyPropertyChanged(nameof(MaxAngle));
+                SetDirty();
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void NotifyPropertyChanged(string PropertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+        }
+        public PreferencesV2.TrackingPreference ToPreference(ICollection<SignalProperty> Signals)
+        {
+            return new PreferencesV2.TrackingPreference()
+            {
+                eyeTrackingType = EyeType.ToString(),
+                lipTrackingType = LipType.ToString(),
+                eyeAutoFps = eyeTrackerAutoFps,
+                lipAutoFps = lipTrackerAutoFps,
+                eyeFps = EyeTrackerTargetFps,
+                lipFps = LipTrackerTargetFps,
+                faceDataPreferences = Signals.Select(r => new PreferencesV2.FaceDataPreferences()
+                {
+                    key = r.Key.ToString(),
+                    range = r.ValueRange.ToString(),
+                    gain = r.Gain,
+                    isClipping = r.IsClipping,
+                    isSending = r.IsSending,
+                }).ToList(),
+            };
+        }
+    }
+}

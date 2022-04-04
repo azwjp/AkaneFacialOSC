@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AZW.FacialOSC.Properties {
+namespace Azw.FacialOsc.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace AZW.FacialOSC.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AZW.FacialOSC.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Azw.FacialOsc.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,87 @@ namespace AZW.FacialOSC.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   2.0.0 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AppVersion {
+            get {
+                return ResourceManager.GetString("AppVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cancel に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonCancel {
+            get {
+                return ResourceManager.GetString("ButtonCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonClose {
+            get {
+                return ResourceManager.GetString("ButtonClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Config に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonConfig {
+            get {
+                return ResourceManager.GetString("ButtonConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Eye Tracking に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonEyeTracking {
+            get {
+                return ResourceManager.GetString("ButtonEyeTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Facial Tracking に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonFaceTracking {
+            get {
+                return ResourceManager.GetString("ButtonFaceTracking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   OK に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonOK {
+            get {
+                return ResourceManager.GetString("ButtonOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Reset All に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonResetAll {
+            get {
+                return ResourceManager.GetString("ButtonResetAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Undo All に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ButtonRevert {
+            get {
+                return ResourceManager.GetString("ButtonRevert", resourceCulture);
             }
         }
         
@@ -79,11 +160,29 @@ namespace AZW.FacialOSC.Properties {
         }
         
         /// <summary>
-        ///   Eye-tracker に類似しているローカライズされた文字列を検索します。
+        ///   Eye tracker に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ConfigEyeTracker {
             get {
                 return ResourceManager.GetString("ConfigEyeTracker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Auto fps adjusting for the eye tracker に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ConfigEyeTrackerAutoFps {
+            get {
+                return ResourceManager.GetString("ConfigEyeTrackerAutoFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Eye tracker target FPS に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ConfigEyeTrackerTargetFps {
+            get {
+                return ResourceManager.GetString("ConfigEyeTrackerTargetFps", resourceCulture);
             }
         }
         
@@ -97,29 +196,119 @@ namespace AZW.FacialOSC.Properties {
         }
         
         /// <summary>
-        ///   Eye-tracking に類似しているローカライズされた文字列を検索します。
+        ///   Lip tracker に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string EyeTrackingButton {
+        public static string ConfigLipTracker {
             get {
-                return ResourceManager.GetString("EyeTrackingButton", resourceCulture);
+                return ResourceManager.GetString("ConfigLipTracker", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Facial-Tracking に類似しているローカライズされた文字列を検索します。
+        ///   Auto fps adjusting for the facial tracker に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string FaceTrackingButton {
+        public static string ConfigLipTrackerAutoFps {
             get {
-                return ResourceManager.GetString("FaceTrackingButton", resourceCulture);
+                return ResourceManager.GetString("ConfigLipTrackerAutoFps", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Range に類似しているローカライズされた文字列を検索します。
+        ///   Faciel tracker target FPS に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string OSCHeaderCenter {
+        public static string ConfigLipTrackerTargetFps {
             get {
-                return ResourceManager.GetString("OSCHeaderCenter", resourceCulture);
+                return ResourceManager.GetString("ConfigLipTrackerTargetFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Max gaze angle (degree) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ConfigMaxGazeAngle {
+            get {
+                return ResourceManager.GetString("ConfigMaxGazeAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Theme に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ConfigTheme {
+            get {
+                return ResourceManager.GetString("ConfigTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Reset all configurations to the default value. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogResetAllMessage {
+            get {
+                return ResourceManager.GetString("DialogResetAllMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Undo all changes to the startup に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogRevertMessage {
+            get {
+                return ResourceManager.GetString("DialogRevertMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Your Vive Pro Eye need to be calibrated. The device might not able to use until calibration. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageCalibrationRequired {
+            get {
+                return ResourceManager.GetString("MessageCalibrationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   An error has occured when starting the device:  に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageDeviceError {
+            get {
+                return ResourceManager.GetString("MessageDeviceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Vive Pro Eye is not connected. Please check your device or switch the target device. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageNotProEye {
+            get {
+                return ResourceManager.GetString("MessageNotProEye", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The new version has been released: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageUpdateExists {
+            get {
+                return ResourceManager.GetString("MessageUpdateExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Checking the update failed に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageUpdateFailed {
+            get {
+                return ResourceManager.GetString("MessageUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Clip に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCHeaderClip {
+            get {
+                return ResourceManager.GetString("OSCHeaderClip", resourceCulture);
             }
         }
         
@@ -142,11 +331,38 @@ namespace AZW.FacialOSC.Properties {
         }
         
         /// <summary>
+        ///   Range に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCHeaderRange {
+            get {
+                return ResourceManager.GetString("OSCHeaderRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Val に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OSCHeaderValue {
             get {
                 return ResourceManager.GetString("OSCHeaderValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Normal に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ThemeAkane {
+            get {
+                return ResourceManager.GetString("ThemeAkane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Block-and-White に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ThemeSimple {
+            get {
+                return ResourceManager.GetString("ThemeSimple", resourceCulture);
             }
         }
         
@@ -192,6 +408,42 @@ namespace AZW.FacialOSC.Properties {
         public static string TrackingUnavailable {
             get {
                 return ResourceManager.GetString("TrackingUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Tracking Configurations に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string WindowHeaderDeviceConfigs {
+            get {
+                return ResourceManager.GetString("WindowHeaderDeviceConfigs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   General Configurations に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string WindowHeaderGeneralConfigs {
+            get {
+                return ResourceManager.GetString("WindowHeaderGeneralConfigs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   AkaneFacialOSC: Config に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string WindowTitleConfig {
+            get {
+                return ResourceManager.GetString("WindowTitleConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   AkaneFacialOSC に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string WindowTitleMainWindow {
+            get {
+                return ResourceManager.GetString("WindowTitleMainWindow", resourceCulture);
             }
         }
     }

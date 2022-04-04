@@ -2,55 +2,58 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using AZW.FacialOSC.Model;
-using AZW.FacialOSC.Properties;
-using AZW.FacialOSC.Tracking;
-using ViveSR.anipal.Eye;
+using Azw.FacialOsc.Model;
+using Azw.FacialOsc.Properties;
+using Azw.FacialOsc.Tracking;
+using Azw.FacialOsc.View;
+using MahApps.Metro.Controls;
 
-namespace AZW.FacialOSC
+namespace Azw.FacialOsc
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
-        internal Controller? Controller;
+        internal Controller Controller = Controller.Instance;
         public MainWindow()
         {
             InitializeComponent();
-            //mainPanel.Visibility = Visibility.Hidden;
-            var controller = Controller.Instance;
+            mainPanel.Visibility = Visibility.Hidden;
 
-            controller.Init(this).Wait();
+            Controller = Controller.Instance;
+            Controller.mainWindow = this;
+            Controller.PreInitWindow();
+
+            DataContext = Controller.TrackingStatus;
+            dirtyButton.DataContext = Controller.Configs;
+            facialTrackerButton.DataContext = Controller.TrackingStatus;
+            eyeTrackerButton.DataContext = Controller.TrackingStatus;
+
+            FilterList.SelectedItem = OSCDataFilter.All;
+            FilterList.SelectedItems.Clear();
+            FilterList.SelectedItems.Add(OSCDataFilter.All);
+            mainPanel.Visibility = Visibility.Visible;
         }
         void GainValue_Inputted(object sender, RoutedEventArgs e)
         {
             var ui = sender as TextBox;
-            var row = ui.DataContext as SignalRow;
+            var row = ui.DataContext as SignalProperty;
         }
 
         private void Slider_Gain_ValueChanged(object sender, RoutedEventArgs e)
         {
             var ui = sender as Slider;
-            var row = ui.DataContext as SignalRow;
+            var row = ui.DataContext as SignalProperty;
             Controller?.MarkDirty();
         }
 
-        public ObservableCollection<SignalRow> Items { get; private set; }
-            = new ObservableCollection<SignalRow>();
+        public ObservableCollection<SignalProperty> Items { get; private set; }
+            = new ObservableCollection<SignalProperty>();
 
         private void facialTrackerButton_Clicked(object sender, RoutedEventArgs args)
         {
@@ -67,84 +70,101 @@ namespace AZW.FacialOSC
         private void centerButton_Click(object sender, RoutedEventArgs e)
         {
             var ui = (Button)sender;
-            var row = (SignalRow)ui.DataContext;
+            var row = (SignalProperty)ui.DataContext;
 
             switch (row.ValueRange)
             {
-                case Model.Range.Fixed:
+                case Model.ValueRange.Fixed:
                     return;
-                case Model.Range.HalfCentered:
-                    row.ValueRange = Model.Range.ZeroCentered;
+                case Model.ValueRange.HalfCentered:
+                    row.ValueRange = Model.ValueRange.ZeroCentered;
                     break;
-                case Model.Range.ZeroCentered:
-                    row.ValueRange = Model.Range.HalfCentered;
+                case Model.ValueRange.ZeroCentered:
+                    row.ValueRange = Model.ValueRange.HalfCentered;
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new UnexpectedEnumValueException(row.ValueRange);
             }
             Controller?.MarkDirty();
-        }
-
-        private void EyeTrackerType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var ui = (ComboBox) sender;
-            var row = (EyeTrackingType) ui.SelectedValue;
-
-        }
-
-        private void Language_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var ui = (ComboBox)sender;
-            var culture = (string)ui.SelectedValue;
-            Controller?.LanguageChanged(culture);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             Controller?.Save();
         }
+        private void ConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ConfigWindow.Instance != null) return;
+
+            var w = new ConfigWindow();
+            w.Owner = this;
+            w.Left = Left + Width / 2 - w.Width / 2;
+            w.Top = Top + Height / 2 - w.Height / 2;
+            ConfigWindow.Instance = w;
+            w.Show();
+        }
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (AboutWindow.Instance != null) return;
+
+            var w = new AboutWindow();
+            w.Owner = this;
+            w.Left = Left + Width / 2 - w.Width / 2;
+            w.Top = Top + Height / 2 - w.Height / 2;
+            AboutWindow.Instance = w;
+            w.Show();
+        }
+
+        private void BulkCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Controller?.BulkCheck();
+        }
+        private void BulkCheckBox_UnChecked(object sender, RoutedEventArgs e)
+        {
+            Controller?.BulkUnCheck();
+        }
     }
 
-    [ValueConversion(typeof(Model.Range), typeof(string))]
+    [ValueConversion(typeof(Model.ValueRange), typeof(string))]
     public class CenterToLabelConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo language)
         {
-            if (value is not Model.Range center) return DependencyProperty.UnsetValue;
+            if (value is not Model.ValueRange center) return DependencyProperty.UnsetValue;
 
             switch (center)
             {
-                case Model.Range.Fixed:
-                case Model.Range.HalfCentered:
+                case Model.ValueRange.Fixed:
+                case Model.ValueRange.HalfCentered:
                     return "0..1";
-                case Model.Range.ZeroCentered:
+                case Model.ValueRange.ZeroCentered:
                     return "-1..1";
                 default:
-                    throw new NotImplementedException(nameof(value));
+                    throw new UnexpectedEnumValueException(center);
             }
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)
         {
             if (value is not string str) return DependencyProperty.UnsetValue;
 
-            return Enum.Parse<Model.Range>(str);
+            return Enum.Parse<Model.ValueRange>(str);
         }
     }
     public class CenterToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo language)
         {
-            if (value is not Model.Range center) return DependencyProperty.UnsetValue;
+            if (value is not Model.ValueRange center) return DependencyProperty.UnsetValue;
 
             switch (center)
             {
-                case Model.Range.Fixed:
+                case ValueRange.Fixed:
                     return Visibility.Hidden;
-                case Model.Range.HalfCentered:
-                case Model.Range.ZeroCentered:
+                case ValueRange.HalfCentered:
+                case ValueRange.ZeroCentered:
                     return Visibility.Visible;
                 default:
-                    throw new NotImplementedException(nameof(value));
+                    throw new UnexpectedEnumValueException(center);
             }
         }
 
@@ -152,7 +172,7 @@ namespace AZW.FacialOSC
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.Range.Fixed : Model.Range.HalfCentered;
+            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
         }
     }
 
@@ -163,28 +183,22 @@ namespace AZW.FacialOSC
         {
             if (value is not DeviceStatus status) return DependencyProperty.UnsetValue;
 
-            switch (status)
+            return status switch
             {
-                case DeviceStatus.Unavailable:
-                    return new SolidColorBrush() { Color = Color.FromRgb(253, 251, 159) };
-                case DeviceStatus.Disbled:
-                    return new SolidColorBrush() { Color = Color.FromRgb(238, 62, 91) };
-                case DeviceStatus.Starting:
-                    return new SolidColorBrush() { Color = Color.FromRgb(160, 165, 250) };
-                case DeviceStatus.Running:
-                    return new SolidColorBrush() { Color = Color.FromRgb(139, 235, 161) };
-                case DeviceStatus.Stopping:
-                    return new SolidColorBrush() { Color = Color.FromRgb(160, 165, 250) };
-                default:
-                    throw new NotImplementedException(nameof(value));
-            }
+                DeviceStatus.Unavailable => AkaneColors.UnavailableBrush,
+                DeviceStatus.Disbled => AkaneColors.DisbledBrush,
+                DeviceStatus.Starting => AkaneColors.StartingBrush,
+                DeviceStatus.Running => AkaneColors.RunningBrush,
+                DeviceStatus.Stopping => AkaneColors.StoppingBrush,
+                _ => throw new UnexpectedEnumValueException(status),
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.Range.Fixed : Model.Range.HalfCentered;
+            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
         }
     }
 
@@ -195,28 +209,22 @@ namespace AZW.FacialOSC
         {
             if (value is not DeviceStatus status) return DependencyProperty.UnsetValue;
 
-            switch (status)
+            return status switch
             {
-                case DeviceStatus.Unavailable:
-                    return Resources.TrackingUnavailable;
-                case DeviceStatus.Disbled:
-                    return Resources.TrackingDisabled;
-                case DeviceStatus.Starting:
-                    return Resources.TrackingStarting;
-                case DeviceStatus.Running:
-                    return Resources.TrackingRunning;
-                case DeviceStatus.Stopping:
-                    return Resources.TrackingStopping;
-                default:
-                    throw new NotImplementedException(nameof(value));
-            }
+                DeviceStatus.Unavailable => Resources.TrackingUnavailable,
+                DeviceStatus.Disbled => Resources.TrackingDisabled,
+                DeviceStatus.Starting => Resources.TrackingStarting,
+                DeviceStatus.Running => Resources.TrackingRunning,
+                DeviceStatus.Stopping => Resources.TrackingStopping,
+                _ => throw new UnexpectedEnumValueException(status),
+            };
         }
         // TODO
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.Range.Fixed : Model.Range.HalfCentered;
+            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
         }
     }
 
@@ -235,7 +243,7 @@ namespace AZW.FacialOSC
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.Range.Fixed : Model.Range.HalfCentered;
+            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
         }
     }
 

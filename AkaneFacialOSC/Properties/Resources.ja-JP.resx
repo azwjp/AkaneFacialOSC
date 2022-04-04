@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="ConfigEyeTracker" xml:space="preserve">
+    <value>デバイス（目）</value>
+  </data>
   <data name="ConfigLanguage" xml:space="preserve">
     <value>言語</value>
+  </data>
+  <data name="ConfigLipTracker" xml:space="preserve">
+    <value>デバイス（口）</value>
   </data>
   <data name="EyeTrackingButton" xml:space="preserve">
     <value>アイトラッキング</value>

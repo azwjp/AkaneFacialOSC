@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using AZW.FacialOSC.Properties;
+using Azw.FacialOsc.Properties;
 
-namespace AZW.FacialOSC
+namespace Azw.FacialOsc
 {
     public class ResourceService : INotifyPropertyChanged
     {

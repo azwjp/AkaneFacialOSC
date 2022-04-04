@@ -7,43 +7,29 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Azw.FacialOsc.View;
 
-namespace AZW.FacialOSC.Model
+namespace Azw.FacialOsc.Model
 {
     [Serializable]
-    public class PreferencesV2
+    public record class PreferencesV2
     {
         private const int CURRENT_VERSION = 2;
 
         public int version;
-        public List<FaceDataPreferencesV2> faceDataPreferences;
-        public string eyeTrackingType;
-        public float maxAngle = 45f;
-        public string language = "";
+        public TrackingPreference trackingPreference;
+        public ApplicationPreference applicationPreference;
 
         const string PATH = @"AZW\FacialOSC";
         const string FILE = "preferences.json";
 
-        public EyeTrackingType Tracker
-        {
-            get
-            { 
-                object parsed;
-                if (Enum.TryParse(typeof(EyeTrackingType), eyeTrackingType, true, out parsed)) {
-                    return (EyeTrackingType)parsed!;
-                }
-                else
-                {
-                    return EyeTrackingType.ViveSRanipal;
-                }
-            }
-        }
+
 
         public PreferencesV2()
         {
             version = CURRENT_VERSION;
-            faceDataPreferences = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().Select(key => new FaceDataPreferencesV2(key)).ToList();
-            eyeTrackingType = EyeTrackingType.ViveSRanipal.ToString();
+            trackingPreference = new TrackingPreference();
+            applicationPreference = new ApplicationPreference();
         }
 
         private PreferencesV2(PreferencesV1 old)
@@ -51,20 +37,21 @@ namespace AZW.FacialOSC.Model
             version = old.version;
             if (old.version < 1)
             {
-                old.faceDataPreferences = old.faceDataPreferences?.Select(p => {
+                old.faceDataPreferences = old.faceDataPreferences?.Select(p =>
+                {
                     p.centerValue = 0.5f;
                     return p;
                 }).ToArray();
             }
-            faceDataPreferences = (old.faceDataPreferences ?? Array.Empty<FaceDataPreferencesV1>()).Select(p => p.UpgradeToV2()).ToList();
-            eyeTrackingType = EyeTrackingType.ViveSRanipal.ToString();
+            trackingPreference = new TrackingPreference(old);
+            applicationPreference = new ApplicationPreference(old);
         }
 
 
         public static PreferencesV2 Load()
         {
             var prefs = LoadV2();
-            
+
             if (prefs == null)
             {
                 var v1 = PreferencesV1.Load();
@@ -130,45 +117,102 @@ namespace AZW.FacialOSC.Model
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PATH, FILE);
             return Load(path);
         }
-    }
 
-
-
-    [Serializable]
-    public class FaceDataPreferencesV2
-    {
-        public string key = "";
-        public bool isSending = true;
-        public double gain = 1;
-        public bool isClipping = true;
-        public string range = Range.Fixed.ToString();
-
-        public FaceKey FaceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
-        public Range CenterKey { get { return (Range)Enum.Parse(typeof(Range), range); } }
-
-        public FaceDataPreferencesV2()
+        [Serializable]
+        public class ApplicationPreference
         {
+            public string language = "";
+            public string theme = "";
+            public AkaneThemes.Themes Theme
+            {
+                get
+                {
+                    AkaneThemes.Themes parsed;
+                    return Enum.TryParse(theme, true, out parsed) ? parsed : AkaneThemes.Themes.AkaneTheme;
+                }
+            }
+
+            public ApplicationPreference() { }
+
+            public ApplicationPreference(PreferencesV1 old)
+            {
+                language = old.language;
+            }
         }
 
-        public FaceDataPreferencesV2(string key)
+        [Serializable]
+        public class TrackingPreference
         {
-            this.key = key;
-            var faceKey = FaceKey;
-            range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? Range.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? Range.HalfCentered : Range.ZeroCentered).ToString();
+            public List<FaceDataPreferences> faceDataPreferences;
+            public string eyeTrackingType = "";
+            public string lipTrackingType = "";
+            public float maxAngle = 45f;
+            public bool eyeAutoFps = true;
+            public bool lipAutoFps = true;
+            public double eyeFps = 60;
+            public double lipFps = 60;
+
+            public EyeTrackingType EyeTracker
+            {
+                get
+                {
+                    EyeTrackingType parsed;
+                    return Enum.TryParse(lipTrackingType, true, out parsed) ? parsed : EyeTrackingType.ViveSRanipal;
+                }
+            }
+            public LipTrackingType LipTracker
+            {
+                get
+                {
+                    LipTrackingType parsed;
+                    return Enum.TryParse(lipTrackingType, true, out parsed) ? parsed : LipTrackingType.ViveSRanipal;
+                }
+            }
+            public TrackingPreference()
+            {
+                faceDataPreferences = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().Select(key => new FaceDataPreferences(key)).ToList();
+            }
+            public TrackingPreference(PreferencesV1 old)
+            {
+                faceDataPreferences = (old.faceDataPreferences ?? Array.Empty<PreferencesV1.FaceDataPreferences>()).Select(p => p.UpgradeToV2()).ToList();
+            }
         }
-        public FaceDataPreferencesV2(FaceKey key)
+        [Serializable]
+        public class FaceDataPreferences
         {
-            this.key = key.ToString();
-            var faceKey = FaceKey;
-            range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? Range.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? Range.HalfCentered : Range.ZeroCentered).ToString();
-        }
-        public FaceDataPreferencesV2(string key, bool isSending, float gain, bool isClipping, string center)
-        {
-            this.key = key;
-            this.isSending = isSending;
-            this.gain = gain;
-            this.isClipping = isClipping;
-            this.range = center;
+            public string key = "";
+            public bool isSending = true;
+            public float gain = 1;
+            public bool isClipping = true;
+            public string range = ValueRange.Fixed.ToString();
+
+            public FaceKey FaceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
+            public ValueRange CenterKey { get { return (ValueRange)Enum.Parse(typeof(ValueRange), range); } }
+
+            public FaceDataPreferences()
+            {
+            }
+
+            public FaceDataPreferences(string key)
+            {
+                this.key = key;
+                var faceKey = FaceKey;
+                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? ValueRange.HalfCentered : ValueRange.ZeroCentered).ToString();
+            }
+            public FaceDataPreferences(FaceKey key)
+            {
+                this.key = key.ToString();
+                var faceKey = FaceKey;
+                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? ValueRange.HalfCentered : ValueRange.ZeroCentered).ToString();
+            }
+            public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping, string range)
+            {
+                this.key = key;
+                this.isSending = isSending;
+                this.gain = gain;
+                this.isClipping = isClipping;
+                this.range = range;
+            }
         }
     }
 }

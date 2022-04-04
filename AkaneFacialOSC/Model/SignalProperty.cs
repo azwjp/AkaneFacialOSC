@@ -10,28 +10,28 @@ using System.Windows;
 using System.Windows.Data;
 using System.Text.Json.Serialization;
 
-namespace AZW.FacialOSC.Model
+namespace Azw.FacialOsc.Model
 {
     public class Rows
     {
-        public IDictionary<FaceKey, SignalRow> originalList = new Dictionary<FaceKey, SignalRow>();
+        public IDictionary<FaceKey, SignalProperty> originalList = new Dictionary<FaceKey, SignalProperty>();
 
         public Rows()
         {
             foreach (FaceKey key in Enum.GetValues(typeof(FaceKey)))
             {
-                var faceVal = new SignalRow();
+                var faceVal = new SignalProperty();
                 faceVal.Key = key;
-                if (FaceKeyUtils.GetDataType(key) == DataType.Gaze) faceVal.ValueRange = Range.ZeroCentered;
+                if (FaceKeyUtils.GetDataType(key) == DataType.Gaze) faceVal.ValueRange = ValueRange.ZeroCentered;
 
                 originalList.Add(key, faceVal);
             }
         }
     }
 
-    public class SignalRow : ModelBase
+    public class SignalProperty : ModelBase
     {
-        public SignalRow InitRow(FaceKey key, bool isOn, double gain, bool isClipping, Range center)
+        public SignalProperty InitRow(FaceKey key, bool isOn, float gain, bool isClipping, ValueRange center)
         {
             Key = key;
             IsSending = isOn;
@@ -50,7 +50,7 @@ namespace AZW.FacialOSC.Model
             set
             {
                 _isSending = value;
-                base.OnPropertyChanged(nameof(_isSending));
+                base.OnPropertyChanged(nameof(IsSending));
             }
         }
 
@@ -61,7 +61,7 @@ namespace AZW.FacialOSC.Model
             set
             {
                 _isClipping = value;
-                base.OnPropertyChanged(nameof(_isClipping));
+                base.OnPropertyChanged(nameof(IsClipping));
             }
         }
 
@@ -72,13 +72,13 @@ namespace AZW.FacialOSC.Model
             set
             {
                 _value = value;
-                base.OnPropertyChanged(nameof(_value));
+                base.OnPropertyChanged(nameof(Value));
             }
         }
 
 
-        private double gain = 1;
-        public double Gain
+        private float gain = 1;
+        public float Gain
         {
             get { return gain; }
             set
@@ -88,14 +88,28 @@ namespace AZW.FacialOSC.Model
             }
         }
 
-        Range _range = Range.Fixed;
-        public Range ValueRange
+        ValueRange _range = ValueRange.Fixed;
+        public ValueRange ValueRange
         {
             get { return _range; }
             set
             {
                 _range = value;
                 OnPropertyChanged(nameof(ValueRange));
+            }
+        }
+
+        public float CenterValue
+        {
+            get
+            {
+                return ValueRange switch
+                {
+                    ValueRange.Fixed => 0.5f,
+                    ValueRange.HalfCentered => 0.5f,
+                    ValueRange.ZeroCentered => 0,
+                    _ => throw new UnexpectedEnumValueException(ValueRange),
+                };
             }
         }
     }
@@ -108,8 +122,8 @@ namespace AZW.FacialOSC.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
-    public enum Range
+    public enum ValueRange
     {
-        Fixed, ZeroCentered, HalfCentered,
+        Fixed, ZeroCentered, HalfCentered
     }
 }

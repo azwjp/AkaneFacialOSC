@@ -5,8 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Azw.FacialOsc.View;
+using ControlzEx.Theming;
 
-namespace AZW.FacialOSC
+namespace Azw.FacialOsc
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -15,6 +17,7 @@ namespace AZW.FacialOSC
     {
         public App()
         {
+            _ = Controller.Instance.InitApp();
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using ViveSR;
-using ViveSR.anipal.Eye;
 
-namespace AZW.FacialOSC.Tracking
+namespace Azw.FacialOsc.Tracking
 {
-    internal abstract class EyeTracker : Tracker<EyeData_v2>
+    internal abstract class EyeTracker : Tracker
     {
         static EyeTracker? instance = null;
 
@@ -23,9 +20,18 @@ namespace AZW.FacialOSC.Tracking
             else
             {
                 await instance.Stop();
-                var handler = instance.updatedHandler;
+
+                var old = instance;
                 instance = Activator.CreateInstance<T>();
-                instance.updatedHandler += handler;
+                instance.updatedHandler = old.updatedHandler;
+                instance.checkedHandler = old.checkedHandler;
+                instance.statusChangedHandler = old.statusChangedHandler;
+                instance.targetInterval = old.targetInterval;
+                instance.IsAutoFpsEnabled = old.IsAutoFpsEnabled;
+
+                old.updatedHandler = null;
+                old.statusChangedHandler = null;
+
                 return instance;
             }
         }
