@@ -139,6 +139,12 @@ namespace Azw.FacialOsc
             };
 
             Configs.IsDirty = false;
+        }
+
+        internal async Task PreInitWindowAsync()
+        {
+            if (configLoadingTask == null) configLoadingTask = LoadAsync();
+            if (configLoadingTask != null && !configLoadingTask.IsCompleted) configLoadingTask.Wait();
 
             var version = await VersionCheck.CheckAsync().ConfigureAwait(false);
             if (version == null)
@@ -147,14 +153,12 @@ namespace Azw.FacialOsc
             }
             else if (version.UpdateExist())
             {
-                AddLog(Resources.MessageUpdateExists, version.Latest);
+                AddLog(Resources.MessageUpdateExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
             }
-        }
-
-        internal void PreInitWindow()
-        {
-            if (configLoadingTask == null) configLoadingTask = LoadAsync();
-            if (configLoadingTask != null && !configLoadingTask.IsCompleted) configLoadingTask.Wait();
+            else if (version.IsLatestDifferent())
+            {
+                AddLog(Resources.MessageDifferentVersionExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
+            }
         }
 
 
@@ -163,17 +167,17 @@ namespace Azw.FacialOsc
             var message = string.Join(" ", texts.Where(s => s != null));
             var parent = mainWindow?.logArea;
             var now = DateTime.Now.ToString("T");
-            var adding = new TextBlock()
-            {
-                Text = $"[{now}] {message}",
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(0, 0, 0, 5),
-            }; 
             _ = mainWindow?.Dispatcher.InvokeAsync(() =>
             {
                 if (parent == null) return;
                 var children = parent.Children;
                 if (children.Count > LogLength) children.RemoveAt(0);
+                var adding = new TextBlock()
+                {
+                    Text = $"[{now}] {message}",
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(0, 0, 0, 5),
+                };
                 children.Add(adding);
             });
         }

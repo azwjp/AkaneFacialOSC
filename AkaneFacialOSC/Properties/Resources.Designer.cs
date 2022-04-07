@@ -268,11 +268,38 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   Current に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageCurrentVersion {
+            get {
+                return ResourceManager.GetString("MessageCurrentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   An error has occured when starting the device:  に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MessageDeviceError {
             get {
                 return ResourceManager.GetString("MessageDeviceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Another version is published: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageDifferentVersionExists {
+            get {
+                return ResourceManager.GetString("MessageDifferentVersionExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Latest に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageLatestVersion {
+            get {
+                return ResourceManager.GetString("MessageLatestVersion", resourceCulture);
             }
         }
         

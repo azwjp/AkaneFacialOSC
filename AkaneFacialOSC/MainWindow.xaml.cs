@@ -27,7 +27,7 @@ namespace Azw.FacialOsc
 
             Controller = Controller.Instance;
             Controller.mainWindow = this;
-            Controller.PreInitWindow();
+            _ = Controller.PreInitWindowAsync();
 
             DataContext = Controller.TrackingStatus;
             dirtyButton.DataContext = Controller.Configs;

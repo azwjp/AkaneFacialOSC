@@ -186,8 +186,17 @@
   <data name="MessageCalibrationRequired" xml:space="preserve">
     <value>Your Vive Pro Eye need to be calibrated. The device might not able to use until calibration.</value>
   </data>
+  <data name="MessageCurrentVersion" xml:space="preserve">
+    <value>Current</value>
+  </data>
   <data name="MessageDeviceError" xml:space="preserve">
     <value>An error has occured when starting the device: </value>
+  </data>
+  <data name="MessageDifferentVersionExists" xml:space="preserve">
+    <value>Another version is published:</value>
+  </data>
+  <data name="MessageLatestVersion" xml:space="preserve">
+    <value>Latest</value>
   </data>
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye is not connected. Please check your device or switch the target device.</value>

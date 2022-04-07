@@ -14,10 +14,12 @@ namespace Azw.FacialOsc.Model
     {
         internal static readonly Uri Url = new Uri(@"https://version.azw.jp/Azw.FacialOsc");
 
+        public readonly string Current;
         public readonly string Latest;
 
         private VersionCheck(string rawVersion)
         {
+            Current = CurrentVersion();
             Latest = rawVersion;
         }
 
@@ -54,8 +56,8 @@ namespace Azw.FacialOsc.Model
         {
             try
             {
-                var re = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)");
-                var current = VersionNumbners(CurrentVersion());
+                var re = new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(?<postfix>.*)");
+                var current = VersionNumbners(Current);
                 var latest = VersionNumbners(Latest);
                 if (current == null || latest == null) return false;
 
@@ -74,9 +76,13 @@ namespace Azw.FacialOsc.Model
             {
                 return false;
             }
-
-
         }
+
+        public bool IsLatestDifferent()
+        {
+            return Current != Latest;
+        }
+
         public static string CurrentVersion()
         {
             var current = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
