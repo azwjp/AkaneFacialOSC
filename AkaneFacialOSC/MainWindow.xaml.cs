@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
@@ -38,6 +38,8 @@ namespace Azw.FacialOsc
             FilterList.SelectedItems.Clear();
             FilterList.SelectedItems.Add(OSCDataFilter.All);
             mainPanel.Visibility = Visibility.Visible;
+
+            SelectAll.IsChecked = Controller.TrackingStatus.DisplayingSignalList.All(s => s.IsSending);
         }
 
         private void Slider_ValueChanged(object sender, RoutedEventArgs e)

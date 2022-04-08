@@ -214,6 +214,15 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   Select All に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ConfigSelectAll {
+            get {
+                return ResourceManager.GetString("ConfigSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Theme に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ConfigTheme {

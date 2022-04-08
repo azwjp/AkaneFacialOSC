@@ -168,6 +168,9 @@
   <data name="ConfigMaxGazeAngle" xml:space="preserve">
     <value>Max gaze angle (degree)</value>
   </data>
+  <data name="ConfigSelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
   <data name="ConfigTheme" xml:space="preserve">
     <value>Theme</value>
   </data>
