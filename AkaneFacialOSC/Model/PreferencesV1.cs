@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
 
 namespace Azw.FacialOsc.Model
 {

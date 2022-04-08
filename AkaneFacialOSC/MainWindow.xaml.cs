@@ -71,11 +71,11 @@ namespace Azw.FacialOsc
 
             switch (row.ValueRange)
             {
-                case Model.ValueRange.ZeroToOne:
-                    row.ValueRange = Model.ValueRange.MinusOneToOne;
+                case ValueRange.ZeroToOne:
+                    row.ValueRange = ValueRange.MinusOneToOne;
                     break;
-                case Model.ValueRange.MinusOneToOne:
-                    row.ValueRange = Model.ValueRange.ZeroToOne;
+                case ValueRange.MinusOneToOne:
+                    row.ValueRange = ValueRange.ZeroToOne;
                     break;
                 default:
                     throw new UnexpectedEnumValueException(row.ValueRange);
@@ -120,12 +120,12 @@ namespace Azw.FacialOsc
         }
     }
 
-    [ValueConversion(typeof(Model.ValueRange), typeof(string))]
+    [ValueConversion(typeof(ValueRange), typeof(string))]
     public class CenterToLabelConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo language)
         {
-            if (value is not Model.ValueRange center) return DependencyProperty.UnsetValue;
+            if (value is not ValueRange center) return DependencyProperty.UnsetValue;
 
             switch (center)
             {
@@ -141,7 +141,7 @@ namespace Azw.FacialOsc
         {
             if (value is not string str) return DependencyProperty.UnsetValue;
 
-            return Enum.Parse<Model.ValueRange>(str);
+            return Enum.Parse<ValueRange>(str);
         }
     }
 

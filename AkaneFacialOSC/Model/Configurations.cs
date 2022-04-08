@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
-using MaterialDesignThemes.Wpf;
 
 namespace Azw.FacialOsc.Model
 {
@@ -25,7 +22,6 @@ namespace Azw.FacialOsc.Model
             }
         }
         void SetDirty() { IsDirty = true; }
-
 
         public Dictionary<string, string> LanguageList { get; set; } = new Dictionary<string, string>()
         {

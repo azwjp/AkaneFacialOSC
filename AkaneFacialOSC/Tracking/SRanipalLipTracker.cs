@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using ViveSR;
 using ViveSR.anipal;
@@ -10,8 +9,6 @@ namespace Azw.FacialOsc.Tracking
 {
     internal class SRanipalLipTracker : LipTracker
     {
-        static SRanipalLipTracker? instance = null;
-
         public Error deviceStatus { get; private set; } = Error.NOT_INITIAL;
         int lastUpdate = 0;
         LipData_v2 lipData = new LipData_v2();

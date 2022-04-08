@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using ViveSR.anipal.Eye;
+﻿using System.Numerics;
 
 namespace Azw.FacialOsc
 {

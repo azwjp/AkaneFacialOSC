@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using ViveSR;
-using ViveSR.anipal;
-using ViveSR.anipal.Lip;
 
 namespace Azw.FacialOsc.Tracking
 {

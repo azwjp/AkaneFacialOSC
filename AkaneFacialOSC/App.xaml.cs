@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using Azw.FacialOsc.View;
-using ControlzEx.Theming;
+﻿using System.Windows;
 
 namespace Azw.FacialOsc
 {

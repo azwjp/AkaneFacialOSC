@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using Azw.FacialOsc.Model;
 using Azw.FacialOsc.Properties;
 using Azw.FacialOsc.Service;
 using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
-using ViveSR.anipal;
 using ViveSR.anipal.Eye;
-using ViveSR.anipal.Lip;
 
 namespace Azw.FacialOsc
 {
