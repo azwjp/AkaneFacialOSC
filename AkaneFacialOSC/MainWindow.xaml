@@ -22,7 +22,7 @@
         xmlns:properties="clr-namespace:Azw.FacialOsc.Properties"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         TitleCharacterCasing="Normal" 
-        Title="AkaneFacialOSC" Height="450" MinHeight="100" Width="780" MinWidth="780">
+        Title="AkaneFacialOSC" Height="800" MinHeight="450" Width="760" MinWidth="760">
     <Window.Resources>
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
         <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
@@ -39,16 +39,17 @@
         <Grid Grid.Row="0" Margin="8,8,8,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="*" MinWidth="620"/>
+                <ColumnDefinition Width="*" MinWidth="500"/>
+                <!-- 20 pixel narrow than the window: the vertial scroll bar has 17 pixel-->
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Hidden">
+            <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Visible" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="2*" MinWidth="100"/>
+                    <ColumnDefinition Width="2*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>                    
                 </Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Name="dummyWidthCheckBox"/>
                 <Border Grid.Column="1" Name="dummyWidthKey"/>
@@ -63,7 +64,8 @@
                   Focusable="False"
                   ItemsSource="{Binding DisplayingSignalList}"
                   BorderThickness="0"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      HorizontalAlignment="Stretch"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Stretch" >
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
@@ -182,7 +184,7 @@
         <Grid Grid.Row="1" Margin="8,8,8,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="280" MinWidth="280"/>
+                <ColumnDefinition Width="284" MinWidth="284"/>
             </Grid.ColumnDefinitions>
 
             <GroupBox Grid.Row="0"
@@ -224,6 +226,7 @@
                         Click="SaveButton_Click"
                         Cursor="Hand"/>
                     <Button Width="92"
+                        Margin="2 0 2 0"
                         Content="{Binding Resources.ButtonConfig, Mode=OneWay, Source={x:Static vm:ResourceService.Current}}"
                         Click="ConfigButton_Click"
                         Cursor="Hand"/>
