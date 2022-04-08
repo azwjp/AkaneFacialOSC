@@ -192,8 +192,14 @@
   <data name="MessageDifferentVersionExists" xml:space="preserve">
     <value>Another version is published:</value>
   </data>
+  <data name="MessageErrorDetail" xml:space="preserve">
+    <value>The detail of error:</value>
+  </data>
   <data name="MessageLatestVersion" xml:space="preserve">
     <value>Latest</value>
+  </data>
+  <data name="MessageLoadingConfigError" xml:space="preserve">
+    <value>The configuration cannot be loaded. The default values are applied. </value>
   </data>
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye is not connected. Please check your device or switch the target device.</value>

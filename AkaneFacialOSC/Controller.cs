@@ -34,8 +34,6 @@ namespace Azw.FacialOsc
                 return _instance;
             }
         }
-
-        private const nint LogLength = 100;
         internal MainWindow? mainWindow;
 
         private LipTracker? lip;
@@ -45,48 +43,94 @@ namespace Azw.FacialOsc
         public Rows rows = new ();
 
         OSCService osc = new();
+        private Log log;
 
         internal IDictionary<FaceKey, SignalProperty> Signals { get { return rows.originalList; } }
 
         private Task<(EyeTracker eye, LipTracker lip)>? configLoadingTask = null;
 
+        public Controller()
+        {
+            log = new(this);
+        }
+
         private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync(PreferencesV2 preference)
         {
-            var ap = preference.applicationPreference;
-            var tp = preference.trackingPreference;
+            try { 
+                var ap = preference.applicationPreference;
+                var tp = preference.trackingPreference;
 
 
-            _ = Application.Current?.Dispatcher.InvokeAsync(() =>
+                _ = Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    AkaneThemes.Use(ap.Theme);
+                });
+                TrackingStatus.LipType = tp.LipTracker;
+                TrackingStatus.EyeType = tp.EyeTracker;
+                TrackingStatus.MaxAngle = tp.maxAngle;
+                TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
+                TrackingStatus.LipTrackerTargetFps = tp.lipFps;
+
+                tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
+
+
+                var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);
+                var lipChangingTask = ChangeLipTracker(tp.LipTracker);
+                var eye = await eyeChangingTask;
+                var lip = await lipChangingTask;
+
+                return (eye, lip);
+            }
+            catch (Exception ex)
             {
-                AkaneThemes.Use(ap.Theme);
-            });
-            TrackingStatus.LipType = tp.LipTracker;
-            TrackingStatus.EyeType = tp.EyeTracker;
-            TrackingStatus.MaxAngle = tp.maxAngle;
-            TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
-            TrackingStatus.LipTrackerTargetFps = tp.lipFps;
+                log.AddLog(Resources.MessageLoadingConfigError, ex);
 
-            tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
+                preference = new PreferencesV2();
+
+                var ap = preference.applicationPreference;
+                var tp = preference.trackingPreference;
+
+                _ = Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    AkaneThemes.Use(ap.Theme);
+                });
+                TrackingStatus.LipType = tp.LipTracker;
+                TrackingStatus.EyeType = tp.EyeTracker;
+                TrackingStatus.MaxAngle = tp.maxAngle;
+                TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
+                TrackingStatus.LipTrackerTargetFps = tp.lipFps;
+
+                tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
 
 
-            var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);
-            var lipChangingTask = ChangeLipTracker(tp.LipTracker);
-            var eye = await eyeChangingTask;
-            var lip = await lipChangingTask;
+                var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);
+                var lipChangingTask = ChangeLipTracker(tp.LipTracker);
+                var eye = await eyeChangingTask;
+                var lip = await lipChangingTask;
 
-            return (eye, lip);
+                return (eye, lip);
+            }
         }
         
         private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync()
         {
             var preference = await Task.Run(() =>
             {
-                var pref = PreferencesV2.Load();
-                if (pref.trackingPreference == null) pref.trackingPreference = new PreferencesV2.TrackingPreference();
-                if (pref.applicationPreference == null) pref.applicationPreference = new PreferencesV2.ApplicationPreference();
-                return pref;
+                try
+                {
+                    var pref = PreferencesV2.Load();
+                    if (pref.trackingPreference == null) pref.trackingPreference = new PreferencesV2.TrackingPreference();
+                    if (pref.applicationPreference == null) pref.applicationPreference = new PreferencesV2.ApplicationPreference();
+                    return pref;
+                }
+                catch (Exception ex)
+                {
+                    log.AddLog(Resources.MessageLoadingConfigError, ex);
+                    return new PreferencesV2();
+                }
             }).ConfigureAwait(false);
-            return await LoadAsync(preference);
+            configLoadingTask = LoadAsync(preference);
+            return await configLoadingTask;
         }
 
         internal async Task InitApp()
@@ -115,7 +159,7 @@ namespace Azw.FacialOsc
                     switch (instance)
                     {
                         case SRanipalEyeTracker s:
-                            AddLog(Resources.MessageDeviceError, s.deviceStatus.ToString());
+                            log.AddLog(Resources.MessageDeviceError, s.deviceStatus.ToString());
                             break;
                         default:
                             break;
@@ -147,37 +191,16 @@ namespace Azw.FacialOsc
             var version = await VersionCheck.CheckAsync().ConfigureAwait(false);
             if (version == null)
             {
-                AddLog(Resources.MessageUpdateFailed);
+                log.AddLog(Resources.MessageUpdateFailed);
             }
             else if (version.UpdateExist())
             {
-                AddLog(Resources.MessageUpdateExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
+                log.AddLog(Resources.MessageUpdateExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
             }
             else if (version.IsLatestDifferent())
             {
-                AddLog(Resources.MessageDifferentVersionExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
+                log.AddLog(Resources.MessageDifferentVersionExists, Resources.MessageCurrentVersion, version.Current, Resources.MessageLatestVersion, version.Latest);
             }
-        }
-
-
-        private void AddLog(params string?[] texts)
-        {
-            var message = string.Join(" ", texts.Where(s => s != null));
-            var parent = mainWindow?.logArea;
-            var now = DateTime.Now.ToString("T");
-            _ = mainWindow?.Dispatcher.InvokeAsync(() =>
-            {
-                if (parent == null) return;
-                var children = parent.Children;
-                if (children.Count > LogLength) children.RemoveAt(0);
-                var adding = new TextBlock()
-                {
-                    Text = $"[{now}] {message}",
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(0, 0, 0, 5),
-                };
-                children.Add(adding);
-            });
         }
 
         internal async Task SwitchEyeTracker()
@@ -210,7 +233,7 @@ namespace Azw.FacialOsc
                     _ = Task.Run(() => {
                         if (SRanipal_Eye.IsViveProEye())
                         {
-                            AddLog(Resources.MessageNotProEye);
+                            log.AddLog(Resources.MessageNotProEye);
                         }
                     }).ConfigureAwait(false);
                     _ = Task.Run(() =>
@@ -219,7 +242,7 @@ namespace Azw.FacialOsc
                         SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
                         if (isNeedCalibration)
                         {
-                            AddLog(Resources.MessageCalibrationRequired);
+                            log.AddLog(Resources.MessageCalibrationRequired);
                         }
                     }).ConfigureAwait(false);
                     break;
@@ -264,7 +287,7 @@ namespace Azw.FacialOsc
             }
             catch (Exception e)
             {
-                AddLog(e.Source, e.Message);
+                log.AddLog(e.Source, e.Message);
             }
         }
 

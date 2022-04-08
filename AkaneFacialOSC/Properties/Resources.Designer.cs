@@ -286,11 +286,29 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   The detail of error: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageErrorDetail {
+            get {
+                return ResourceManager.GetString("MessageErrorDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Latest に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MessageLatestVersion {
             get {
                 return ResourceManager.GetString("MessageLatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The configuration cannot be loaded. The default values are applied.  に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageLoadingConfigError {
+            get {
+                return ResourceManager.GetString("MessageLoadingConfigError", resourceCulture);
             }
         }
         
