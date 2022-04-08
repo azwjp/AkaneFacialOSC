@@ -63,8 +63,6 @@ namespace Azw.FacialOsc
             TrackingStatus.LipType = tp.LipTracker;
             TrackingStatus.EyeType = tp.EyeTracker;
             TrackingStatus.MaxAngle = tp.maxAngle;
-            TrackingStatus.EyeTrackerAutoFps = tp.eyeAutoFps;
-            TrackingStatus.LipTrackerAutoFps = tp.lipAutoFps;
             TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
             TrackingStatus.LipTrackerTargetFps = tp.lipFps;
 
@@ -358,19 +356,6 @@ namespace Azw.FacialOsc
         internal void SetLipFps(double fps)
         {
             lip?.SetTargetFps(fps);
-        }
-
-        internal void SetAutoFps(TrackingType type, bool isEnabled)
-        {
-            Tracker? tracker = type switch
-            {
-                TrackingType.Eye => eye,
-                TrackingType.Lip => lip,
-                _ => throw new UnexpectedEnumValueException(type),
-            };
-            if (tracker == null) return;
-
-            tracker.IsAutoFpsEnabled = isEnabled;
         }
 
         internal Task RevertConfigs()

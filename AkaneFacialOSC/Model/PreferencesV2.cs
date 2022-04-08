@@ -147,10 +147,8 @@ namespace Azw.FacialOsc.Model
             public string eyeTrackingType = "";
             public string lipTrackingType = "";
             public float maxAngle = 45f;
-            public bool eyeAutoFps = true;
-            public bool lipAutoFps = true;
-            public double eyeFps = 60;
-            public double lipFps = 60;
+            public double eyeFps = 61;
+            public double lipFps = 61;
 
             public EyeTrackingType EyeTracker
             {

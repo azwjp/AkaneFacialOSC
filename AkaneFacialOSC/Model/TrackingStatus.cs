@@ -79,20 +79,6 @@ namespace Azw.FacialOsc.Model
             }
         }
 
-        private bool eyeTrackerAutoFps;
-        public bool EyeTrackerAutoFps
-        {
-            get { return eyeTrackerAutoFps; }
-            set
-            {
-                if (eyeTrackerAutoFps == value) return;
-                eyeTrackerAutoFps = value;
-                Controller?.SetAutoFps(TrackingType.Eye, value);
-                NotifyPropertyChanged(nameof(EyeTrackerAutoFps));
-                SetDirty();
-            }
-        }
-
         private double eyeTrackerTargetFps;
         public double EyeTrackerTargetFps
         {
@@ -103,19 +89,6 @@ namespace Azw.FacialOsc.Model
                 eyeTrackerTargetFps = value;
                 Controller?.SetEyeFps(value);
                 NotifyPropertyChanged(nameof(EyeTrackerTargetFps));
-                SetDirty();
-            }
-        }
-        private bool lipTrackerAutoFps;
-        public bool LipTrackerAutoFps
-        {
-            get { return lipTrackerAutoFps; }
-            set
-            {
-                if (lipTrackerAutoFps == value) return;
-                lipTrackerAutoFps = value;
-                Controller?.SetAutoFps(TrackingType.Lip, value);
-                NotifyPropertyChanged(nameof(LipTrackerAutoFps));
                 SetDirty();
             }
         }
@@ -159,8 +132,6 @@ namespace Azw.FacialOsc.Model
             {
                 eyeTrackingType = EyeType.ToString(),
                 lipTrackingType = LipType.ToString(),
-                eyeAutoFps = eyeTrackerAutoFps,
-                lipAutoFps = lipTrackerAutoFps,
                 eyeFps = EyeTrackerTargetFps,
                 lipFps = LipTrackerTargetFps,
                 faceDataPreferences = Signals.Select(r => new PreferencesV2.FaceDataPreferences()

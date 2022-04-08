@@ -27,7 +27,6 @@ namespace Azw.FacialOsc.Tracking
                 instance.checkedHandler = old.checkedHandler;
                 instance.statusChangedHandler = old.statusChangedHandler;
                 instance.targetInterval = old.targetInterval;
-                instance.IsAutoFpsEnabled = old.IsAutoFpsEnabled;
 
                 old.updatedHandler = null;
                 old.statusChangedHandler = null;

@@ -169,15 +169,6 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
-        ///   Auto fps adjusting for the eye tracker に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string ConfigEyeTrackerAutoFps {
-            get {
-                return ResourceManager.GetString("ConfigEyeTrackerAutoFps", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Eye tracker target FPS に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ConfigEyeTrackerTargetFps {
@@ -201,15 +192,6 @@ namespace Azw.FacialOsc.Properties {
         public static string ConfigLipTracker {
             get {
                 return ResourceManager.GetString("ConfigLipTracker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Auto fps adjusting for the facial tracker に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string ConfigLipTrackerAutoFps {
-            get {
-                return ResourceManager.GetString("ConfigLipTrackerAutoFps", resourceCulture);
             }
         }
         

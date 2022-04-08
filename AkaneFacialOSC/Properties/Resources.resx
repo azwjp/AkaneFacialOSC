@@ -153,9 +153,6 @@
   <data name="ConfigEyeTracker" xml:space="preserve">
     <value>Eye tracker</value>
   </data>
-  <data name="ConfigEyeTrackerAutoFps" xml:space="preserve">
-    <value>Auto fps adjusting for the eye tracker</value>
-  </data>
   <data name="ConfigEyeTrackerTargetFps" xml:space="preserve">
     <value>Eye tracker target FPS</value>
   </data>
@@ -164,9 +161,6 @@
   </data>
   <data name="ConfigLipTracker" xml:space="preserve">
     <value>Lip tracker</value>
-  </data>
-  <data name="ConfigLipTrackerAutoFps" xml:space="preserve">
-    <value>Auto fps adjusting for the facial tracker</value>
   </data>
   <data name="ConfigLipTrackerTargetFps" xml:space="preserve">
     <value>Faciel tracker target FPS</value>
