@@ -181,6 +181,7 @@ namespace Azw.FacialOsc.Model
             public string key = "";
             public bool isSending = true;
             public float gain = 1;
+            public float curve = 1;
             public bool isClipping = true;
             public string range = ValueRange.Fixed.ToString();
 

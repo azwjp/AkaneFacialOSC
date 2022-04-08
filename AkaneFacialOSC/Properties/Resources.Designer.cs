@@ -322,6 +322,15 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   Adjust Curve に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCHeaderCurve {
+            get {
+                return ResourceManager.GetString("OSCHeaderCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Gain に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OSCHeaderGain {

@@ -204,6 +204,9 @@
   <data name="OSCHeaderClip" xml:space="preserve">
     <value>Clip</value>
   </data>
+  <data name="OSCHeaderCurve" xml:space="preserve">
+    <value>Adjust Curve</value>
+  </data>
   <data name="OSCHeaderGain" xml:space="preserve">
     <value>Gain</value>
   </data>

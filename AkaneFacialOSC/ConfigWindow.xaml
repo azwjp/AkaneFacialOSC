@@ -86,13 +86,9 @@
                     VerticalAlignment="Center"/>
         </Grid>
 
-
         <Grid Grid.Row="1" Grid.Column="0" x:Name="trackingConfigs">
             <Grid.RowDefinitions>
                 <RowDefinition Height="36"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="24"/>
                 <RowDefinition Height="24"/>
                 <RowDefinition Height="24"/>
                 <RowDefinition Height="24"/>

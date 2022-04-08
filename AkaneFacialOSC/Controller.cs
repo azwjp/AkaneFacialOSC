@@ -66,7 +66,7 @@ namespace Azw.FacialOsc
             TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
             TrackingStatus.LipTrackerTargetFps = tp.lipFps;
 
-            tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.isClipping, p.CenterKey));
+            tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
 
 
             var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);

@@ -22,7 +22,7 @@
         xmlns:properties="clr-namespace:Azw.FacialOsc.Properties"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         TitleCharacterCasing="Normal" 
-        Title="AkaneFacialOSC" Height="800" MinHeight="450" Width="760" MinWidth="760">
+        Title="AkaneFacialOSC" Height="800" MinHeight="450" Width="940" MinWidth="940">
     <Window.Resources>
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
         <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
@@ -39,7 +39,7 @@
         <Grid Grid.Row="0" Margin="8,8,8,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="*" MinWidth="500"/>
+                <ColumnDefinition Width="*" MinWidth="680"/>
                 <!-- 20 pixel narrow than the window: the vertial scroll bar has 17 pixel-->
             </Grid.ColumnDefinitions>
             <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Visible" HorizontalAlignment="Stretch">
@@ -48,6 +48,7 @@
                     <ColumnDefinition Width="*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="2*" MinWidth="180"/>
+                    <ColumnDefinition Width="2*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="100"/>                    
                 </Grid.ColumnDefinitions>
@@ -55,8 +56,9 @@
                 <Border Grid.Column="1" Name="dummyWidthKey"/>
                 <Border Grid.Column="2" Name="dummyWidthValue"/>
                 <Border Grid.Column="3" Name="dummyWidthGain"/>
-                <Border Grid.Column="4" Name="dummyWidthClipping"/>
-                <Border Grid.Column="5" Name="dummyWidthCenter"/>
+                <Border Grid.Column="4" Name="dummyWidthCurve"/>
+                <Border Grid.Column="5" Name="dummyWidthClipping"/>
+                <Border Grid.Column="6" Name="dummyWidthCenter"/>
             </Grid>
             <ListBox x:Name="FilterList" ItemsSource="{Binding FilterList}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked"/>
             <ListView Grid.Row="0"
@@ -138,7 +140,7 @@
                                             VerticalAlignment="Center"
                                             Maximum="4"
                                             Value="{Binding Gain,UpdateSourceTrigger=PropertyChanged}"
-                                            ValueChanged="Slider_Gain_ValueChanged"
+                                            ValueChanged="Slider_ValueChanged"
                                             Name="gainSlider"
                                             Margin="10,0,20,0"
                                             LargeChange="0.1"
@@ -146,7 +148,31 @@
                                             TickFrequency="1" />
                                         <TextBox Grid.Column="1"
                                              Text="{Binding Value, ElementName=gainSlider}"
-                                             LostFocus="GainValue_Inputted"
+                                             TextWrapping="NoWrap"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="{Binding ElementName=dummyWidthCurve, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderCurve, Mode=OneWay}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Width="{Binding ElementName=dummyWidthCurve, Path=ActualWidth}" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*" MinWidth="60"/>
+                                            <ColumnDefinition Width="1*" MinWidth="40"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Slider Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Maximum="4"
+                                            Value="{Binding Curve, UpdateSourceTrigger=PropertyChanged}"
+                                            ValueChanged="Slider_ValueChanged"
+                                            Name="curveSlider"
+                                            Margin="10,0,20,0"
+                                            LargeChange="0.1"
+                                            SmallChange="0.01"
+                                            TickFrequency="1" />
+                                        <TextBox Grid.Column="1"
+                                             Text="{Binding Value, ElementName=curveSlider}"
                                              TextWrapping="NoWrap"/>
                                     </Grid>
                                 </DataTemplate>

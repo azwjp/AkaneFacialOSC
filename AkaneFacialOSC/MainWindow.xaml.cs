@@ -39,13 +39,8 @@ namespace Azw.FacialOsc
             FilterList.SelectedItems.Add(OSCDataFilter.All);
             mainPanel.Visibility = Visibility.Visible;
         }
-        void GainValue_Inputted(object sender, RoutedEventArgs e)
-        {
-            var ui = sender as TextBox;
-            var row = ui.DataContext as SignalProperty;
-        }
 
-        private void Slider_Gain_ValueChanged(object sender, RoutedEventArgs e)
+        private void Slider_ValueChanged(object sender, RoutedEventArgs e)
         {
             var ui = sender as Slider;
             var row = ui.DataContext as SignalProperty;
@@ -263,7 +258,6 @@ namespace Azw.FacialOsc
             return Convert(value, targetType, parameter, language);
         }
     }
-
     public enum OSCDataFilter
     {
         All, OnlyEnabled, Essential, EyeRaw, EyeComputed, Gaze, LipRaw, LipComputed

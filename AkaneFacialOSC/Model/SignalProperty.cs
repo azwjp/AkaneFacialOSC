@@ -31,11 +31,12 @@ namespace Azw.FacialOsc.Model
 
     public class SignalProperty : ModelBase
     {
-        public SignalProperty InitRow(FaceKey key, bool isOn, float gain, bool isClipping, ValueRange center)
+        public SignalProperty InitRow(FaceKey key, bool isOn, float gain, float curve, bool isClipping, ValueRange center)
         {
             Key = key;
             IsSending = isOn;
             Gain = gain;
+            Curve = curve;
             IsClipping = isClipping;
             ValueRange = center;
             return this;
@@ -85,6 +86,17 @@ namespace Azw.FacialOsc.Model
             {
                 gain = value;
                 OnPropertyChanged(nameof(Gain));
+            }
+        }
+
+        private float curce = 1;
+        public float Curve
+        {
+            get { return curce; }
+            set
+            {
+                curce = value;
+                OnPropertyChanged(nameof(Curve));
             }
         }
 

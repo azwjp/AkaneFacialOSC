@@ -154,6 +154,7 @@ namespace Azw.FacialOsc.Tracking
             {
                 var pref = facePrefs[key];
                 var center = pref.CenterValue;
+                value = MathF.Sign(value) * MathF.Pow(MathF.Abs(value), 1 / pref.Curve); // Adjust the curve
                 value = (value - center) * pref.Gain + center;
                 if (pref.IsClipping)
                 {
