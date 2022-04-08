@@ -22,7 +22,7 @@ namespace Azw.FacialOsc.Model
             {
                 var faceVal = new SignalProperty();
                 faceVal.Key = key;
-                if (FaceKeyUtils.GetDataType(key) == DataType.Gaze) faceVal.ValueRange = ValueRange.ZeroCentered;
+                if (FaceKeyUtils.GetDataType(key) == DataType.Gaze) faceVal.ValueRange = ValueRange.MinusOneToOne;
 
                 originalList.Add(key, faceVal);
             }
@@ -100,7 +100,7 @@ namespace Azw.FacialOsc.Model
             }
         }
 
-        ValueRange _range = ValueRange.Fixed;
+        ValueRange _range = ValueRange.ZeroToOne;
         public ValueRange ValueRange
         {
             get { return _range; }
@@ -117,9 +117,8 @@ namespace Azw.FacialOsc.Model
             {
                 return ValueRange switch
                 {
-                    ValueRange.Fixed => 0.5f,
-                    ValueRange.HalfCentered => 0.5f,
-                    ValueRange.ZeroCentered => 0,
+                    ValueRange.ZeroToOne => 0.5f,
+                    ValueRange.MinusOneToOne => 0,
                     _ => throw new UnexpectedEnumValueException(ValueRange),
                 };
             }
@@ -136,6 +135,6 @@ namespace Azw.FacialOsc.Model
     }
     public enum ValueRange
     {
-        Fixed, ZeroCentered, HalfCentered
+        MinusOneToOne, ZeroToOne
     }
 }

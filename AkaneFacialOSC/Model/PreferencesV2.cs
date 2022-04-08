@@ -183,26 +183,24 @@ namespace Azw.FacialOsc.Model
             public float gain = 1;
             public float curve = 1;
             public bool isClipping = true;
-            public string range = ValueRange.Fixed.ToString();
+            public string range = ValueRange.ZeroToOne.ToString();
 
             public FaceKey FaceKey { get { return (FaceKey)Enum.Parse(typeof(FaceKey), key); } }
             public ValueRange CenterKey { get { return (ValueRange)Enum.Parse(typeof(ValueRange), range); } }
 
-            public FaceDataPreferences()
-            {
-            }
+            public FaceDataPreferences() { }
 
             public FaceDataPreferences(string key)
             {
                 this.key = key;
                 var faceKey = FaceKey;
-                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? ValueRange.HalfCentered : ValueRange.ZeroCentered).ToString();
+                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.MinusOneToOne : ValueRange.ZeroToOne).ToString();
             }
             public FaceDataPreferences(FaceKey key)
             {
                 this.key = key.ToString();
                 var faceKey = FaceKey;
-                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.ZeroCentered : FaceKeyUtils.IsBipolar(faceKey) ? ValueRange.HalfCentered : ValueRange.ZeroCentered).ToString();
+                range = (FaceKeyUtils.GetDataType(faceKey) == DataType.Gaze ? ValueRange.MinusOneToOne : ValueRange.ZeroToOne).ToString();
             }
             public FaceDataPreferences(string key, bool isSending, float gain, bool isClipping, string range)
             {

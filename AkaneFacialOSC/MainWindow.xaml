@@ -25,7 +25,6 @@
         Title="AkaneFacialOSC" Height="800" MinHeight="450" Width="940" MinWidth="940">
     <Window.Resources>
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
-        <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
         <local:DeviceStatusToColorConverter x:Key="DeviceStatusToColor"/>
         <local:DeviceStatusToLabelConverter x:Key="DeviceStatusToLabel"/>
         <local:DirtyToLabelConverter x:Key="DirtyToLabel"/>
@@ -198,7 +197,6 @@
                                     <Button x:Name="centerButton"
                                         Width="56"
                                         Click="centerButton_Click"
-                                        Visibility="{Binding ValueRange, Converter={StaticResource CenterToVisibility}}"
                                         Content="{Binding ValueRange, Converter={StaticResource CenterToLabel}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

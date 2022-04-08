@@ -82,23 +82,14 @@ namespace Azw.FacialOsc.Model
             {
                 get
                 {
-                    var def = FaceKeyUtils.DefaultValue(faceKey);
-                    if (0.5f - 0.0009765625f < def && def < 0.5f + 0.0009765625)
-                    {
-                        return centerValue < float.Epsilon ? ValueRange.ZeroCentered : ValueRange.HalfCentered;
-                    }
-                    else
-                    {
-                        return ValueRange.Fixed;
-                    }
+                    return centerValue < float.Epsilon ? ValueRange.MinusOneToOne : ValueRange.ZeroToOne;
                 }
                 set
                 {
                     centerValue = value switch
                     {
-                        ValueRange.Fixed => centerValue = 0.5f,
-                        ValueRange.ZeroCentered => centerValue = 0,
-                        ValueRange.HalfCentered => centerValue = 0.5f,
+                        ValueRange.MinusOneToOne => centerValue = 0,
+                        ValueRange.ZeroToOne => centerValue = 0.5f,
                         _ => throw new UnexpectedEnumValueException(value),
                     };
                 }
@@ -126,16 +117,7 @@ namespace Azw.FacialOsc.Model
                 v2.isSending = isSending;
                 v2.gain = gain;
                 v2.isClipping = isClipping;
-                var defaultValue = FaceKeyUtils.DefaultValue(faceKey);
-
-                if (0.5f - 0.0009765625f < defaultValue && defaultValue < 0.5f + 0.0009765625)
-                {
-                    v2.range = (centerValue < float.Epsilon ? ValueRange.ZeroCentered : ValueRange.HalfCentered).ToString();
-                }
-                else
-                {
-                    v2.range = ValueRange.Fixed.ToString();
-                }
+                v2.range = (centerValue < float.Epsilon ? ValueRange.MinusOneToOne : ValueRange.ZeroToOne).ToString();
 
                 return v2;
             }

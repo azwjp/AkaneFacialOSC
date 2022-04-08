@@ -69,13 +69,11 @@ namespace Azw.FacialOsc
 
             switch (row.ValueRange)
             {
-                case Model.ValueRange.Fixed:
-                    return;
-                case Model.ValueRange.HalfCentered:
-                    row.ValueRange = Model.ValueRange.ZeroCentered;
+                case Model.ValueRange.ZeroToOne:
+                    row.ValueRange = Model.ValueRange.MinusOneToOne;
                     break;
-                case Model.ValueRange.ZeroCentered:
-                    row.ValueRange = Model.ValueRange.HalfCentered;
+                case Model.ValueRange.MinusOneToOne:
+                    row.ValueRange = Model.ValueRange.ZeroToOne;
                     break;
                 default:
                     throw new UnexpectedEnumValueException(row.ValueRange);
@@ -129,10 +127,9 @@ namespace Azw.FacialOsc
 
             switch (center)
             {
-                case Model.ValueRange.Fixed:
-                case Model.ValueRange.HalfCentered:
+                case ValueRange.ZeroToOne:
                     return "0..1";
-                case Model.ValueRange.ZeroCentered:
+                case ValueRange.MinusOneToOne:
                     return "-1..1";
                 default:
                     throw new UnexpectedEnumValueException(center);
@@ -143,31 +140,6 @@ namespace Azw.FacialOsc
             if (value is not string str) return DependencyProperty.UnsetValue;
 
             return Enum.Parse<Model.ValueRange>(str);
-        }
-    }
-    public class CenterToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo language)
-        {
-            if (value is not Model.ValueRange center) return DependencyProperty.UnsetValue;
-
-            switch (center)
-            {
-                case ValueRange.Fixed:
-                    return Visibility.Hidden;
-                case ValueRange.HalfCentered:
-                case ValueRange.ZeroCentered:
-                    return Visibility.Visible;
-                default:
-                    throw new UnexpectedEnumValueException(center);
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)
-        {
-            if (value is not Visibility v) return DependencyProperty.UnsetValue;
-
-            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
         }
     }
 
@@ -193,7 +165,7 @@ namespace Azw.FacialOsc
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
+            return null;
         }
     }
 
@@ -219,7 +191,7 @@ namespace Azw.FacialOsc
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
+            return null;
         }
     }
 
@@ -238,7 +210,7 @@ namespace Azw.FacialOsc
         {
             if (value is not Visibility v) return DependencyProperty.UnsetValue;
 
-            return v == Visibility.Collapsed ? Model.ValueRange.Fixed : Model.ValueRange.HalfCentered;
+            return null;
         }
     }
 

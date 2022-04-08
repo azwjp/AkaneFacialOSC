@@ -160,11 +160,10 @@ namespace Azw.FacialOsc.Tracking
                 {
                     switch (pref.ValueRange)
                     {
-                        case ValueRange.ZeroCentered:
+                        case ValueRange.MinusOneToOne:
                             value = Math.Clamp(value, -1, 1);
                             break;
-                        case ValueRange.HalfCentered:
-                        case ValueRange.Fixed:
+                        case ValueRange.ZeroToOne:
                             value = Math.Clamp(value, 0, 1);
                             break;
                     }
