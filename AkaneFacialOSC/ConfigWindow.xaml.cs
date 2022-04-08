@@ -22,7 +22,6 @@ namespace Azw.FacialOsc
             InitializeComponent();
 
             Controller = Controller.Instance;
-            Controller.PreInitWindowAsync();
 
             configs.DataContext = Controller.Configs;
             trackingConfigs.DataContext = Controller.TrackingStatus;
