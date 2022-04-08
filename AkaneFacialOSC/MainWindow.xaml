@@ -22,7 +22,7 @@
         xmlns:properties="clr-namespace:Azw.FacialOsc.Properties"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         TitleCharacterCasing="Normal" 
-        Title="AkaneFacialOSC" Height="450" MinHeight="100" Width="1080" MinWidth="1080">
+        Title="AkaneFacialOSC" Height="450" MinHeight="100" Width="780" MinWidth="780">
     <Window.Resources>
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
         <local:CenterToVisibilityConverter x:Key="CenterToVisibility"/>
@@ -33,105 +33,106 @@
     </Window.Resources>
     <Grid Name="mainPanel">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" MinHeight="200"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
-            <ColumnDefinition Width="2*" MinWidth="620"/>
-            <ColumnDefinition Width="1*" MinWidth="300"/>
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Hidden">
+        <Grid Grid.Row="0" Margin="8,8,8,8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="*" MinWidth="180"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="2*" MinWidth="100"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*" MinWidth="620"/>
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Name="dummyWidthCheckBox"/>
-            <Border Grid.Column="1" Name="dummyWidthKey"/>
-            <Border Grid.Column="2" Name="dummyWidthValue"/>
-            <Border Grid.Column="3" Name="dummyWidthGain"/>
-            <Border Grid.Column="4" Name="dummyWidthClipping"/>
-            <Border Grid.Column="5" Name="dummyWidthCenter"/>
-        </Grid>
-        <ListBox x:Name="FilterList" ItemsSource="{Binding FilterList}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked"/>
-        <ListView Grid.Row="0"
+            <Grid Grid.Row="0" Grid.Column="1" Name="dummyGrid" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*" MinWidth="180"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="2*" MinWidth="100"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Name="dummyWidthCheckBox"/>
+                <Border Grid.Column="1" Name="dummyWidthKey"/>
+                <Border Grid.Column="2" Name="dummyWidthValue"/>
+                <Border Grid.Column="3" Name="dummyWidthGain"/>
+                <Border Grid.Column="4" Name="dummyWidthClipping"/>
+                <Border Grid.Column="5" Name="dummyWidthCenter"/>
+            </Grid>
+            <ListBox x:Name="FilterList" ItemsSource="{Binding FilterList}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked"/>
+            <ListView Grid.Row="0"
                   Grid.Column="1"
                   Focusable="False"
                   ItemsSource="{Binding DisplayingSignalList}"
                   BorderThickness="0"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Stretch" >
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
-                    <Setter 
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
+                        <Setter 
                         Property="VerticalContentAlignment" 
                         Value="Stretch" 
                     />
-                    <Setter Property="Focusable" Value="false"/>
-                    <Setter Property="Padding" Value="0"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView AllowsColumnReorder="False">
-                    <GridView.ColumnHeaderContainerStyle>
-                        <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
-                            <Setter Property="IsHitTestVisible" Value="False"/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="Margin" Value="0"/>
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                        </Style>
-                    </GridView.ColumnHeaderContainerStyle>
-                    <GridViewColumn x:Name="checkBoxColumn"
+                        <Setter Property="Focusable" Value="false"/>
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridView.ColumnHeaderContainerStyle>
+                            <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </GridView.ColumnHeaderContainerStyle>
+                        <GridViewColumn x:Name="checkBoxColumn"
                                     Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}">
-                        <GridViewColumnHeader Padding="7 6 0 6" HorizontalAlignment="Left">
-                            <!-- the default is 14 6 14 6. https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/73b0d6725922f936986532b1809f5a5045e9fb39/MaterialDesignThemes.Wpf/Themes/MaterialDesignTheme.ListBox.xaml#L35 -->
-                            <!-- <CheckBox Width="16" Content="" Checked="BulkCheckBox_Checked" Unchecked="BulkCheckBox_UnChecked" IsHitTestVisible="True"/>-->
-                        </GridViewColumnHeader>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox VerticalContentAlignment="Stretch"
+                            <GridViewColumnHeader Padding="7 6 0 6" HorizontalAlignment="Left">
+                                <!-- the default is 14 6 14 6. https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/blob/73b0d6725922f936986532b1809f5a5045e9fb39/MaterialDesignThemes.Wpf/Themes/MaterialDesignTheme.ListBox.xaml#L35 -->
+                                <!-- <CheckBox Width="16" Content="" Checked="BulkCheckBox_Checked" Unchecked="BulkCheckBox_UnChecked" IsHitTestVisible="True"/>-->
+                            </GridViewColumnHeader>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox VerticalContentAlignment="Stretch"
                                          Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
                                           Content=""
                                           VerticalAlignment="Center"
                                         IsChecked="{Binding IsSending}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn x:Name="keyColumn" Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}">
-                        <GridViewColumnHeader Padding="7 6 7 6" HorizontalAlignment="Center">
-                            <TextBlock Padding="0"
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn x:Name="keyColumn" Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}">
+                            <GridViewColumnHeader Padding="7 6 7 6" HorizontalAlignment="Center">
+                                <TextBlock Padding="0"
                                        Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
                                        Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderKey, Mode=OneWay}"/>
-                        </GridViewColumnHeader>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
+                            </GridViewColumnHeader>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
                                            Text="{Binding Key}"
                                            VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn  Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderValue, Mode=OneWay}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock VerticalAlignment="Center"
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn  Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderValue, Mode=OneWay}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center"
                                          Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}"
                                          Text="{Binding Value}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderGain, Mode=OneWay}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="5*" MinWidth="60"/>
-                                        <ColumnDefinition Width="1*" MinWidth="40"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Slider Grid.Column="0"
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderGain, Mode=OneWay}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Width="{Binding ElementName=dummyWidthGain, Path=ActualWidth}" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*" MinWidth="60"/>
+                                            <ColumnDefinition Width="1*" MinWidth="40"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Slider Grid.Column="0"
                                             VerticalAlignment="Center"
                                             Maximum="4"
                                             Value="{Binding Gain,UpdateSourceTrigger=PropertyChanged}"
@@ -141,80 +142,54 @@
                                             LargeChange="0.1"
                                             SmallChange="0.01"
                                             TickFrequency="1" />
-                                    <TextBox Grid.Column="1"
+                                        <TextBox Grid.Column="1"
                                              Text="{Binding Value, ElementName=gainSlider}"
                                              LostFocus="GainValue_Inputted"
                                              TextWrapping="NoWrap"/>
-                                </Grid>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn
                             Width="{Binding ElementName=dummyWidthClipping, Path=ActualWidth}"
                             Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderClip, Mode=OneWay}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox
                                         VerticalContentAlignment="Stretch"
                                         Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
                                         Content=""
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding IsClipping}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="{Binding ElementName=dummyWidthCenter, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderRange, Mode=OneWay}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button x:Name="centerButton"
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="{Binding ElementName=dummyWidthCenter, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderRange, Mode=OneWay}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="centerButton"
                                         Width="56"
                                         Click="centerButton_Click"
                                         Visibility="{Binding ValueRange, Converter={StaticResource CenterToVisibility}}"
                                         Content="{Binding ValueRange, Converter={StaticResource CenterToLabel}}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Grid Grid.Row="0"
-              Grid.Column="2"
-              VerticalAlignment="Stretch"
-              Height="Auto"
-              Margin="8,8,8,8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <StackPanel
-                        Grid.Row="0"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal"
-                        x:Name="buttons">
-                <Button Width="92"
-                        x:Name="dirtyButton"
-                        Margin="0 0 2 0"
-                        IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
-                        Content="{Binding Path=IsDirty, Converter={StaticResource DirtyToLabel}, Mode=OneWay}"
-                        Click="SaveButton_Click"
-                        Cursor="Hand"/>
-                <Button Width="92"
-                        Content="{Binding Resources.ButtonConfig, Mode=OneWay, Source={x:Static vm:ResourceService.Current}}"
-                        Click="ConfigButton_Click"
-                        Cursor="Hand"/>
-                <Button Width="92"
-                        Margin="2 0 0 0"
-                        Content="About"
-                        Click="AboutButton_Click"
-                        Cursor="Hand"/>
-            </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Grid Grid.Row="1" Margin="8,8,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="280" MinWidth="280"/>
+            </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Row="1"
+            <GroupBox Grid.Row="0"
+                      Grid.Column="0"
                       VerticalAlignment="Stretch"
                       VerticalContentAlignment="Stretch"
-                      Margin="0,8,0,8" >
+                      Margin="0,0,8,0" >
                 <GroupBox.Header>
                     Log
                 </GroupBox.Header>
@@ -225,48 +200,81 @@
                     </StackPanel>
                 </ScrollViewer>
             </GroupBox>
-
-            <Grid Grid.Row="2"
-                      Margin="0,8,0,8">
+            <Grid Grid.Row="0"
+              Grid.Column="1"
+              VerticalAlignment="Stretch"
+              Height="Auto"
+              Margin="0,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <StackPanel
+                        Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        x:Name="buttons">
+                    <Button Width="92"
+                        x:Name="dirtyButton"
+                        Margin="0 0 2 0"
+                        IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
+                        Content="{Binding Path=IsDirty, Converter={StaticResource DirtyToLabel}, Mode=OneWay}"
+                        Click="SaveButton_Click"
+                        Cursor="Hand"/>
+                    <Button Width="92"
+                        Content="{Binding Resources.ButtonConfig, Mode=OneWay, Source={x:Static vm:ResourceService.Current}}"
+                        Click="ConfigButton_Click"
+                        Cursor="Hand"/>
+                    <Button Width="92"
+                        Margin="2 0 0 0"
+                        Content="About"
+                        Click="AboutButton_Click"
+                        Cursor="Hand"/>
+                </StackPanel>
 
-                <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="Eye" />
-                <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="Face"/>
+                <Grid Grid.Row="2"
+                      Margin="0,8,0,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  Text="Target fps" />
-                <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeTargetFps"/>
-                <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
-                <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipTargetFps"/>
-                <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="Eye" />
+                    <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="Face"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Text="Application fps" />
-                <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeAppFps"/>
-                <TextBlock Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
-                <TextBlock Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipAppFps"/>
-                <TextBlock Grid.Row="2" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  Text="Target fps" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeTargetFps"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipTargetFps"/>
+                    <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"  Text="Device fps" />
-                <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeDeviceFps"/>
-                <TextBlock Grid.Row="3" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
-                <TextBlock Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipDeviceFps"/>
-                <TextBlock Grid.Row="3" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
-            </Grid>
+                    <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Text="Application fps" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeAppFps"/>
+                    <TextBlock Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                    <TextBlock Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipAppFps"/>
+                    <TextBlock Grid.Row="2" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
 
-            <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,8,0,0" HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal" Height="Auto">
-                    <Button
+                    <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"  Text="Device fps" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeDeviceFps"/>
+                    <TextBlock Grid.Row="3" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                    <TextBlock Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipDeviceFps"/>
+                    <TextBlock Grid.Row="3" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
+                </Grid>
+
+                <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,8,0,0" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" Height="Auto">
+                        <Button
                             Margin="0,0,2,0"
                             x:Name="eyeTrackerButton"
                             Width="140"
@@ -274,65 +282,66 @@
                             BorderThickness="4"
                             Click="eyeTrackerButton_Clicked"
                             Cursor="Hand" >
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
-                                <GradientStop Color="#eeeeee" Offset="0.95" />
-                                <GradientStop Color="#eeeeee" Offset="1" />
-                                <GradientStop Color="#eeeeee" Offset="0.8" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                        <Button.BorderBrush>
-                            <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
-                                <GradientStop Color="#03dac6" Offset="0" />
-                                <GradientStop Color="#eeeeee" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.BorderBrush>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
+                                    <GradientStop Color="#eeeeee" Offset="0.95" />
+                                    <GradientStop Color="#eeeeee" Offset="1" />
+                                    <GradientStop Color="#eeeeee" Offset="0.8" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <Button.BorderBrush>
+                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
+                                    <GradientStop Color="#03dac6" Offset="0" />
+                                    <GradientStop Color="#eeeeee" Offset="1" />
+                                </LinearGradientBrush>
+                            </Button.BorderBrush>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock
                                    Foreground="#006666"
                                    VerticalAlignment="Center"
                                    Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ButtonEyeTracking, Mode=OneWay}"
                                    HorizontalAlignment="Center"/>
-                            <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,6,0,4" Stroke="{Binding EyeTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
-                            <TextBlock
+                                <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,6,0,4" Stroke="{Binding EyeTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
+                                <TextBlock
                                    Foreground="Black"
                                    Text="{Binding EyeTrackingStatus, Converter={StaticResource DeviceStatusToLabel}}"
                             HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="facialTrackerButton"
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="facialTrackerButton"
                             Margin="2,0,0,0"
                             Width="140"
                             Height="60"
                             BorderThickness="4"
                             Click="facialTrackerButton_Clicked"
                             Cursor="Hand" >
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
-                                <GradientStop Color="#eeeeee" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                        <Button.BorderBrush>
-                            <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
-                                <GradientStop Color="#ff7597" Offset="0" />
-                                <GradientStop Color="#eeeeee" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.BorderBrush>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
-                            <TextBlock
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0.475,0" EndPoint="0.525,1">
+                                    <GradientStop Color="#eeeeee" Offset="1" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <Button.BorderBrush>
+                                <LinearGradientBrush StartPoint="0.4,0" EndPoint="0.6,1">
+                                    <GradientStop Color="#ff7597" Offset="0" />
+                                    <GradientStop Color="#eeeeee" Offset="1" />
+                                </LinearGradientBrush>
+                            </Button.BorderBrush>
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                                <TextBlock
                                    Foreground="#880e4f"
                                    VerticalAlignment="Center"
                                    Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ButtonFaceTracking, Mode=OneWay}"
                                    HorizontalAlignment="Center" />
-                            <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,6,0,4" Stroke="{Binding LipTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
-                            <TextBlock
+                                <Line Grid.Row="1" X2="1" Stretch="Fill" StrokeThickness="3" Margin="0,6,0,4" Stroke="{Binding LipTrackingStatus, Converter={StaticResource DeviceStatusToColor}}"/>
+                                <TextBlock
                                    Foreground="Black"
                                    Text="{Binding Path=LipTrackingStatus, Converter={StaticResource DeviceStatusToLabel}, Mode=OneWay}"
                             HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </controls:MetroWindow>
