@@ -13,6 +13,7 @@
     <VersionSuffix>RC1</VersionSuffix>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>portable</DebugType>
+    <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -97,6 +98,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
   	  <_Parameter1>AkaneFacialOSCTest</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\AppLogo.png" />
