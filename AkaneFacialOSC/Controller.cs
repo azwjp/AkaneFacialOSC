@@ -104,8 +104,8 @@ namespace Azw.FacialOsc
             eye.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
             {
                 mainWindow.eyeTargetFps.Text = (1 / instance.targetInterval.TotalSeconds).ToString("0.000");
-                mainWindow.eyeAppFps.Text = instance.ApplicationFps.ToString("0.000");
-                mainWindow.eyeDeviceFps.Text = instance.TrackingFps.ToString("0.000");
+                mainWindow.eyeAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
+                mainWindow.eyeDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
             }
             );
             eye.statusChangedHandler += (instance, status) =>
@@ -129,8 +129,8 @@ namespace Azw.FacialOsc
             lip.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
                 {
                     mainWindow.lipTargetFps.Text = (1 / instance.targetInterval.TotalSeconds).ToString("0.000");
-                    mainWindow.lipAppFps.Text = instance.ApplicationFps.ToString("0.000");
-                    mainWindow.lipDeviceFps.Text = instance.TrackingFps.ToString("0.000");
+                    mainWindow.lipAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
+                    mainWindow.lipDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
                 }
             );
             lip.statusChangedHandler += (instance, status) =>

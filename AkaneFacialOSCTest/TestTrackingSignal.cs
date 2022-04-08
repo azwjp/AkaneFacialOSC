@@ -21,6 +21,12 @@ namespace Azw.FacialOsc.Tracking
             var y = new OSCData(FaceKey.Eye_Left_Blink, 2);
             (x + y).Should().Be(3);
         }
-
+        [TestMethod]
+        public void TestFps()
+        {
+            AverageFps.CulcNewCapacity(60).Should().Be(60);
+            AverageFps.CulcNewCapacity(61).Should().Be(60);
+            AverageFps.CulcNewCapacity(59).Should().Be(60);
+        }
     }
 }

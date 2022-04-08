@@ -26,8 +26,9 @@ namespace Azw.FacialOsc.Tracking
         public OnChecked? checkedHandler;
         public OnStatusChanged? statusChangedHandler;
         public TimeSpan targetInterval = TimeSpan.FromMilliseconds(1000d / 60d);
-        public double ApplicationFps { get; set; } = 0;
-        public double TrackingFps { get; set; } = 0;
+        private AverageFps targetFps = new();
+        public AverageFps ApplicationFps { get; private set; } = new();
+        public AverageFps TrackingFps { get; private set; } = new();
         public bool IsAutoFpsEnabled = true;
 
         private TimeSpan longestInterval = TimeSpan.FromSeconds(1);
@@ -65,6 +66,8 @@ namespace Azw.FacialOsc.Tracking
         {
             var updatingTime = Stopwatch.StartNew();
             var loopTime = Stopwatch.StartNew();
+            targetFps = new();
+            targetFps.Add(targetInterval);
             while (true)
             {
                 var elasped = Stopwatch.StartNew();
@@ -74,21 +77,30 @@ namespace Azw.FacialOsc.Tracking
                 if (UpdateData())
                 {
                     updatedHandler?.Invoke(this, GetData());
-                    TrackingFps = 1 / updatingTime.Elapsed.TotalSeconds;
+                    TrackingFps.Add(updatingTime.Elapsed);
                     updatingTime = Stopwatch.StartNew();
                     if (IsAutoFpsEnabled)
                     {
-                        targetInterval *= 0.99;
+                        var refernceInterval = TrackingFps.count == 0 ? targetInterval.TotalSeconds : TrackingFps.averageInterval;
+                        targetFps.Add(TimeSpan.FromSeconds(refernceInterval * Math.Pow(0.5, refernceInterval)));
+                        targetInterval = TimeSpan.FromSeconds(targetFps.averageInterval);
                         if (targetInterval < shortestInterval) targetInterval = shortestInterval;
                     }
                 }
-                else if (IsAutoFpsEnabled) {
-                    targetInterval = targetInterval + elasped.Elapsed / 4;
+                else if (IsAutoFpsEnabled)
+                {
+                    elasped.Stop();
+                    loopTime.Stop();
+                    var refernceInterval = TrackingFps.count == 0 ? targetInterval.TotalSeconds : ApplicationFps.averageInterval;
+                    targetFps.Add(TimeSpan.FromSeconds(refernceInterval * Math.Pow(2, refernceInterval)));
+                    targetInterval = TimeSpan.FromSeconds(targetFps.averageInterval);
                     if (targetInterval > longestInterval) targetInterval = longestInterval;
+                    loopTime.Start();
+                    elasped.Start();
                 }
                 var sleepTime = targetInterval - elasped.Elapsed;
                 if (sleepTime > TimeSpan.Zero) Thread.Sleep(sleepTime);
-                ApplicationFps = 1 / loopTime.Elapsed.TotalSeconds;
+                ApplicationFps.Add(loopTime.Elapsed);
             }
         }
 
