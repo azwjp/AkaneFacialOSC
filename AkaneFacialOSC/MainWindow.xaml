@@ -46,8 +46,8 @@
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="2*" MinWidth="180"/>
-                    <ColumnDefinition Width="2*" MinWidth="180"/>
+                    <ColumnDefinition Width="*" MinWidth="180"/>
+                    <ColumnDefinition Width="*" MinWidth="180"/>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
@@ -104,10 +104,12 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox VerticalContentAlignment="Stretch"
-                                         Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
-                                          Content=""
-                                          VerticalAlignment="Center"
-                                        IsChecked="{Binding IsSending}" />
+                                        Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
+                                        Content=""
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding IsSending}"
+                                        Checked="MarkDirty"
+                                        Unchecked="MarkDirty" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -146,7 +148,7 @@
                                             VerticalAlignment="Center"
                                             Maximum="4"
                                             Value="{Binding Gain,UpdateSourceTrigger=PropertyChanged}"
-                                            ValueChanged="Slider_ValueChanged"
+                                            ValueChanged="MarkDirty"
                                             Name="gainSlider"
                                             Margin="10,0,20,0"
                                             LargeChange="0.1"
@@ -171,7 +173,7 @@
                                             VerticalAlignment="Center"
                                             Maximum="4"
                                             Value="{Binding Curve, UpdateSourceTrigger=PropertyChanged}"
-                                            ValueChanged="Slider_ValueChanged"
+                                            ValueChanged="MarkDirty"
                                             Name="curveSlider"
                                             Margin="10,0,20,0"
                                             LargeChange="0.1"
@@ -194,7 +196,9 @@
                                         Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
                                         Content=""
                                         VerticalAlignment="Center"
-                                        IsChecked="{Binding IsClipping}" />
+                                        IsChecked="{Binding IsClipping}"
+                                        Checked="MarkDirty"
+                                        Unchecked="MarkDirty"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

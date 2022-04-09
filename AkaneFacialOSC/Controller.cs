@@ -356,6 +356,8 @@ namespace Azw.FacialOsc
             {
                 signal.IsSending = true;
             }
+
+            MarkDirty();
         }
         internal void BulkUnCheck()
         {
@@ -363,6 +365,8 @@ namespace Azw.FacialOsc
             {
                 signal.IsSending = false;
             }
+
+            MarkDirty();
         }
 
         internal void SetEyeFps(double fps)

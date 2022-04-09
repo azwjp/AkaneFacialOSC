@@ -42,10 +42,8 @@ namespace Azw.FacialOsc
             SelectAll.IsChecked = Controller.TrackingStatus.DisplayingSignalList.All(s => s.IsSending);
         }
 
-        private void Slider_ValueChanged(object sender, RoutedEventArgs e)
+        private void MarkDirty(object sender, RoutedEventArgs e)
         {
-            var ui = sender as Slider;
-            var row = ui.DataContext as SignalProperty;
             Controller?.MarkDirty();
         }
 
