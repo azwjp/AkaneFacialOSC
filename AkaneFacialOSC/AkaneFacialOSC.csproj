@@ -30,7 +30,6 @@
   <ItemGroup>
     <None Include="Properties\Resources.resx" />
     <None Include="Properties\Resources.ja-JP.resx" />
-    <None Include="Properties\Resources.en-US.resx" />
   </ItemGroup>
 
   <ItemGroup>
