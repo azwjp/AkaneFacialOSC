@@ -117,10 +117,163 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EyeTrackingButton" xml:space="preserve">
-    <value>Use eye-tracking</value>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="ButtonConfig" xml:space="preserve">
+    <value>設置</value>
+  </data>
+  <data name="ButtonEyeTracking" xml:space="preserve">
+    <value>眼球追蹤</value>
+  </data>
+  <data name="ButtonFaceTracking" xml:space="preserve">
+    <value>表情偵測</value>
+  </data>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ButtonResetAll" xml:space="preserve">
+    <value>全部初始化</value>
+  </data>
+  <data name="ButtonRevert" xml:space="preserve">
+    <value>全部撤銷</value>
+  </data>
+  <data name="ConfigButtonSave" xml:space="preserve">
+    <value>存儲</value>
+  </data>
+  <data name="ConfigButtonSaveDirty" xml:space="preserve">
+    <value>存儲 (*)</value>
+  </data>
+  <data name="ConfigEyeTracker" xml:space="preserve">
+    <value>眼球追蹤裝置</value>
+  </data>
+  <data name="ConfigEyeTrackerTargetFps" xml:space="preserve">
+    <value>眼球追蹤目標 FPS</value>
+  </data>
+  <data name="ConfigLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="ConfigLipTracker" xml:space="preserve">
+    <value>表情偵測裝置</value>
+  </data>
+  <data name="ConfigLipTrackerTargetFps" xml:space="preserve">
+    <value>表情偵測目標 FPS</value>
+  </data>
+  <data name="ConfigMaxGazeAngle" xml:space="preserve">
+    <value>最大注視角度 (度)</value>
+  </data>
+  <data name="ConfigSelectAll" xml:space="preserve">
+    <value>選擇全部</value>
+  </data>
+  <data name="ConfigTheme" xml:space="preserve">
+    <value>主題</value>
+  </data>
+  <data name="DialogResetAllMessage" xml:space="preserve">
+    <value>初始化全設置，成默認值</value>
+  </data>
+  <data name="DialogRevertMessage" xml:space="preserve">
+    <value>全部撤銷，成啓動時的值</value>
+  </data>
+  <data name="MessageCalibrationRequired" xml:space="preserve">
+    <value>Vive Pro Eye 需要校准。到完畢校准爲止您可能不可以使用裝置。</value>
+  </data>
+  <data name="MessageCurrentVersion" xml:space="preserve">
+    <value>現在</value>
+  </data>
+  <data name="MessageDeviceError" xml:space="preserve">
+    <value>裝置啓動的時候錯誤發現了。</value>
+  </data>
+  <data name="MessageDifferentVersionExists" xml:space="preserve">
+    <value>別的版本發佈了:</value>
+  </data>
+  <data name="MessageErrorDetail" xml:space="preserve">
+    <value>錯誤詳細:</value>
+  </data>
+  <data name="MessageLatestVersion" xml:space="preserve">
+    <value>最新:</value>
+  </data>
+  <data name="MessageLoadingConfigError" xml:space="preserve">
+    <value>不會打開設置。App 使用被默認值。</value>
+  </data>
+  <data name="MessageNotProEye" xml:space="preserve">
+    <value>Vive Pro Eye 未連接。請確認裝置或者切換眼球追蹤裝置。</value>
+  </data>
+  <data name="MessageUpdateExists" xml:space="preserve">
+    <value>新的版本發佈了:</value>
+  </data>
+  <data name="MessageUpdateFailed" xml:space="preserve">
+    <value>確認新的版本失敗了。</value>
+  </data>
+  <data name="OSCHeaderClip" xml:space="preserve">
+    <value>削波</value>
+  </data>
+  <data name="OSCHeaderCurve" xml:space="preserve">
+    <value>調整曲綫</value>
+  </data>
+  <data name="OSCHeaderGain" xml:space="preserve">
+    <value>增益</value>
   </data>
   <data name="OSCHeaderKey" xml:space="preserve">
-    <value>OSC Key</value>
+    <value>OSC 鍵</value>
+  </data>
+  <data name="OSCHeaderRange" xml:space="preserve">
+    <value>範圍</value>
+  </data>
+  <data name="OSCHeaderValue" xml:space="preserve">
+    <value>值</value>
+  </data>
+  <data name="OSCSignalFilterAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="OSCSignalFilterEssential" xml:space="preserve">
+    <value>主要</value>
+  </data>
+  <data name="OSCSignalFilterEyeComputed" xml:space="preserve">
+    <value>眼 (總括)</value>
+  </data>
+  <data name="OSCSignalFilterEyeRaw" xml:space="preserve">
+    <value>眼 (原始)</value>
+  </data>
+  <data name="OSCSignalFilterGaze" xml:space="preserve">
+    <value>視綫</value>
+  </data>
+  <data name="OSCSignalFilterLipComputed" xml:space="preserve">
+    <value>口 (總括)</value>
+  </data>
+  <data name="OSCSignalFilterLipRaw" xml:space="preserve">
+    <value>口 (原始)</value>
+  </data>
+  <data name="OSCSignalFilterOnlyEnabled" xml:space="preserve">
+    <value>使用中</value>
+  </data>
+  <data name="TrackingDisabled" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="TrackingRunning" xml:space="preserve">
+    <value>動作中</value>
+  </data>
+  <data name="TrackingStarting" xml:space="preserve">
+    <value>啓動...</value>
+  </data>
+  <data name="TrackingStopping" xml:space="preserve">
+    <value>關閉...</value>
+  </data>
+  <data name="TrackingUnavailable" xml:space="preserve">
+    <value>不可用</value>
+  </data>
+  <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
+    <value>設置追蹤</value>
+  </data>
+  <data name="WindowHeaderGeneralConfigs" xml:space="preserve">
+    <value>設置App</value>
+  </data>
+  <data name="WindowTitleConfig" xml:space="preserve">
+    <value>AkaneFacialOSC: 設置</value>
+  </data>
+  <data name="WindowTitleMainWindow" xml:space="preserve">
+    <value>AkaneFacialOSC</value>
   </data>
 </root>

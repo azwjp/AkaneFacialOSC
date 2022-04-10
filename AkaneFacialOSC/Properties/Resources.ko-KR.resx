@@ -163,7 +163,7 @@
     <value>페이셜 트래커 묵표 FPS</value>
   </data>
   <data name="ConfigMaxGazeAngle" xml:space="preserve">
-    <value>시선의 최대 각도 (degree)</value>
+    <value>시선의 최대 각도 (디그리)</value>
   </data>
   <data name="ConfigSelectAll" xml:space="preserve">
     <value>모두 선택</value>
