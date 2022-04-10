@@ -47,17 +47,19 @@ namespace Azw.FacialOsc
             log = new(this);
         }
 
-        private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync(PreferencesV2 preference)
+        private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync(PreferencesV2 preference, bool retry)
         {
             try { 
                 var ap = preference.applicationPreference;
                 var tp = preference.trackingPreference;
 
-
-                _ = Application.Current?.Dispatcher.InvokeAsync(() =>
+                Configs.ApplicationTheme = ap.Theme;
+                _ = Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    AkaneThemes.Use(ap.Theme);
+                    AkaneThemes.Use(ap.Theme); // Need to update the theme manually to set the front brush
                 });
+                Configs.Language = ap.language;
+
                 TrackingStatus.LipType = tp.LipTracker;
                 TrackingStatus.EyeType = tp.EyeTracker;
                 TrackingStatus.MaxAngle = tp.maxAngle;
@@ -78,30 +80,8 @@ namespace Azw.FacialOsc
             {
                 log.AddLog(Resources.MessageLoadingConfigError, ex);
 
-                preference = new PreferencesV2();
-
-                var ap = preference.applicationPreference;
-                var tp = preference.trackingPreference;
-
-                _ = Application.Current?.Dispatcher.InvokeAsync(() =>
-                {
-                    AkaneThemes.Use(ap.Theme);
-                });
-                TrackingStatus.LipType = tp.LipTracker;
-                TrackingStatus.EyeType = tp.EyeTracker;
-                TrackingStatus.MaxAngle = tp.maxAngle;
-                TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
-                TrackingStatus.LipTrackerTargetFps = tp.lipFps;
-
-                tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
-
-
-                var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);
-                var lipChangingTask = ChangeLipTracker(tp.LipTracker);
-                var eye = await eyeChangingTask;
-                var lip = await lipChangingTask;
-
-                return (eye, lip);
+                if (retry) return await LoadAsync(new PreferencesV2(), false);
+                else throw;
             }
         }
         
@@ -122,7 +102,7 @@ namespace Azw.FacialOsc
                     return new PreferencesV2();
                 }
             }).ConfigureAwait(false);
-            configLoadingTask = LoadAsync(preference);
+            configLoadingTask = LoadAsync(preference, true);
             return await configLoadingTask;
         }
 
@@ -394,7 +374,7 @@ namespace Azw.FacialOsc
         }
         internal Task<(EyeTracker eye, LipTracker lip)> ResetAll()
         {
-            return LoadAsync(new PreferencesV2());
+            return LoadAsync(new PreferencesV2(), false);
         }
 
         internal void Save()
