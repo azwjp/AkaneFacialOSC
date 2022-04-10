@@ -152,7 +152,7 @@ namespace Azw.FacialOsc.Model
                 get
                 {
                     EyeTrackingType parsed;
-                    return Enum.TryParse(lipTrackingType, true, out parsed) ? parsed : EyeTrackingType.ViveSRanipal;
+                    return Enum.TryParse(eyeTrackingType, true, out parsed) ? parsed : EyeTrackingType.ViveSRanipal;
                 }
             }
             public LipTrackingType LipTracker
