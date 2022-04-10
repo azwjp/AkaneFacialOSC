@@ -177,6 +177,15 @@
   <data name="DialogRevertMessage" xml:space="preserve">
     <value>全部撤銷，成啓動時的值</value>
   </data>
+  <data name="LabelApplicationFps" xml:space="preserve">
+    <value>APP動作FPS</value>
+  </data>
+  <data name="LabelDeviceFps" xml:space="preserve">
+    <value>裝置數據更新FPS</value>
+  </data>
+  <data name="LabelTargetFps" xml:space="preserve">
+    <value>設置FPS</value>
+  </data>
   <data name="MessageCalibrationRequired" xml:space="preserve">
     <value>Vive Pro Eye 需要校准。到完畢校准爲止您可能不可以使用裝置。</value>
   </data>

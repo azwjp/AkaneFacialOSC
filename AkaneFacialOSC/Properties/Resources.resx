@@ -180,6 +180,15 @@
   <data name="DialogRevertMessage" xml:space="preserve">
     <value>Undo all changes to the startup</value>
   </data>
+  <data name="LabelApplicationFps" xml:space="preserve">
+    <value>Application FPS</value>
+  </data>
+  <data name="LabelDeviceFps" xml:space="preserve">
+    <value>Device FPS</value>
+  </data>
+  <data name="LabelTargetFps" xml:space="preserve">
+    <value>Target FPS</value>
+  </data>
   <data name="MessageCalibrationRequired" xml:space="preserve">
     <value>Your Vive Pro Eye need to be calibrated. The device might not able to use until calibration.</value>
   </data>

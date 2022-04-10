@@ -177,6 +177,15 @@
   <data name="DialogRevertMessage" xml:space="preserve">
     <value>기동 했을 때의 설정을 복원합니다.</value>
   </data>
+  <data name="LabelApplicationFps" xml:space="preserve">
+    <value>데이타 확인 빈도</value>
+  </data>
+  <data name="LabelDeviceFps" xml:space="preserve">
+    <value>데이타 경신 빈도</value>
+  </data>
+  <data name="LabelTargetFps" xml:space="preserve">
+    <value>목표 FPS</value>
+  </data>
   <data name="MessageCalibrationRequired" xml:space="preserve">
     <value>Vive Pro Eye를 교정해야 합니다. 교정할 때까지 사용할 수 없는 가능성이 있습니다.</value>
   </data>

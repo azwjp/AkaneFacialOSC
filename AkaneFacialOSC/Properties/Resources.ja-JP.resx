@@ -177,6 +177,15 @@
   <data name="DialogRevertMessage" xml:space="preserve">
     <value>すべての設定の変更を戻して起動時の状態に戻します．</value>
   </data>
+  <data name="LabelApplicationFps" xml:space="preserve">
+    <value>データ確認速度</value>
+  </data>
+  <data name="LabelDeviceFps" xml:space="preserve">
+    <value>デバイス更新速度</value>
+  </data>
+  <data name="LabelTargetFps" xml:space="preserve">
+    <value>設定 FPS</value>
+  </data>
   <data name="MessageCalibrationRequired" xml:space="preserve">
     <value>Vive Pro Eye のアイトラッキングのキャリブレーションが必要です．キャリブレーションが完了するまで使用できない可能性があります．</value>
   </data>

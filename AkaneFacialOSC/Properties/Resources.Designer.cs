@@ -250,6 +250,33 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   Application FPS に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LabelApplicationFps {
+            get {
+                return ResourceManager.GetString("LabelApplicationFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Device FPS に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LabelDeviceFps {
+            get {
+                return ResourceManager.GetString("LabelDeviceFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Target FPS に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LabelTargetFps {
+            get {
+                return ResourceManager.GetString("LabelTargetFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Your Vive Pro Eye need to be calibrated. The device might not able to use until calibration. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MessageCalibrationRequired {
