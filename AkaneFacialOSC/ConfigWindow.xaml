@@ -81,7 +81,6 @@
                     DisplayMemberPath="Key"
                     ItemsSource="{Binding ApplicationThemeList}"
                     SelectedValue="{Binding ApplicationTheme}" 
-                    SelectionChanged="ApplicationTheme_SelectionChanged"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"/>
         </Grid>

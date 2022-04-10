@@ -94,18 +94,6 @@ namespace Azw.FacialOsc
             Controller?.ChangeLipTracker(trackingType);
         }
 
-        private void Language_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var ui = (ComboBox)sender;
-            var culture = (string)ui.SelectedValue;
-            Controller?.LanguageChanged(culture);
-        }
-        private void ApplicationTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var ui = (ComboBox)sender;
-            var theme = (AkaneThemes.Themes)ui.SelectedValue;
-        }
-
         private readonly Regex numberRegex = new (@"\d*");
         private bool ValidateNumber(string text) { return numberRegex.IsMatch(text); }
         private void TextBox_ValidateNumber(object sender, TextCompositionEventArgs e)
