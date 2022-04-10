@@ -356,26 +356,27 @@ namespace Azw.FacialOsc
                     .Select(k => Signals[k]);
 
                 TrackingStatus.DisplayingSignalList = new ObservableCollection<SignalProperty>(toBeDisplayed);
+
+                mainWindow?.Dispatcher.Invoke(() =>
+                {
+                    mainWindow?.CheckCheckedAll();
+                });
             }).ConfigureAwait(false);
         }
 
-        internal void BulkCheck()
+        internal void BulkChange(bool toBe)
         {
+            var isDirty = false;
             foreach (var signal in TrackingStatus.DisplayingSignalList)
             {
-                signal.IsSending = true;
+                if (signal.IsSending != toBe)
+                {
+                    isDirty = true;
+                    signal.IsSending = toBe;
+                }
             }
 
-            MarkDirty();
-        }
-        internal void BulkUnCheck()
-        {
-            foreach (var signal in TrackingStatus.DisplayingSignalList)
-            {
-                signal.IsSending = false;
-            }
-
-            MarkDirty();
+            if (isDirty) MarkDirty();
         }
 
         internal void SetEyeFps(double fps)

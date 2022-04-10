@@ -37,18 +37,32 @@ namespace Azw.FacialOsc
 
             FilterList.SelectedIndex = 0;
 
+            CheckCheckedAll();
             mainPanel.Visibility = Visibility.Visible;
 
-            SelectAll.IsChecked = Controller.TrackingStatus.DisplayingSignalList.All(s => s.IsSending);
+        }
+
+        internal void CheckCheckedAll()
+        {
+            var checkedCount = Controller.TrackingStatus.DisplayingSignalList.Count(s => s.IsSending);
+            if (checkedCount == 0)
+            {
+                SelectAll.IsChecked = false;
+            }
+            else if (checkedCount == Controller.TrackingStatus.DisplayingSignalList.Count)
+            {
+                SelectAll.IsChecked = true;
+            }
+            else
+            {
+                SelectAll.IsChecked = null;
+            }
         }
 
         private void MarkDirty(object sender, RoutedEventArgs e)
         {
             Controller?.MarkDirty();
         }
-
-        public ObservableCollection<SignalProperty> Items { get; private set; }
-            = new ObservableCollection<SignalProperty>();
 
         private void facialTrackerButton_Clicked(object sender, RoutedEventArgs args)
         {
@@ -58,6 +72,7 @@ namespace Azw.FacialOsc
         {
             Controller?.ChangeFilter(sender, args);
         }
+
         private void eyeTrackerButton_Clicked(object sender, RoutedEventArgs args)
         {
             Controller?.SwitchEyeTracker();
@@ -108,13 +123,15 @@ namespace Azw.FacialOsc
             w.Show();
         }
 
-        private void BulkCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void BulkCheckBox_Clicked(object sender, RoutedEventArgs e)
         {
-            Controller?.BulkCheck();
+            var ui = (CheckBox)sender;
+            Controller?.BulkChange(ui.IsChecked != false);
         }
-        private void BulkCheckBox_UnChecked(object sender, RoutedEventArgs e)
+        private void IsSendingCheckBox_Clicked(object sender, RoutedEventArgs e)
         {
-            Controller?.BulkUnCheck();
+            Controller?.MarkDirty();
+            CheckCheckedAll();
         }
     }
 
