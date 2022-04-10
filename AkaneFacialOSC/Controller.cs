@@ -200,6 +200,24 @@ namespace Azw.FacialOsc
         {
             if (eye == null) eye = await EyeTracker.Instance<SRanipalEyeTracker>().ConfigureAwait(false);
 
+            if (eye.Status == DeviceStatus.Disbled || eye.Status == DeviceStatus.Stopping && eye is SRanipalEyeTracker)
+            {
+                _ = Task.Run(() => {
+                    if (!SRanipal_Eye.IsViveProEye())
+                    {
+                        log.AddLog(Resources.MessageNotProEye);
+                    }
+                }).ConfigureAwait(false);
+                _ = Task.Run(() =>
+                {
+                    var isNeedCalibration = false;
+                    SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
+                    if (isNeedCalibration)
+                    {
+                        log.AddLog(Resources.MessageCalibrationRequired);
+                    }
+                }).ConfigureAwait(false);
+            }
             await eye.Switch().ConfigureAwait(false);
         }
 
@@ -222,22 +240,6 @@ namespace Azw.FacialOsc
             {
                 case EyeTrackingType.ViveSRanipal:
                     eye = await EyeTracker.Instance<SRanipalEyeTracker>().ConfigureAwait(false);
-
-                    _ = Task.Run(() => {
-                        if (SRanipal_Eye.IsViveProEye())
-                        {
-                            log.AddLog(Resources.MessageNotProEye);
-                        }
-                    }).ConfigureAwait(false);
-                    _ = Task.Run(() =>
-                    {
-                        var isNeedCalibration = false;
-                        SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
-                        if (isNeedCalibration)
-                        {
-                            log.AddLog(Resources.MessageCalibrationRequired);
-                        }
-                    }).ConfigureAwait(false);
                     break;
                 case EyeTrackingType.PimaxAsee:
                     eye = await EyeTracker.Instance<DroolonPi1EyeTracker>().ConfigureAwait(false);
