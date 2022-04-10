@@ -493,24 +493,6 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
-        ///   Normal に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string ThemeAkane {
-            get {
-                return ResourceManager.GetString("ThemeAkane", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Block-and-White に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string ThemeSimple {
-            get {
-                return ResourceManager.GetString("ThemeSimple", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Stopped に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string TrackingDisabled {
@@ -552,6 +534,24 @@ namespace Azw.FacialOsc.Properties {
         public static string TrackingUnavailable {
             get {
                 return ResourceManager.GetString("TrackingUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Validation {
+            get {
+                return ResourceManager.GetString("Validation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   No value inputted. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ValidationNoValue {
+            get {
+                return ResourceManager.GetString("ValidationNoValue", resourceCulture);
             }
         }
         

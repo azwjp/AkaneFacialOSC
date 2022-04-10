@@ -261,12 +261,6 @@
   <data name="OSCSignalFilterOnlyEnabled" xml:space="preserve">
     <value>Only Enabled</value>
   </data>
-  <data name="ThemeAkane" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="ThemeSimple" xml:space="preserve">
-    <value>Block-and-White</value>
-  </data>
   <data name="TrackingDisabled" xml:space="preserve">
     <value>Stopped</value>
   </data>
@@ -281,6 +275,12 @@
   </data>
   <data name="TrackingUnavailable" xml:space="preserve">
     <value>Unavailable</value>
+  </data>
+  <data name="Validation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ValidationNoValue" xml:space="preserve">
+    <value>No value inputted.</value>
   </data>
   <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
     <value>Tracking Configurations</value>

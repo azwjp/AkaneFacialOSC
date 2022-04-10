@@ -25,10 +25,6 @@
         Width="450"
         MinHeight="450"
         MinWidth="450">
-
-    <Window.Resources>
-        <view:ThemeNameConverter x:Key="ThemeToLabel"/>
-    </Window.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

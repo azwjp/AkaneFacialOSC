@@ -94,7 +94,7 @@ namespace Azw.FacialOsc
             Controller?.ChangeLipTracker(trackingType);
         }
 
-        private readonly Regex numberRegex = new (@"\d*");
+        private readonly Regex numberRegex = new (@"\d*(\.\d*)?");
         private bool ValidateNumber(string text) { return numberRegex.IsMatch(text); }
         private void TextBox_ValidateNumber(object sender, TextCompositionEventArgs e)
         {
