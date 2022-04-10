@@ -394,6 +394,78 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   All に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterAll {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Essential に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterEssential {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterEssential", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Eye (Computed) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterEyeComputed {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterEyeComputed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Eye (Raw) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterEyeRaw {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterEyeRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Gaze に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterGaze {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterGaze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Lip (Computed) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterLipComputed {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterLipComputed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Lip (Raw) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterLipRaw {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterLipRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Only Enabled に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OSCSignalFilterOnlyEnabled {
+            get {
+                return ResourceManager.GetString("OSCSignalFilterOnlyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Normal に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ThemeAkane {

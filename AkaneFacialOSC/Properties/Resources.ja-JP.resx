@@ -225,6 +225,30 @@
   <data name="OSCHeaderValue" xml:space="preserve">
     <value>値</value>
   </data>
+  <data name="OSCSignalFilterAll" xml:space="preserve">
+    <value>すべて表示</value>
+  </data>
+  <data name="OSCSignalFilterEssential" xml:space="preserve">
+    <value>主要な信号</value>
+  </data>
+  <data name="OSCSignalFilterEyeComputed" xml:space="preserve">
+    <value>目（計算済み）</value>
+  </data>
+  <data name="OSCSignalFilterEyeRaw" xml:space="preserve">
+    <value>目（生データ）</value>
+  </data>
+  <data name="OSCSignalFilterGaze" xml:space="preserve">
+    <value>視線</value>
+  </data>
+  <data name="OSCSignalFilterLipComputed" xml:space="preserve">
+    <value>口（計算済み）</value>
+  </data>
+  <data name="OSCSignalFilterLipRaw" xml:space="preserve">
+    <value>口（生データ）</value>
+  </data>
+  <data name="OSCSignalFilterOnlyEnabled" xml:space="preserve">
+    <value>使用中のみ</value>
+  </data>
   <data name="TrackingDisabled" xml:space="preserve">
     <value>停止</value>
   </data>

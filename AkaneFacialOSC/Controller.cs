@@ -294,33 +294,39 @@ namespace Azw.FacialOsc
 
             var ui = (ListBox)sender;
             var selected = ui.SelectedItems;
+            var selectedKeys = ui.SelectedItems
+                .Cast<KeyValuePair<OSCSignalFilter, string>>()
+                .Select(kv => kv.Key).ToList();
+            var addedKeys = args.AddedItems
+                .Cast<KeyValuePair<OSCSignalFilter, string>>()
+                .Select(kv => kv.Key).ToList();
 
             isModifyingFilter = true;
-            if (args.AddedItems.Count == 0 && selected.Count == 0)
+            if (addedKeys.Count == 0 && selectedKeys.Count == 0)
             {
                 selected.Clear();
-                selected.Add(OSCDataFilter.All);
+                selected.Add(new KeyValuePair<OSCSignalFilter, string>(OSCSignalFilter.All, Resources.OSCSignalFilterAll));
             }
-            else if (args.AddedItems.Contains(OSCDataFilter.All))
+            else if (addedKeys.Contains(OSCSignalFilter.All))
             {
                 selected.Clear();
-                selected.Add(OSCDataFilter.All);
+                selected.Add(new KeyValuePair<OSCSignalFilter, string>(OSCSignalFilter.All, Resources.OSCSignalFilterAll));
             }
-            else if (args.AddedItems.Contains(OSCDataFilter.OnlyEnabled))
+            else if (addedKeys.Contains(OSCSignalFilter.OnlyEnabled))
             {
                 selected.Clear();
-                selected.Add(OSCDataFilter.OnlyEnabled);
+                selected.Add(new KeyValuePair<OSCSignalFilter, string>(OSCSignalFilter.OnlyEnabled, Resources.OSCSignalFilterOnlyEnabled));
             }
             else
             {
-                if (selected.Contains(OSCDataFilter.All))
+                if (selectedKeys.Contains(OSCSignalFilter.All))
                 {
-                    selected.Remove(OSCDataFilter.All);
+                    selected.RemoveAt(selectedKeys.IndexOf(OSCSignalFilter.All));
                 }
 
-                if (selected.Contains(OSCDataFilter.OnlyEnabled))
+                if (selectedKeys.Contains(OSCSignalFilter.OnlyEnabled))
                 {
-                    selected.Remove(OSCDataFilter.OnlyEnabled);
+                    selected.RemoveAt(selectedKeys.IndexOf(OSCSignalFilter.OnlyEnabled));
                 }
 
             }
@@ -329,24 +335,25 @@ namespace Azw.FacialOsc
             _ = Task.Run(() =>
             {
                 var toBeDisplayed = selected
-                .Cast<OSCDataFilter>()
-                .SelectMany(filter =>
-                    Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().Where(k =>
-                        filter switch
-                        {
-                            OSCDataFilter.All => true,
-                            OSCDataFilter.OnlyEnabled => Signals[k].IsSending,
-                            OSCDataFilter.Essential => FaceKeyUtils.IsEssential(k),
-                            OSCDataFilter.EyeRaw => FaceKeyUtils.GetDataType(k) == DataType.Eye,
-                            OSCDataFilter.EyeComputed => FaceKeyUtils.GetDataType(k) == DataType.ComputedEye,
-                            OSCDataFilter.Gaze => FaceKeyUtils.GetDataType(k) == DataType.Gaze,
-                            OSCDataFilter.LipRaw => FaceKeyUtils.GetDataType(k) == DataType.Facial,
-                            OSCDataFilter.LipComputed => FaceKeyUtils.GetDataType(k) == DataType.ComputedFacial,
-                            _ => throw new UnexpectedEnumValueException(filter),
-                        })
-                )
-                .Distinct()
-                .Select(k => Signals[k]);
+                    .Cast<KeyValuePair<OSCSignalFilter, string>>()
+                    .Select(kv => kv.Key)
+                    .SelectMany(filter =>
+                        Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().Where(k =>
+                            filter switch
+                            {
+                                OSCSignalFilter.All => true,
+                                OSCSignalFilter.OnlyEnabled => Signals[k].IsSending,
+                                OSCSignalFilter.Essential => FaceKeyUtils.IsEssential(k),
+                                OSCSignalFilter.EyeRaw => FaceKeyUtils.GetDataType(k) == DataType.Eye,
+                                OSCSignalFilter.EyeComputed => FaceKeyUtils.GetDataType(k) == DataType.ComputedEye,
+                                OSCSignalFilter.Gaze => FaceKeyUtils.GetDataType(k) == DataType.Gaze,
+                                OSCSignalFilter.LipRaw => FaceKeyUtils.GetDataType(k) == DataType.Facial,
+                                OSCSignalFilter.LipComputed => FaceKeyUtils.GetDataType(k) == DataType.ComputedFacial,
+                                _ => throw new UnexpectedEnumValueException(filter),
+                            })
+                    )
+                    .Distinct()
+                    .Select(k => Signals[k]);
 
                 TrackingStatus.DisplayingSignalList = new ObservableCollection<SignalProperty>(toBeDisplayed);
             }).ConfigureAwait(false);
@@ -416,6 +423,7 @@ namespace Azw.FacialOsc
                 Configs.Language = cultureName;
                 TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.EyeTrackingStatus));
                 TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.LipTrackingStatus));
+                TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.FilterList));
             }).ConfigureAwait(false);
         }
 

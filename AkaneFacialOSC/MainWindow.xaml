@@ -27,6 +27,7 @@
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
         <local:DeviceStatusToColorConverter x:Key="DeviceStatusToColor"/>
         <local:DeviceStatusToLabelConverter x:Key="DeviceStatusToLabel"/>
+        <local:OscFiltgerToLabelConverter x:Key="OscFiltgerToLabel"/>
         <local:DirtyToLabelConverter x:Key="DirtyToLabel"/>
         <local:NegationConverter x:Key="Negation"/>
     </Window.Resources>
@@ -64,7 +65,9 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" x:Name="FilterList" ItemsSource="{Binding FilterList}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                <ListBox Grid.Row="0" x:Name="FilterList" 
+                          SelectedValuePath="Key"
+                          DisplayMemberPath="Value" ItemsSource="{Binding FilterList, Converter={StaticResource OscFiltgerToLabel}}" SelectionMode="Multiple" SelectionChanged="Filter_Clicked" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"/>
                 <CheckBox Grid.Row="1" x:Name="SelectAll" Content="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ConfigSelectAll, Mode=OneWay}" Checked="BulkCheckBox_Checked" Unchecked="BulkCheckBox_UnChecked" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"/>
             </Grid>
             <ListView Grid.Row="0"

@@ -228,6 +228,30 @@
   <data name="OSCHeaderValue" xml:space="preserve">
     <value>Val</value>
   </data>
+  <data name="OSCSignalFilterAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="OSCSignalFilterEssential" xml:space="preserve">
+    <value>Essential</value>
+  </data>
+  <data name="OSCSignalFilterEyeComputed" xml:space="preserve">
+    <value>Eye (Computed)</value>
+  </data>
+  <data name="OSCSignalFilterEyeRaw" xml:space="preserve">
+    <value>Eye (Raw)</value>
+  </data>
+  <data name="OSCSignalFilterGaze" xml:space="preserve">
+    <value>Gaze</value>
+  </data>
+  <data name="OSCSignalFilterLipComputed" xml:space="preserve">
+    <value>Lip (Computed)</value>
+  </data>
+  <data name="OSCSignalFilterLipRaw" xml:space="preserve">
+    <value>Lip (Raw)</value>
+  </data>
+  <data name="OSCSignalFilterOnlyEnabled" xml:space="preserve">
+    <value>Only Enabled</value>
+  </data>
   <data name="ThemeAkane" xml:space="preserve">
     <value>Normal</value>
   </data>

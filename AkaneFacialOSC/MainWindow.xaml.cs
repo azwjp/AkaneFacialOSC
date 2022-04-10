@@ -11,6 +11,7 @@ using Azw.FacialOsc.Properties;
 using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
 using MahApps.Metro.Controls;
+using System.Collections.Generic;
 
 namespace Azw.FacialOsc
 {
@@ -34,9 +35,8 @@ namespace Azw.FacialOsc
             facialTrackerButton.DataContext = Controller.TrackingStatus;
             eyeTrackerButton.DataContext = Controller.TrackingStatus;
 
-            FilterList.SelectedItem = OSCDataFilter.All;
-            FilterList.SelectedItems.Clear();
-            FilterList.SelectedItems.Add(OSCDataFilter.All);
+            FilterList.SelectedIndex = 0;
+
             mainPanel.Visibility = Visibility.Visible;
 
             SelectAll.IsChecked = Controller.TrackingStatus.DisplayingSignalList.All(s => s.IsSending);
@@ -230,8 +230,36 @@ namespace Azw.FacialOsc
             return Convert(value, targetType, parameter, language);
         }
     }
-    public enum OSCDataFilter
+
+    [ValueConversion(typeof(IDictionary<OSCSignalFilter, string>), typeof(string))]
+    public class OscFiltgerToLabelConverter : IValueConverter
     {
-        All, OnlyEnabled, Essential, EyeRaw, EyeComputed, Gaze, LipRaw, LipComputed
+        public object Convert(object value, Type targetType, object parameter, CultureInfo language)
+        {
+            if (value is not IDictionary<OSCSignalFilter, string> statuses) return DependencyProperty.UnsetValue;
+
+            return statuses.ToDictionary(s => s.Key, s => s.Key switch
+            {
+                OSCSignalFilter.All => Resources.OSCSignalFilterAll,
+                OSCSignalFilter.OnlyEnabled => Resources.OSCSignalFilterOnlyEnabled,
+                OSCSignalFilter.Essential => Resources.OSCSignalFilterEssential,
+                OSCSignalFilter.Gaze => Resources.OSCSignalFilterGaze,
+                OSCSignalFilter.EyeRaw => Resources.OSCSignalFilterEyeRaw,
+                OSCSignalFilter.EyeComputed => Resources.OSCSignalFilterEyeComputed,
+                OSCSignalFilter.LipRaw => Resources.OSCSignalFilterLipRaw,
+                OSCSignalFilter.LipComputed => Resources.OSCSignalFilterLipComputed,
+                _ => s.ToString(),
+            });
+        }
+
+        // TODO
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo language)
+        {
+            return Convert(value, targetType, parameter, language);
+        }
+    }
+    public enum OSCSignalFilter
+    {
+        All, OnlyEnabled, Essential, Gaze, EyeRaw, EyeComputed, LipRaw, LipComputed
     }
 }

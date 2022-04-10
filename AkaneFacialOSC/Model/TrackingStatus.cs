@@ -49,7 +49,7 @@ namespace Azw.FacialOsc.Model
 
         public Dictionary<EyeTrackingType, string> EyeTrackerList { get; set; } = Enum.GetValues(typeof(EyeTrackingType)).Cast<EyeTrackingType>().ToDictionary(t => t, t => t.ToString());
         public Dictionary<LipTrackingType, string> LipTrackerList { get; set; } = Enum.GetValues(typeof(LipTrackingType)).Cast<LipTrackingType>().ToDictionary(t => t, t => t.ToString());
-        public ObservableCollection<OSCDataFilter> FilterList { get; set; } = new ObservableCollection<OSCDataFilter>(Enum.GetValues(typeof(OSCDataFilter)).Cast<OSCDataFilter>().ToList());
+        public Dictionary<OSCSignalFilter, string> FilterList { get; set; } = new Dictionary<OSCSignalFilter, string>(Enum.GetValues(typeof(OSCSignalFilter)).Cast<OSCSignalFilter>().ToDictionary(s => s, s => s.ToString()));
 
 
         private EyeTrackingType eyeType;

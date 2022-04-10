@@ -136,7 +136,7 @@
     <value>OK</value>
   </data>
   <data name="ButtonResetAll" xml:space="preserve">
-    <value>전부 초기화</value>
+    <value>모두 초기화</value>
   </data>
   <data name="ButtonRevert" xml:space="preserve">
     <value>되돌리기</value>
@@ -208,7 +208,7 @@
     <value>업데이트를 확인할 수 없었습니다.</value>
   </data>
   <data name="OSCHeaderClip" xml:space="preserve">
-    <value>Clip</value>
+    <value>클립</value>
   </data>
   <data name="OSCHeaderCurve" xml:space="preserve">
     <value>보정 곡선</value>
@@ -224,6 +224,30 @@
   </data>
   <data name="OSCHeaderValue" xml:space="preserve">
     <value>송신치</value>
+  </data>
+  <data name="OSCSignalFilterAll" xml:space="preserve">
+    <value>모두 표지</value>
+  </data>
+  <data name="OSCSignalFilterEssential" xml:space="preserve">
+    <value>주된</value>
+  </data>
+  <data name="OSCSignalFilterEyeComputed" xml:space="preserve">
+    <value>눈 (계산 후)</value>
+  </data>
+  <data name="OSCSignalFilterEyeRaw" xml:space="preserve">
+    <value>눈 (미가공)</value>
+  </data>
+  <data name="OSCSignalFilterGaze" xml:space="preserve">
+    <value>시선</value>
+  </data>
+  <data name="OSCSignalFilterLipComputed" xml:space="preserve">
+    <value>입 (계산 후)</value>
+  </data>
+  <data name="OSCSignalFilterLipRaw" xml:space="preserve">
+    <value>입 (미가공)</value>
+  </data>
+  <data name="OSCSignalFilterOnlyEnabled" xml:space="preserve">
+    <value>사용중만</value>
   </data>
   <data name="TrackingDisabled" xml:space="preserve">
     <value>정지</value>
