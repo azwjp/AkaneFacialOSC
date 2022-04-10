@@ -273,6 +273,12 @@
   <data name="TrackingUnavailable" xml:space="preserve">
     <value>利用不可</value>
   </data>
+  <data name="ValidationNoValue" xml:space="preserve">
+    <value>値が入力されていません．</value>
+  </data>
+  <data name="ValidationShouldBePositive" xml:space="preserve">
+    <value>0 以上の数値を入力してください．</value>
+  </data>
   <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
     <value>トラッキング設定</value>
   </data>

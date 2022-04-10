@@ -147,9 +147,13 @@
                     Grid.Column="2"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
-                    PreviewTextInput="TextBox_ValidateNumber"
-                    DataObject.Pasting="TextBox_ValidateNumber_Pasting"
-                    Text="{Binding MaxAngle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="Arrow"/>
+                    Cursor="Arrow">
+                <Binding Path="MaxAngle" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <view:PositiveNumberValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox>
 
             <TextBlock
                     Grid.Row="4"
@@ -162,10 +166,14 @@
                     Grid.Column="2"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
-                    PreviewTextInput="TextBox_ValidateNumber"
-                    DataObject.Pasting="TextBox_ValidateNumber_Pasting"
-                    Text="{Binding EyeTrackerTargetFps, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="Arrow"/>
-            
+                    Cursor="Arrow">
+                <Binding Path="EyeTrackerTargetFps" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <view:PositiveNumberValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox>
+
             <TextBlock
                     Grid.Row="5"
                     Grid.Column="0"
@@ -177,9 +185,13 @@
                     Grid.Column="2"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
-                    PreviewTextInput="TextBox_ValidateNumber"
-                    DataObject.Pasting="TextBox_ValidateNumber_Pasting"
-                    Text="{Binding LipTrackerTargetFps, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="Arrow"/>
+                    Cursor="Arrow">
+                <Binding Path="LipTrackerTargetFps" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <view:PositiveNumberValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox>
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">

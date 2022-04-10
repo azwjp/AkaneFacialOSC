@@ -273,6 +273,12 @@
   <data name="TrackingUnavailable" xml:space="preserve">
     <value>상용 불가</value>
   </data>
+  <data name="ValidationNoValue" xml:space="preserve">
+    <value>값이 입력되지 없습니다.</value>
+  </data>
+  <data name="ValidationShouldBePositive" xml:space="preserve">
+    <value>값은 0 이상의 수치야 합니다.</value>
+  </data>
   <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
     <value>트래킹 설정</value>
   </data>

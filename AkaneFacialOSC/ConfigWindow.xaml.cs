@@ -93,21 +93,5 @@ namespace Azw.FacialOsc
             var trackingType = (LipTrackingType)ui.SelectedValue;
             Controller?.ChangeLipTracker(trackingType);
         }
-
-        private readonly Regex numberRegex = new (@"\d*(\.\d*)?");
-        private bool ValidateNumber(string text) { return numberRegex.IsMatch(text); }
-        private void TextBox_ValidateNumber(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !ValidateNumber(e.Text);
-        }
-        private void TextBox_ValidateNumber_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            if (e.DataObject.GetDataPresent(typeof(string)))
-            {
-                var text = (string)e.DataObject.GetData(typeof(string));
-                if (ValidateNumber(text)) return;
-            }
-            e.CancelCommand();
-        }
     }
 }

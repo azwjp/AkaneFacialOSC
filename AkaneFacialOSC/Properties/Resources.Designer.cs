@@ -538,20 +538,20 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
-        ///    に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string Validation {
-            get {
-                return ResourceManager.GetString("Validation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   No value inputted. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ValidationNoValue {
             get {
                 return ResourceManager.GetString("ValidationNoValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The value should be positive number. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ValidationShouldBePositive {
+            get {
+                return ResourceManager.GetString("ValidationShouldBePositive", resourceCulture);
             }
         }
         

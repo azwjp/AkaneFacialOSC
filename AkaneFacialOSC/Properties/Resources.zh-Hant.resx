@@ -273,6 +273,12 @@
   <data name="TrackingUnavailable" xml:space="preserve">
     <value>不可用</value>
   </data>
+  <data name="ValidationNoValue" xml:space="preserve">
+    <value>沒有輸入值。</value>
+  </data>
+  <data name="ValidationShouldBePositive" xml:space="preserve">
+    <value>輸入的值需要0以上的數。</value>
+  </data>
   <data name="WindowHeaderDeviceConfigs" xml:space="preserve">
     <value>設置追蹤</value>
   </data>
