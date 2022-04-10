@@ -107,7 +107,6 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox VerticalContentAlignment="Stretch"
-                                        Width="{Binding ElementName=dummyWidthCheckBox, Path=ActualWidth}"
                                         Content=""
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding IsSending}"
@@ -117,24 +116,26 @@
                         </GridViewColumn>
                         <GridViewColumn x:Name="keyColumn" Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}">
                             <GridViewColumnHeader Padding="7 6 7 6" HorizontalAlignment="Center">
-                                <TextBlock Padding="0"
-                                       Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
-                                       Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderKey, Mode=OneWay}"/>
+                                <TextBlock
+                                       Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderKey}"/>
                             </GridViewColumnHeader>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Width="{Binding ElementName=dummyWidthKey, Path=ActualWidth}"
+                                    <TextBlock
                                            Text="{Binding Key}"
                                            VerticalAlignment="Center" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn  Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}" Header="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderValue, Mode=OneWay}">
+                        <GridViewColumn  Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}">
+                            <GridViewColumnHeader Padding="7 6 7 6" HorizontalAlignment="Center">
+                                <TextBlock
+                                       Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.OSCHeaderValue}"/>
+                            </GridViewColumnHeader>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center"
-                                         Width="{Binding ElementName=dummyWidthValue, Path=ActualWidth}"
-                                         Text="{Binding Value}" />
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right"
+                                         Text="{Binding Value, Mode=OneWay, StringFormat={}{0:F2}}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -157,7 +158,7 @@
                                             SmallChange="0.01"
                                             TickFrequency="1" />
                                         <TextBox Grid.Column="1"
-                                             Text="{Binding Value, ElementName=gainSlider}"
+                                             Text="{Binding Value, ElementName=gainSlider, StringFormat={}{0:F2}}"
                                              TextWrapping="NoWrap"/>
                                     </Grid>
                                 </DataTemplate>
@@ -182,7 +183,7 @@
                                             SmallChange="0.01"
                                             TickFrequency="1" />
                                         <TextBox Grid.Column="1"
-                                             Text="{Binding Value, ElementName=curveSlider}"
+                                             Text="{Binding Value, ElementName=curveSlider, StringFormat={}{0:F2}}"
                                              TextWrapping="NoWrap"/>
                                     </Grid>
                                 </DataTemplate>
