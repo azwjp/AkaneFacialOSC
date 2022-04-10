@@ -33,7 +33,7 @@
     </Window.Resources>
     <Grid Name="mainPanel">
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="3*" />
             <RowDefinition Height="*" MinHeight="200"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="8,8,8,8">
