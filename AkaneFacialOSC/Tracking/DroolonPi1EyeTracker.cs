@@ -47,9 +47,15 @@ namespace Azw.FacialOsc.Tracking
 
         public override bool UpdateData()
         {
-            if (pimaxAseeEye.Timestamp <= lastUpdate) return false;
-
-            return true;
+            if (pimaxAseeEye.LastUpdateTick <= lastUpdate)
+            {
+                return false;
+            }
+            else
+            {
+                lastUpdate = pimaxAseeEye.LastUpdateTick;
+                return true;
+            }
         }
 
         public override IDictionary<FaceKey, float> GetData()

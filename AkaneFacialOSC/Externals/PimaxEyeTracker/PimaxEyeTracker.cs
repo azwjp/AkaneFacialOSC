@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Pimax.EyeTracking {
@@ -138,7 +139,9 @@ namespace Pimax.EyeTracking {
         public EyeState RecommendedEye { get; private set; }
 
         public System.Int64 Timestamp => _GetTimestamp();
-		//public Eye RecommendedEye => _GetRecommendedEye();
+        //public Eye RecommendedEye => _GetRecommendedEye();
+
+        public long LastUpdateTick { get; private set; } = 0;
 
 		public bool Active => _IsActive();
 
@@ -165,6 +168,7 @@ namespace Pimax.EyeTracking {
 				LeftEye = new EyeState(Eye.Left, this);
                 RightEye = new EyeState(Eye.Right, this);
                 RecommendedEye = new EyeState(_GetRecommendedEye(), this);
+                LastUpdateTick = DateTime.Now.Ticks;
                 OnUpdate?.Invoke();
 			}
 		}
