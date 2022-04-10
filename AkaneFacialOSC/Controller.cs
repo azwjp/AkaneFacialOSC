@@ -424,6 +424,7 @@ namespace Azw.FacialOsc
                 TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.EyeTrackingStatus));
                 TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.LipTrackingStatus));
                 TrackingStatus.NotifyPropertyChanged(nameof(TrackingStatus.FilterList));
+                Configs.NotifyPropertyChanged(nameof(Configs.IsDirty));
             }).ConfigureAwait(false);
         }
 
