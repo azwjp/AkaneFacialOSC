@@ -182,7 +182,7 @@ namespace Azw.FacialOsc.Tracking
         }
         protected OSCData? CalcBipolar(FaceKey key, FaceKey lowerKey, FaceKey higherKey)
         {
-            if (!data.ContainsKey(higherKey) || data.ContainsKey(lowerKey)) return null;
+            if (!data.ContainsKey(higherKey) || !data.ContainsKey(lowerKey)) return null;
 
             var higherValue = data[higherKey];
             var lowerValue = data[lowerKey];
