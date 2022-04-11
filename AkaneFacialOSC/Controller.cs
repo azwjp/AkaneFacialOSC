@@ -254,7 +254,7 @@ namespace Azw.FacialOsc
         {
             try
             {
-                foreach (var o in new TrackingData(rawData, Signals, TrackingStatus.MaxAngle, type).CalcAndGet())
+                foreach (var o in new TrackingData(rawData, Signals, TrackingStatus.MaxAngleRadian, type).CalcAndGet())
                 {
                     osc.Send(o);
                     Signals[o.key].Value = o.value;

@@ -107,6 +107,7 @@ namespace Azw.FacialOsc.Model
         }
 
         private float maxAngle = 45;
+        public float MaxAngleRadian { get; private set; } = 45f * MathF.PI / 180f;
         public float MaxAngle
         {
             get { return maxAngle; }
@@ -114,6 +115,7 @@ namespace Azw.FacialOsc.Model
             {
                 if (maxAngle == value) return;
                 maxAngle = value;
+                MaxAngleRadian = value * MathF.PI / 180f;
                 NotifyPropertyChanged(nameof(MaxAngle));
                 SetDirty();
             }
