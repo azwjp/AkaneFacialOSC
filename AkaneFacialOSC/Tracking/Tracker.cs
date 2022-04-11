@@ -77,6 +77,7 @@ namespace Azw.FacialOsc.Tracking
                 var sleepTime = targetInterval - loopTime.Elapsed;
                 if (sleepTime > TimeSpan.Zero) Thread.Sleep(sleepTime);
                 ApplicationFps.Add(loopTime.Elapsed);
+                TrackingFps.Temporary(updatingTime.Elapsed);
                 loopTime = Stopwatch.StartNew();
             }
         }
@@ -94,16 +95,18 @@ namespace Azw.FacialOsc.Tracking
         public abstract bool UpdateData();
         public abstract IDictionary<FaceKey, float> GetData();
 
-        public Task<DeviceStatus> Switch()
+        public Task<DeviceStatus> Switch(Action? starting = null, Action? stopping = null)
         {
             switch (Status)
             {
                 case DeviceStatus.Starting:
                 case DeviceStatus.Running:
+                    stopping?.Invoke();
                     return Stop();
                 case DeviceStatus.Unavailable:
                 case DeviceStatus.Disbled:
                 case DeviceStatus.Stopping:
+                    starting?.Invoke();
                     return Start();
                 default:
                     throw new UnexpectedEnumValueException(Status);

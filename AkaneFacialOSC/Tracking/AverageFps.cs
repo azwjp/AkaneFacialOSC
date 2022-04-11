@@ -47,6 +47,24 @@ namespace Azw.FacialOsc.Tracking
 
             return interval;
         }
+        public TimeSpan Temporary(TimeSpan interval)
+        {
+            intervalSecond[tail] = interval.TotalSeconds;
+
+            var tempCount = count;
+            if (tempCount < capacity) tempCount++;
+
+            var total = 0d;
+            for (nint i = 0; i < tempCount; i++)
+            {
+                total += intervalSecond[i];
+            }
+
+            averageInterval = total / count;
+            averageFps = 1 / averageInterval;
+
+            return interval;
+        }
 
         internal static nint CulcNewCapacity(double fps)
         {
