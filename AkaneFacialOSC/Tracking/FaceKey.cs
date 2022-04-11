@@ -89,6 +89,8 @@ namespace Azw.FacialOsc
         Mouth_Sad_Smile,
         Mouth_Upper_Left_Right,
         Mouth_Lower_Left_Right,
+        Mouth_Left,
+        Mouth_Right,
         Mouth_Left_Right,
         Mouth_Upper_Inside_Overturn,
         Mouth_Lower_Inside_Overturn,
@@ -98,10 +100,6 @@ namespace Azw.FacialOsc
         Mouth_Lower_Down,
         Tongue_Left_Right,
         Tongue_Down_Up,
-
-
-        Mouth_Left,
-        Mouth_Right,
     }
 
     public enum DataType
@@ -339,6 +337,10 @@ namespace Azw.FacialOsc
                     return .5f;
                 case FaceKey.Mouth_Upper_Left_Right:
                 case FaceKey.Mouth_Lower_Left_Right:
+                    return .5f;
+                case FaceKey.Mouth_Left:
+                case FaceKey.Mouth_Right:
+                    return 0;
                 case FaceKey.Mouth_Left_Right:
                 case FaceKey.Mouth_Upper_Inside_Overturn:
                 case FaceKey.Mouth_Lower_Inside_Overturn:
