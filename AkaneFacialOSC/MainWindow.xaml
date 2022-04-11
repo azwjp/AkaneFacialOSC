@@ -295,9 +295,9 @@
                     <TextBlock Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="Face"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.LabelTargetFps, Mode=OneWay}" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeTargetFps"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding Path=EyeTrackerTargetFps, Mode=OneWay, StringFormat={}{0:F2}}"        x:Name="eyeTargetFps"/>
                     <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
-                    <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipTargetFps"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" Text="{Binding Path=LipTrackerTargetFps, Mode=OneWay, StringFormat={}{0:F2}}"        x:Name="lipTargetFps"/>
                     <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.LabelApplicationFps, Mode=OneWay}" />
@@ -307,7 +307,7 @@
                     <TextBlock Grid.Row="2" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left"  Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.LabelDeviceFps, Mode=OneWay}" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="0.000"        x:Name="eyeDeviceFps"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" Text="0.000" x:Name="eyeDeviceFps"/>
                     <TextBlock Grid.Row="3" Grid.Column="2" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
                     <TextBlock Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" Text="0.000"        x:Name="lipDeviceFps"/>
                     <TextBlock Grid.Row="3" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>

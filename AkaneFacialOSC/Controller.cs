@@ -49,7 +49,7 @@ namespace Azw.FacialOsc
 
         private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync(PreferencesV2 preference, bool retry)
         {
-            try { 
+            try {
                 var ap = preference.applicationPreference;
                 var tp = preference.trackingPreference;
 
@@ -118,7 +118,6 @@ namespace Azw.FacialOsc
             eye.updatedHandler += (instance, rawData) => TrackerOnUpdated(instance, rawData, TrackingType.Eye);
             eye.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
             {
-                mainWindow.eyeTargetFps.Text = (1 / instance.targetInterval.TotalSeconds).ToString("0.000");
                 mainWindow.eyeAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
                 mainWindow.eyeDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
             }
@@ -143,7 +142,6 @@ namespace Azw.FacialOsc
             lip.updatedHandler += (instance, rawData) => TrackerOnUpdated(instance, rawData, TrackingType.Lip);
             lip.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
                 {
-                    mainWindow.lipTargetFps.Text = (1 / instance.targetInterval.TotalSeconds).ToString("0.000");
                     mainWindow.lipAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
                     mainWindow.lipDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
                 }
@@ -180,32 +178,48 @@ namespace Azw.FacialOsc
         {
             if (eye == null) eye = await EyeTracker.Instance<SRanipalEyeTracker>().ConfigureAwait(false);
 
-            if (eye.Status == DeviceStatus.Disbled || eye.Status == DeviceStatus.Stopping && eye is SRanipalEyeTracker)
+            _ = eye?.Switch(() =>
             {
-                _ = Task.Run(() => {
-                    if (!SRanipal_Eye.IsViveProEye())
-                    {
-                        log.AddLog(Resources.MessageNotProEye);
-                    }
-                }).ConfigureAwait(false);
-                _ = Task.Run(() =>
+                if (eye is SRanipalEyeTracker)
                 {
-                    var isNeedCalibration = false;
-                    SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
-                    if (isNeedCalibration)
+                    _ = Task.Run(() => {
+                        if (!SRanipal_Eye.IsViveProEye())
+                        {
+                            log.AddLog(Resources.MessageNotProEye);
+                        }
+                    }).ConfigureAwait(false);
+                    _ = Task.Run(() =>
                     {
-                        log.AddLog(Resources.MessageCalibrationRequired);
-                    }
-                }).ConfigureAwait(false);
-            }
-            await eye.Switch().ConfigureAwait(false);
+                        var isNeedCalibration = false;
+                        SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
+                        if (isNeedCalibration)
+                        {
+                            log.AddLog(Resources.MessageCalibrationRequired);
+                        }
+                    }).ConfigureAwait(false);
+                }
+            }, () =>
+            {
+                mainWindow?.Dispatcher.InvokeAsync(() =>
+                {
+                    mainWindow.eyeAppFps.Text = 0d.ToString("0.000");
+                    mainWindow.eyeDeviceFps.Text = 0d.ToString("0.000");
+                });
+            }).ConfigureAwait(false);
         }
 
         internal async Task SwitchFacialTracker()
         {
             if (lip == null) lip = await LipTracker.Instance<SRanipalLipTracker>().ConfigureAwait(false);
 
-            var status = await lip.Switch().ConfigureAwait(false);
+            var status = await lip.Switch(null, () =>
+            {
+                mainWindow?.Dispatcher.InvokeAsync(() =>
+                {
+                    mainWindow.lipAppFps.Text = 0d.ToString("0.000");
+                    mainWindow.lipDeviceFps.Text = 0d.ToString("0.000");
+                });
+            }).ConfigureAwait(false);
 
             // When it is connected with the wireless kit, it could run in the next attempt even if the device throw an error in the first time
             if (status == DeviceStatus.Unavailable && lip.GetType() == typeof(SRanipalLipTracker) && ((SRanipalLipTracker)lip).deviceStatus == ViveSR.Error.LIP_NOT_SUPPORT)
@@ -361,10 +375,12 @@ namespace Azw.FacialOsc
 
         internal void SetEyeFps(double fps)
         {
+            mainWindow?.Dispatcher.InvokeAsync(() => mainWindow.eyeTargetFps.Text = fps.ToString("0.000"));
             eye?.SetTargetFps(fps);
         }
         internal void SetLipFps(double fps)
         {
+            mainWindow?.Dispatcher.InvokeAsync(() => mainWindow.lipTargetFps.Text = fps.ToString("0.000"));
             lip?.SetTargetFps(fps);
         }
 
