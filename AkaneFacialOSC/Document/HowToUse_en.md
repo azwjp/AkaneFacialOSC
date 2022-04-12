@@ -16,13 +16,27 @@ Some basic knowledge to use animators and blend shapes on Unity for VRChat is re
     - Pimax Droolon P1
 
 ## Steps to run
-1. Install SRanipal SDK, and run it before using this app
-    - you can find it on the Vive official SDK website 
+### Preparing
+- If you use Vive Facial Tracker and/or Vive Pro Eye, you need to install and run **SRanipal Runtime**
+    - You can download it from the HTC Vive official website for the developers
+    - https://developer-express.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/download/latest/
+- If you use Pimax Droolon Pi1,  you need to install and run **aSee VR Runtime**
+    - You can install it on Pitool
+- You must install **.NET Desktop Runtime 6.0**
+    - Download it from the web page of Microsoft
+    - https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+
+### Run
+1. Run SteamVR
+1. Run SRAnipal Runtime (for Vive) and/or aSee VR Runtime (for Pimax)
 1. Run this application
     - You might find an alert from "Windows Security Alert"
         - If it shows, **accept to communicate on the private networks**
         - This is because OSC uses a network feature to send the data (this is the specification of OSC)
-        - This app does not send beyond the network (and the Internet) actually, only communicate in your computer running this app
+        - This app does not send beyond the network (and the Internet) actually, only communicates in your computer running this app
+
+I recommend starting SteamVR and SRAnipal Runtime first; it will be stabler.
+The order to start VRChat or this app is not a problem.
 
 ## How to set up your avatar on VRChat
 ### Summary (for experts)

@@ -14,15 +14,27 @@ VRChat で使用する場合，アニメーターやブレンドシェイプの�
 - Vive Facial Tracker, Vive Pro Eye, Pimax Droolon P1 に対応しています
 
 ## アプリの使い方
-1. 使う前に，SRanipal SDK をインストールして起動してください
+### 事前準備
+- Vive Facial Tracker と Vive Pro Eye を使う場合は，**SRanipal Runtime** をインストールして起動する必要があります
     - HTC Vive の開発者向け公式ウェブページからダウンロードすることができます
+    - https://developer-express.vive.com/resources/vive-sense/eye-and-facial-tracking-sdk/download/latest/
+- Pimax Droolon Pi1 を使う場合は **aSee VR Runtime** のインストールが必要です
+    - アイトラッカが接続されていれば Pitool からインストールができます
+- **.NET デスクトップ ランタイム 6.0** のインストールが必要です
+    - Microsoft の公式ページからダウンロードしてください
+    - https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0
+
+### 起動方法
+1. SteamVR を起動します
+1. SRAnipal Runtime (Vive 製品を使う場合) や aSee VR Runtime (Pimax を使用する場合) を起動します
 1. このアプリを実行します
     - 初回起動時に，「Windows セキュリティの重大な警告」が表示される場合があります
         - この場合，**プライベート ネットワークでのアクセスを許可してください**
         - これは，OSC は「ネットワークの機能を用いてデータを送信する」という仕組みのためです
         - このアプリは，ネットワークを使って PC の外にデータを送りません．このアプリが走っている PC の中でのみデータのやりとりをします
 
-{{< image src="/images/2022/facialisc-ja.png" caption="Windows セキュリティの重大な警告" >}}
+SteamVR と SRAnipal Runtime を先に起動した方が安定して開始できると思います．
+VRChat とこのアプリはどちらを先に起動しても問題ありません．
 
 ## アバタのセットアップ方法
 ### 技術者向け情報
