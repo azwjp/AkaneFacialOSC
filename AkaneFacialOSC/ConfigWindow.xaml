@@ -30,6 +30,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Grid.Column="0" x:Name="configs">
             <Grid.RowDefinitions>
@@ -200,8 +201,6 @@
                 <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button
@@ -222,15 +221,15 @@
                     Content="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ButtonResetAll, Mode=OneWay}"
                     Click="ResetButton_Click"
                     Cursor="Hand"/>
-            <Button
-                    Grid.Row="0"
-                    Grid.Column="5"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
-                    Content="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ButtonClose, Mode=OneWay}"
-                    Click="OKButton_Click"
-                    Cursor="Hand"/>
         </Grid>
+
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                Width="110"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                IsEnabled="{Binding Path=IsDirty, Mode=OneWay}"
+                Content="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ButtonClose, Mode=OneWay}"
+                Click="OKButton_Click"
+                Cursor="Hand"/>
     </Grid>
 </controls:MetroWindow>
