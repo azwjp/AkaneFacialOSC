@@ -160,7 +160,7 @@
     <value>Language</value>
   </data>
   <data name="ConfigLipTracker" xml:space="preserve">
-    <value>Lip tracker</value>
+    <value>Facial tracker</value>
   </data>
   <data name="ConfigLipTrackerTargetFps" xml:space="preserve">
     <value>Faciel tracker target FPS</value>

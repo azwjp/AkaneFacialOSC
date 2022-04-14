@@ -187,7 +187,7 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
-        ///   Lip tracker に類似しているローカライズされた文字列を検索します。
+        ///   Facial tracker に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ConfigLipTracker {
             get {
