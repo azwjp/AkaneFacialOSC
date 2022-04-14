@@ -39,7 +39,6 @@ namespace Azw.FacialOsc
 
             CheckCheckedAll();
             mainPanel.Visibility = Visibility.Visible;
-
         }
 
         internal void CheckCheckedAll()

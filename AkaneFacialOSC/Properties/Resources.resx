@@ -213,6 +213,9 @@
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye is not connected. Please check your device or switch the target device.</value>
   </data>
+  <data name="MessageUnexpectedError" xml:space="preserve">
+    <value>An unexpected error has occurred.</value>
+  </data>
   <data name="MessageUpdateExists" xml:space="preserve">
     <value>The new version has been released:</value>
   </data>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,18 +16,20 @@ namespace Azw.FacialOsc.Service
         private ConcurrentQueue<string> logs = new();
 
         private const nint LogLength = 100;
+        const string ErrorLogDir = "ErrorLogs";
+
 
         public Log(Controller controller)
         {
             this.controller = controller;
         }
 
-        internal void AddLog(string message, Exception ex)
+        internal bool AddLog(string message, Exception ex)
         {
-            AddLog(message, Resources.MessageErrorDetail, ex.Message);
+            return AddLog(message, Resources.MessageErrorDetail, ex.Message);
         }
 
-        internal void AddLog(params string?[] texts)
+        internal bool AddLog(params string?[] texts)
         {
             var mainWindow = controller?.mainWindow;
             var message = string.Join(" ", texts.Where(s => s != null));
@@ -52,6 +56,36 @@ namespace Azw.FacialOsc.Service
                         children.Add(adding);
                     }
                 });
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        internal void UnhandledException(Exception exception)
+        {
+            Debug.WriteLine(exception);
+
+            try
+            {
+                var dir = Path.Join(Directory.GetCurrentDirectory(), ErrorLogDir);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                var path = Path.Combine(dir, $"error_{DateTime.Now.ToString("yyyy-MM-dd")}.log");
+                File.AppendAllLines(path, new string[] {
+                    DateTime.Now.ToString(),
+                    exception.ToString(),
+                });
+            }
+            catch { }
+
+            if(!AddLog(Resources.MessageUnexpectedError, exception))
+            {
+                MessageBox.Show(Resources.MessageUnexpectedError + exception.Message);
             }
         }
     }

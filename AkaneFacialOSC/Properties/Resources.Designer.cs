@@ -349,6 +349,15 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   An unexpected error has occurred. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageUnexpectedError {
+            get {
+                return ResourceManager.GetString("MessageUnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   The new version has been released: に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MessageUpdateExists {

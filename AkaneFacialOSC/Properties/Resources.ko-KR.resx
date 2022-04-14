@@ -210,6 +210,9 @@
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye가 접속되고 있지 않습니다. Vive Pro Eye가 접속되고 있지 않습니다. 데바이스 상태를 확인하세요.</value>
   </data>
+  <data name="MessageUnexpectedError" xml:space="preserve">
+    <value>예상하지 않은 오류가 발생했습니다.</value>
+  </data>
   <data name="MessageUpdateExists" xml:space="preserve">
     <value>새 버전이 공개뒸습니다:</value>
   </data>
