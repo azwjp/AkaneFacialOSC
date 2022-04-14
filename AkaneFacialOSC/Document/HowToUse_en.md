@@ -33,7 +33,7 @@ Some basic knowledge to use animators and blend shapes on Unity for VRChat is re
     - You might find an alert from "Windows Security Alert"
         - If it shows, **accept to communicate on the private networks**
         - This is because OSC uses a network feature to send the data (this is the specification of OSC)
-        - This app does not send beyond the network (and the Internet) actually, only communicates in your computer running this app
+        - This app does not send beyond the network (and the Internet) actually, only communicates in your computer running this app (Except for checking the update: accessing a webpage when starting up)
 
 I recommend starting SteamVR and SRAnipal Runtime first; it will be stabler.
 The order to start VRChat or this app is not a problem.
