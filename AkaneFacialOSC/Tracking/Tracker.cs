@@ -39,7 +39,7 @@ namespace Azw.FacialOsc.Tracking
                 Status = DeviceStatus.Running;
 
                 cts = new CancellationTokenSource();
-                _ = Task.Run(Runner, cts.Token).ConfigureAwait(false);
+                _ = Task.Factory.StartNew(Runner, cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
             }
             else
             {
