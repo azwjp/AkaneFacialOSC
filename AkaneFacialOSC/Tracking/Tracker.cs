@@ -22,8 +22,10 @@ namespace Azw.FacialOsc.Tracking
         public delegate void OnUpdated(Tracker instance, IDictionary<FaceKey, float> rawData);
         public delegate void OnChecked(Tracker instance);
         public delegate void OnStatusChanged(Tracker instance, DeviceStatus status);
+        public delegate void OnStopped(Task finishedTask);
         public OnUpdated? updatedHandler;
         public OnChecked? checkedHandler;
+        public OnStopped? stoppedHandler;
         public OnStatusChanged? statusChangedHandler;
         public TimeSpan targetInterval = TimeSpan.FromMilliseconds(1000d / 61d);
         private AverageFps targetFps = new();
@@ -39,7 +41,7 @@ namespace Azw.FacialOsc.Tracking
                 Status = DeviceStatus.Running;
 
                 cts = new CancellationTokenSource();
-                _ = Task.Factory.StartNew(Runner, cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                _ = Task.Factory.StartNew(Runner, cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default).ContinueWith((task) => stoppedHandler?.Invoke(task)).ConfigureAwait(false);
             }
             else
             {

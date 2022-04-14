@@ -43,7 +43,7 @@ namespace Azw.FacialOsc
 
         private void HandleException(Exception e)
         {
-            Controller.Instance.UnhandledException(e);
+            Controller.Instance.UnhandledException(FacialOsc.Properties.Resources.MessageUnexpectedError, e);
         }
     }
 }

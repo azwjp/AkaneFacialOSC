@@ -64,10 +64,9 @@ namespace Azw.FacialOsc.Service
                 return false;
             }
         }
-        internal void UnhandledException(Exception exception)
-        {
-            Debug.WriteLine(exception);
 
+        private void WriteLog(Exception exception)
+        {
             try
             {
                 var dir = Path.Join(Directory.GetCurrentDirectory(), ErrorLogDir);
@@ -82,10 +81,16 @@ namespace Azw.FacialOsc.Service
                 });
             }
             catch { }
+        }
 
-            if(!AddLog(Resources.MessageUnexpectedError, exception))
+        internal void UnhandledException(string message, Exception exception)
+        {
+            Debug.WriteLine(exception);
+            WriteLog(exception);
+
+            if (!AddLog(message, exception))
             {
-                MessageBox.Show(Resources.MessageUnexpectedError + exception.Message);
+                MessageBox.Show(message + exception.Message);
             }
         }
     }

@@ -210,6 +210,9 @@
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye が接続されていません．デバイスの接続状態を確認してください．</value>
   </data>
+  <data name="MessageTrackingTaskError" xml:space="preserve">
+    <value>エラーが発生したためトラッキングが停止しました．</value>
+  </data>
   <data name="MessageUnexpectedError" xml:space="preserve">
     <value>予期しないエラーが発生しました．</value>
   </data>

@@ -210,6 +210,9 @@
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye 未連接。請確認裝置或者切換眼球追蹤裝置。</value>
   </data>
+  <data name="MessageTrackingTaskError" xml:space="preserve">
+    <value>因爲錯誤，追蹤停止了</value>
+  </data>
   <data name="MessageUnexpectedError" xml:space="preserve">
     <value>發生了意外的錯誤。</value>
   </data>

@@ -349,6 +349,15 @@ namespace Azw.FacialOsc.Properties {
         }
         
         /// <summary>
+        ///   Tracking stopped with an error. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MessageTrackingTaskError {
+            get {
+                return ResourceManager.GetString("MessageTrackingTaskError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   An unexpected error has occurred. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MessageUnexpectedError {

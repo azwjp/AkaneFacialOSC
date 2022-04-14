@@ -139,6 +139,14 @@ namespace Azw.FacialOsc
                     }
                 }
             };
+            eye.stoppedHandler += task =>
+            {
+                if (task.IsFaulted && task.Exception != null)
+                {
+                    log.UnhandledException(Resources.MessageDeviceError, task.Exception);
+                    eye?.Stop();
+                }
+            };
             lip.SetTargetFps(TrackingStatus.LipTrackerTargetFps);
             lip.updatedHandler += (instance, rawData) => TrackerOnUpdated(instance, rawData, TrackingType.Lip);
             lip.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
@@ -150,6 +158,14 @@ namespace Azw.FacialOsc
             lip.statusChangedHandler += (instance, status) =>
             {
                 TrackingStatus.LipTrackingStatus = status;
+            };
+            lip.stoppedHandler += task =>
+            {
+                if (task.IsFaulted && task.Exception != null)
+                {
+                    log.UnhandledException(Resources.MessageDeviceError, task.Exception);
+                    lip?.Stop();
+                }
             };
 
             Configs.IsDirty = false;
@@ -277,7 +293,7 @@ namespace Azw.FacialOsc
             }
             catch (Exception e)
             {
-                log.AddLog(e.Source, e.Message);
+                log.UnhandledException(Resources.MessageUnexpectedError, e);
             }
         }
 
@@ -431,9 +447,9 @@ namespace Azw.FacialOsc
             Configs.IsDirty = true;
         }
 
-        internal void UnhandledException(Exception exception)
+        internal void UnhandledException(string message, Exception exception)
         {
-            log.UnhandledException(exception);
+            log.UnhandledException(message, exception);
         }
     }
 }
