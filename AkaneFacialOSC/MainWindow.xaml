@@ -250,6 +250,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel
                         Grid.Row="0"
@@ -274,9 +275,31 @@
                         Click="AboutButton_Click"
                         Cursor="Hand"/>
                 </StackPanel>
-
+                
                 <Grid Grid.Row="2"
-                      Margin="0,8,0,8">
+                      Margin="0,2,0,4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ConfigEyeTracker, Mode=OneWay}" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Text="{Binding Path=EyeType, Mode=OneWay}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Text="{Binding Source={x:Static app:ResourceService.Current}, Path=Resources.ConfigLipTracker, Mode=OneWay}" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Text="{Binding Path=LipType, Mode=OneWay}"/>
+
+                </Grid>
+                
+                <Grid Grid.Row="3"
+                      Margin="0,2,0,4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -285,7 +308,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="Auto" />
@@ -313,7 +336,7 @@
                     <TextBlock Grid.Row="3" Grid.Column="4" HorizontalAlignment="Left"  Text="fps "         Margin="5 0 0 0"/>
                 </Grid>
 
-                <StackPanel Grid.Row="3" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,8,0,0" HorizontalAlignment="Right">
+                <StackPanel Grid.Row="4" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,8,0,0" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal" Height="Auto">
                         <Button
                             Margin="0,0,2,0"
