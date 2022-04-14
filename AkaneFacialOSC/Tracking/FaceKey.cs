@@ -220,6 +220,7 @@ namespace Azw.FacialOsc
                 case FaceKey.Mouth_Upper_Up:
                 case FaceKey.Mouth_Lower_Down:
                 case FaceKey.Tongue_LongStep1:
+                case FaceKey.Tongue_LongStep2:
                 case FaceKey.Tongue_Left_Right:
                 case FaceKey.Tongue_Down_Up:
                     return true;
