@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Json;
+using Azw.FacialOsc.Common;
 
 namespace Azw.FacialOsc.Model
 {

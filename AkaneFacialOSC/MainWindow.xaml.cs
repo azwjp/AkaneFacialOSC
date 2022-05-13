@@ -12,6 +12,7 @@ using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
 using MahApps.Metro.Controls;
 using System.Collections.Generic;
+using Azw.FacialOsc.Common;
 
 namespace Azw.FacialOsc
 {

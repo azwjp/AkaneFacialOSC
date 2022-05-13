@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -41,6 +43,11 @@ namespace Azw.FacialOsc
             MessageBox.Show($"{FacialOsc.Properties.Resources.MessageUnexpectedError} {exception.Message}", "Error");
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            Controller.Instance.DisposeAll();
+        }
         private void HandleException(Exception e)
         {
             Controller.Instance.UnhandledException(FacialOsc.Properties.Resources.MessageUnexpectedError, e);

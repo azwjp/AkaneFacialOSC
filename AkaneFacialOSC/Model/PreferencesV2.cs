@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using Azw.FacialOsc.Common;
 using Azw.FacialOsc.View;
 
 namespace Azw.FacialOsc.Model

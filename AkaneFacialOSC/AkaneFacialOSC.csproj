@@ -9,11 +9,12 @@
 	<StartupObject>Azw.FacialOsc.App</StartupObject>
 	<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<PackageId>Azw.FacialOsc</PackageId>
-	<VersionPrefix>2.1.0</VersionPrefix>
+	<VersionPrefix>2.2.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>portable</DebugType>
     <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -123,6 +124,12 @@
     <Content Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibrary\CommonLibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\AppLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Azw.FacialOsc.Common;
 
 namespace Azw.FacialOsc.Model
 {
@@ -125,8 +126,5 @@ namespace Azw.FacialOsc.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
-    public enum ValueRange
-    {
-        MinusOneToOne, ZeroToOne
-    }
+
 }

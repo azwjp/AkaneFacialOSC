@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Azw.FacialOsc.Common;
+using Azw.FacialOsc.Common.Model;
 using Azw.FacialOsc.Model;
 using Azw.FacialOsc.Properties;
 using Azw.FacialOsc.Service;
 using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
-using ViveSR.anipal.Eye;
 
 namespace Azw.FacialOsc
 {
@@ -30,25 +32,26 @@ namespace Azw.FacialOsc
         }
         internal MainWindow? mainWindow;
 
-        private LipTracker? lip;
-        private EyeTracker? eye;
+        private LipTracker lip;
+        private EyeTracker eye;
         internal TrackingStatus TrackingStatus { get; set; } = new();
         internal Configurations Configs { get; set; } = new();
         public Rows rows = new ();
 
-        OSCService osc = new();
         private Log log;
 
         internal IDictionary<FaceKey, SignalProperty> Signals { get { return rows.originalList; } }
 
-        private Task<(EyeTracker eye, LipTracker lip)>? configLoadingTask = null;
+        private Task? configLoadingTask = null;
 
         public Controller()
         {
             log = new(this);
+            lip = new(this);
+            eye = new(this);
         }
 
-        private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync(PreferencesV2 preference, bool retry)
+        private async Task LoadAsync(PreferencesV2 preference, bool retry)
         {
             try {
                 var ap = preference.applicationPreference;
@@ -69,24 +72,17 @@ namespace Azw.FacialOsc
 
                 tp.faceDataPreferences.ForEach(p => rows.originalList[p.FaceKey].InitRow(p.FaceKey, p.isSending, p.gain, p.curve, p.isClipping, p.CenterKey));
 
-
-                var eyeChangingTask = ChangeEyeTracker(tp.EyeTracker);
-                var lipChangingTask = ChangeLipTracker(tp.LipTracker);
-                var eye = await eyeChangingTask;
-                var lip = await lipChangingTask;
-
-                return (eye, lip);
             }
             catch (Exception ex)
             {
                 log.AddLog(Resources.MessageLoadingConfigError, ex);
 
-                if (retry) return await LoadAsync(new PreferencesV2(), false);
+                if (retry) await LoadAsync(new PreferencesV2(), false);
                 else throw;
             }
         }
         
-        private async Task<(EyeTracker eye, LipTracker lip)> LoadAsync()
+        private async Task LoadAsync()
         {
             var preference = await Task.Run(() =>
             {
@@ -104,7 +100,7 @@ namespace Azw.FacialOsc
                 }
             }).ConfigureAwait(false);
             configLoadingTask = LoadAsync(preference, true);
-            return await configLoadingTask;
+            await configLoadingTask;
         }
 
         internal async Task InitApp()
@@ -113,59 +109,57 @@ namespace Azw.FacialOsc
             TrackingStatus.Controller = this;
             TrackingStatus.DisplayingSignalList = new ObservableCollection<SignalProperty>(Signals.Select(kv => kv.Value).ToList());
 
-            var (eye, lip) = await LoadAsync().ConfigureAwait(false);
+            await LoadAsync().ConfigureAwait(false);
 
-            eye.SetTargetFps(TrackingStatus.EyeTrackerTargetFps);
-            eye.updatedHandler += (instance, rawData) => TrackerOnUpdated(instance, rawData, TrackingType.Eye);
-            eye.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
+            eye.PropertyChanged();
+            lip.PropertyChanged();
+            eye.CheckingDataHandler += (data, values) => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
             {
-                mainWindow.eyeAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
-                mainWindow.eyeDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
+                foreach (var o in values.Where(e => FaceKeyUtils.GetTrackingType(e.Key) == TrackingType.Eye))
+                {
+                    Signals[o.Key].Value = o.Value;
+                }
+                mainWindow.eyeAppFps.Text = data.ApplicationFps.ToString("0.000");
+                mainWindow.eyeDeviceFps.Text = data.TrackingFps.ToString("0.000");
             }
             );
-            eye.statusChangedHandler += (instance, status) =>
+            eye.StatusChangedHandler += (status, detail) =>
             {
                 TrackingStatus.EyeTrackingStatus = status;
-
-                if (status == DeviceStatus.Unavailable)
+                switch (status)
                 {
-                    switch (instance)
-                    {
-                        case SRanipalEyeTracker s:
-                            log.AddLog(Resources.MessageDeviceError, s.deviceStatus.ToString());
-                            break;
-                        default:
-                            break;
-                    }
+                    case DeviceStatus.Disbled:
+                        mainWindow?.Dispatcher.InvokeAsync(() =>
+                        {
+                            mainWindow.eyeAppFps.Text = 0d.ToString("0.000");
+                            mainWindow.eyeDeviceFps.Text = 0d.ToString("0.000");
+                        });
+                        break;
+                    case DeviceStatus.Unavailable:
+                        switch (eye.TrackingDevice)
+                        {
+                            case EyeTrackingType.ViveSRanipal:
+                                log.AddLog(Resources.MessageDeviceError, ((ViveSR.Error)detail).ToString());
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
                 }
             };
-            eye.stoppedHandler += task =>
+            lip.CheckingDataHandler += (data, values) => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
             {
-                if (task.IsFaulted && task.Exception != null)
+                foreach (var o in values.Where(e => FaceKeyUtils.GetTrackingType(e.Key) == TrackingType.Lip))
                 {
-                    log.UnhandledException(Resources.MessageDeviceError, task.Exception);
-                    eye?.Stop();
+                    Signals[o.Key].Value = o.Value;
                 }
-            };
-            lip.SetTargetFps(TrackingStatus.LipTrackerTargetFps);
-            lip.updatedHandler += (instance, rawData) => TrackerOnUpdated(instance, rawData, TrackingType.Lip);
-            lip.checkedHandler += instance => _ = mainWindow?.Dispatcher.InvokeAsync(() =>
-                {
-                    mainWindow.lipAppFps.Text = instance.ApplicationFps.averageFps.ToString("0.000");
-                    mainWindow.lipDeviceFps.Text = instance.TrackingFps.averageFps.ToString("0.000");
+                mainWindow.lipAppFps.Text = data.ApplicationFps.ToString("0.000");
+                mainWindow.lipDeviceFps.Text = data.TrackingFps.ToString("0.000");
                 }
             );
-            lip.statusChangedHandler += (instance, status) =>
+            lip.StatusChangedHandler += (status, detail) =>
             {
                 TrackingStatus.LipTrackingStatus = status;
-            };
-            lip.stoppedHandler += task =>
-            {
-                if (task.IsFaulted && task.Exception != null)
-                {
-                    log.UnhandledException(Resources.MessageDeviceError, task.Exception);
-                    lip?.Stop();
-                }
             };
 
             Configs.IsDirty = false;
@@ -193,108 +187,25 @@ namespace Azw.FacialOsc
 
         internal async Task SwitchEyeTracker()
         {
-            if (eye == null) eye = await EyeTracker.Instance<SRanipalEyeTracker>().ConfigureAwait(false);
-
-            _ = eye?.Switch(() =>
-            {
-                if (eye is SRanipalEyeTracker)
-                {
-                    _ = Task.Run(() => {
-                        if (!SRanipal_Eye.IsViveProEye())
-                        {
-                            log.AddLog(Resources.MessageNotProEye);
-                        }
-                    }).ConfigureAwait(false);
-                    _ = Task.Run(() =>
-                    {
-                        var isNeedCalibration = false;
-                        SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
-                        if (isNeedCalibration)
-                        {
-                            log.AddLog(Resources.MessageCalibrationRequired);
-                        }
-                    }).ConfigureAwait(false);
-                }
-            }, () =>
-            {
-                mainWindow?.Dispatcher.InvokeAsync(() =>
-                {
-                    mainWindow.eyeAppFps.Text = 0d.ToString("0.000");
-                    mainWindow.eyeDeviceFps.Text = 0d.ToString("0.000");
-                });
-            }).ConfigureAwait(false);
+            Task.Run(() => eye.Switch()).ConfigureAwait(false);
         }
+
 
         internal async Task SwitchFacialTracker()
         {
-            if (lip == null) lip = await LipTracker.Instance<SRanipalLipTracker>().ConfigureAwait(false);
-
-            var status = await lip.Switch(null, () =>
-            {
-                mainWindow?.Dispatcher.InvokeAsync(() =>
-                {
-                    mainWindow.lipAppFps.Text = 0d.ToString("0.000");
-                    mainWindow.lipDeviceFps.Text = 0d.ToString("0.000");
-                });
-            }).ConfigureAwait(false);
-
-            // When it is connected with the wireless kit, it could run in the next attempt even if the device throw an error in the first time
-            if (status == DeviceStatus.Unavailable && lip.GetType() == typeof(SRanipalLipTracker) && ((SRanipalLipTracker)lip).deviceStatus == ViveSR.Error.LIP_NOT_SUPPORT)
-            {
-                _ = lip.Start();
-            }
+            Task.Run(() => lip.Switch()).ConfigureAwait(false);
         }
 
-        internal async Task<EyeTracker> ChangeEyeTracker(EyeTrackingType trackingType)
+        internal async Task ChangeEyeTracker(EyeTrackingType trackingType)
         {
-            switch (trackingType)
-            {
-                case EyeTrackingType.ViveSRanipal:
-                    eye = await EyeTracker.Instance<SRanipalEyeTracker>().ConfigureAwait(false);
-                    break;
-                case EyeTrackingType.PimaxAsee:
-                    eye = await EyeTracker.Instance<DroolonPi1EyeTracker>().ConfigureAwait(false);
-                    break;
-                case EyeTrackingType.Debug:
-                    eye = await EyeTracker.Instance<MockEyeTracker>().ConfigureAwait(false);
-                    break;
-                default:
-                    throw new UnexpectedEnumValueException(trackingType);
-            }
-
-            return eye;
+            eye.TrackingDevice = trackingType;
+            Task.Run(() => eye.Stop()).ConfigureAwait(false);
         }
 
-        internal async Task<LipTracker> ChangeLipTracker(LipTrackingType trackingType)
+        internal async Task ChangeLipTracker(LipTrackingType trackingType)
         {
-            switch (trackingType)
-            {
-                case LipTrackingType.ViveSRanipal:
-                    lip = await LipTracker.Instance<SRanipalLipTracker>().ConfigureAwait(false);
-                    break;
-                case LipTrackingType.Debug:
-                    lip = await LipTracker.Instance<MockLipTracker>().ConfigureAwait(false);
-                    break;
-                default:
-                    throw new UnexpectedEnumValueException(trackingType);
-            }
-
-            return lip;
-        }
-        private void TrackerOnUpdated(Tracker instance, IDictionary<FaceKey, float> rawData, TrackingType type)
-        {
-            try
-            {
-                foreach (var o in new TrackingData(rawData, Signals, TrackingStatus.MaxAngleRadian, type).CalcAndGet())
-                {
-                    osc.Send(o);
-                    Signals[o.key].Value = o.value;
-                }
-            }
-            catch (Exception e)
-            {
-                log.UnhandledException(Resources.MessageUnexpectedError, e);
-            }
+            lip.TrackingDevice = trackingType;
+            Task.Run(() => lip.Stop()).ConfigureAwait(false);
         }
 
         bool isModifyingFilter = false;
@@ -393,19 +304,21 @@ namespace Azw.FacialOsc
         internal void SetEyeFps(double fps)
         {
             mainWindow?.Dispatcher.InvokeAsync(() => mainWindow.eyeTargetFps.Text = fps.ToString("0.000"));
-            eye?.SetTargetFps(fps);
+            TrackingStatus.EyeTrackerTargetFps = fps;
+            eye.PropertyChanged();
         }
         internal void SetLipFps(double fps)
         {
             mainWindow?.Dispatcher.InvokeAsync(() => mainWindow.lipTargetFps.Text = fps.ToString("0.000"));
-            lip?.SetTargetFps(fps);
+            TrackingStatus.LipTrackerTargetFps = fps;
+            lip.PropertyChanged();
         }
 
         internal Task RevertConfigs()
         {
             return InitApp();
         }
-        internal Task<(EyeTracker eye, LipTracker lip)> ResetAll()
+        internal Task ResetAll()
         {
             return LoadAsync(new PreferencesV2(), false);
         }
@@ -445,6 +358,16 @@ namespace Azw.FacialOsc
         internal void MarkDirty()
         {
             Configs.IsDirty = true;
+            eye.PropertyChanged();
+            lip.PropertyChanged();
+        }
+
+        internal void DisposeAll()
+        {
+            Task.WaitAll(
+                Task.Run(() => eye.Dispose()),
+                Task.Run(() => lip.Dispose())
+            );
         }
 
         internal void UnhandledException(string message, Exception exception)

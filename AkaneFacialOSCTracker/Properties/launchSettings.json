@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AkaneFacialOSCTracker": {
+      "commandName": "Project",
+      "commandLineArgs": "Lip ViveSRanipal 33772"
+    }
+  }
+}
