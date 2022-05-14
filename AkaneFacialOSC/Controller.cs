@@ -198,12 +198,16 @@ namespace Azw.FacialOsc
 
         internal async Task ChangeEyeTracker(EyeTrackingType trackingType)
         {
+            if (trackingType == eye.TrackingDevice) return;
+
             eye.TrackingDevice = trackingType;
             Task.Run(() => eye.Stop()).ConfigureAwait(false);
         }
 
         internal async Task ChangeLipTracker(LipTrackingType trackingType)
         {
+            if (trackingType == lip.TrackingDevice) return;
+
             lip.TrackingDevice = trackingType;
             Task.Run(() => lip.Stop()).ConfigureAwait(false);
         }
