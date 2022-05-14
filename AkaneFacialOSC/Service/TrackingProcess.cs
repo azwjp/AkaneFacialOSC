@@ -59,6 +59,7 @@ namespace Azw.FacialOsc.Service
 
             IsActive = true;
             StatusChangedHandler?.Invoke(DeviceStatus.Starting, 0);
+            lastStatus = DeviceStatus.Starting;
             cts = new CancellationTokenSource();
 
             _ = Task.Factory.StartNew(() =>
@@ -74,7 +75,7 @@ namespace Azw.FacialOsc.Service
                     {
                         return;
                     }
-                    else if (lastStatus != status)
+                    else if (lastStatus != status && (status == DeviceStatus.Running || status == DeviceStatus.Unavailable))
                     {
                         StatusChangedHandler?.Invoke((DeviceStatus)trackingData.Status, trackingData.ErrorCode);
                         lastStatus = status;
