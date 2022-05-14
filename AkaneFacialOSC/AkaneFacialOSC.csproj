@@ -9,8 +9,8 @@
 	<StartupObject>Azw.FacialOsc.App</StartupObject>
 	<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<PackageId>Azw.FacialOsc</PackageId>
-	<VersionPrefix>2.2.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+	<VersionPrefix>2.2.1</VersionPrefix>
+    <VersionSuffix>RC1</VersionSuffix>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>portable</DebugType>
     <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
@@ -71,18 +71,6 @@
     <None Update="Document\HowToUse_ja.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Externals\PimaxEyeTracker\PimaxEyeTracker.dll">
-      <Link>PimaxEyeTracker.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Externals\SRanipal\libHTC_License.dll">
-      <Link>libHTC_License.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Externals\SRanipal\nanomsg.dll">
-      <Link>nanomsg.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Licenses\MahApps.Metro.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -101,18 +89,6 @@
     <None Update="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="Externals\SRanipal\SRanipal.dll">
-      <Link>SRanipal.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Externals\SRanipal\SRWorks_Log.dll">
-      <Link>SRWorks_Log.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Externals\SRanipal\ViveSR_Client.dll">
-      <Link>ViveSR_Client.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
