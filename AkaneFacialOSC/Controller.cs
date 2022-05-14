@@ -15,6 +15,7 @@ using Azw.FacialOsc.Properties;
 using Azw.FacialOsc.Service;
 using Azw.FacialOsc.Tracking;
 using Azw.FacialOsc.View;
+using ViveSR.anipal.Eye;
 
 namespace Azw.FacialOsc
 {
@@ -128,6 +129,23 @@ namespace Azw.FacialOsc
                 TrackingStatus.EyeTrackingStatus = status;
                 switch (status)
                 {
+                    case DeviceStatus.Starting:
+                        _ = Task.Run(() => {
+                            if (!SRanipal_Eye.IsViveProEye())
+                            {
+                                log.AddLog(Resources.MessageNotProEye);
+                            }
+                        }).ConfigureAwait(false);
+                        _ = Task.Run(() =>
+                        {
+                            var isNeedCalibration = false;
+                            SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
+                            if (isNeedCalibration)
+                            {
+                                log.AddLog(Resources.MessageCalibrationRequired);
+                            }
+                        }).ConfigureAwait(false);
+                        break;
                     case DeviceStatus.Disbled:
                         mainWindow?.Dispatcher.InvokeAsync(() =>
                         {
