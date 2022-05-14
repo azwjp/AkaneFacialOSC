@@ -62,7 +62,6 @@ namespace Azw.FacialOsc.Tracking
             else
             {
                 Status = DeviceStatus.Unavailable;
-                StopProcess();
             }
         }
 
