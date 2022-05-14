@@ -95,9 +95,12 @@ namespace Azw.FacialOsc.Service
             cts?.Cancel();
             if (tracker != null)
             {
-                tracker.WaitForExit(2000);
-                if (!tracker.HasExited) tracker.Kill();
-                tracker = null;
+                lock (tracker)
+                {
+                    tracker.WaitForExit(2000);
+                    if (!tracker.HasExited) tracker.Kill();
+                    tracker = null;
+                }
             }
             StatusChangedHandler?.Invoke(DeviceStatus.Disbled, 0);
         }
