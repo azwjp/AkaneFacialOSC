@@ -130,21 +130,24 @@ namespace Azw.FacialOsc
                 switch (status)
                 {
                     case DeviceStatus.Starting:
-                        _ = Task.Run(() => {
-                            if (!SRanipal_Eye.IsViveProEye())
-                            {
-                                log.AddLog(Resources.MessageNotProEye);
-                            }
-                        }).ConfigureAwait(false);
-                        _ = Task.Run(() =>
+                        if (TrackingStatus.EyeType == EyeTrackingType.ViveSRanipal)
                         {
-                            var isNeedCalibration = false;
-                            SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
-                            if (isNeedCalibration)
+                            _ = Task.Run(() => {
+                                if (!SRanipal_Eye.IsViveProEye())
+                                {
+                                    log.AddLog(Resources.MessageNotProEye);
+                                }
+                            }).ConfigureAwait(false);
+                            _ = Task.Run(() =>
                             {
-                                log.AddLog(Resources.MessageCalibrationRequired);
-                            }
-                        }).ConfigureAwait(false);
+                                var isNeedCalibration = false;
+                                SRanipal_Eye.IsUserNeedCalibration(ref isNeedCalibration);
+                                if (isNeedCalibration)
+                                {
+                                    log.AddLog(Resources.MessageCalibrationRequired);
+                                }
+                            }).ConfigureAwait(false);
+                        }
                         break;
                     case DeviceStatus.Disbled:
                         mainWindow?.Dispatcher.InvokeAsync(() =>
