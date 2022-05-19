@@ -205,7 +205,7 @@
     <value>最新バージョン</value>
   </data>
   <data name="MessageLoadingConfigError" xml:space="preserve">
-    <value>保存された設定ファイルが読み込めませんでした．是フォルトのあたいを使用しています．</value>
+    <value>保存された設定ファイルが読み込めませんでした．デフォルトの値を使用します．</value>
   </data>
   <data name="MessageNotProEye" xml:space="preserve">
     <value>Vive Pro Eye が接続されていません．デバイスの接続状態を確認してください．</value>
