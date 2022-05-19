@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MaterialDesignColors;
@@ -23,12 +24,15 @@ namespace Azw.FacialOsc.View
 
         public static void Use(Themes themes)
         {
-            switch (themes)
+            _ = Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                case Themes.AkaneTheme: UseAkaneTheme(); break;
-                case Themes.SimpleTheme: UseSimpleTheme(); break;
-                default: throw new UnexpectedEnumValueException(themes);
-            }
+                switch (themes)
+                {
+                    case Themes.AkaneTheme: UseAkaneTheme(); break;
+                    case Themes.SimpleTheme: UseSimpleTheme(); break;
+                    default: throw new UnexpectedEnumValueException(themes);
+                }
+            });
         }
 
         public static void UseAkaneTheme()

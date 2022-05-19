@@ -33,12 +33,6 @@ namespace Azw.FacialOsc
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _ = Controller.Instance.InitApp();
-
-            DispatcherUnhandledException += OnDispatcherUnhandledException;
-            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-
             if (!mutex.WaitOne(0, false))
             {
                 var others = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
@@ -50,6 +44,12 @@ namespace Azw.FacialOsc
                 Shutdown();
                 return;
             }
+
+            Controller.Instance.InitApp();
+
+            DispatcherUnhandledException += OnDispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             base.OnStartup(e);
         }

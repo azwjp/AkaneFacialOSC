@@ -26,6 +26,7 @@ namespace Azw.FacialOsc.Service
 
         internal bool AddLog(string message, Exception ex)
         {
+            WriteLog(ex);
             return AddLog(message, Resources.MessageErrorDetail, ex.Message);
         }
 
@@ -86,7 +87,6 @@ namespace Azw.FacialOsc.Service
         internal void UnhandledException(string message, Exception exception)
         {
             Debug.WriteLine(exception);
-            WriteLog(exception);
 
             if (!AddLog(message, exception))
             {

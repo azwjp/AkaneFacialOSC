@@ -37,13 +37,11 @@ namespace Azw.FacialOsc
         private EyeTracker eye;
         internal TrackingStatus TrackingStatus { get; set; } = new();
         internal Configurations Configs { get; set; } = new();
-        public Rows rows = new ();
+        public Rows rows = new();
 
         private Log log;
 
         internal IDictionary<FaceKey, SignalProperty> Signals { get { return rows.originalList; } }
-
-        private Task? configLoadingTask = null;
 
         public Controller()
         {
@@ -52,17 +50,15 @@ namespace Azw.FacialOsc
             eye = new(this);
         }
 
-        private async Task LoadAsync(PreferencesV2 preference, bool retry)
+        private void Load(PreferencesV2 preference, bool retry)
         {
             try {
                 var ap = preference.applicationPreference;
                 var tp = preference.trackingPreference;
 
                 Configs.ApplicationTheme = ap.Theme;
-                _ = Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    AkaneThemes.Use(ap.Theme); // Need to update the theme manually to set the front brush
-                });
+                AkaneThemes.Use(ap.Theme); // Need to update the theme manually to set the front brush
+
                 Configs.Language = ap.language;
 
                 TrackingStatus.LipType = tp.LipTracker;
@@ -78,14 +74,14 @@ namespace Azw.FacialOsc
             {
                 log.AddLog(Resources.MessageLoadingConfigError, ex);
 
-                if (retry) await LoadAsync(new PreferencesV2(), false);
+                if (retry) Load(new PreferencesV2(), false);
                 else throw;
             }
         }
-        
-        private async Task LoadAsync()
+
+        private void Load()
         {
-            var preference = await Task.Run(() =>
+            var preference = Task.Run(() =>
             {
                 try
                 {
@@ -99,18 +95,17 @@ namespace Azw.FacialOsc
                     log.AddLog(Resources.MessageLoadingConfigError, ex);
                     return new PreferencesV2();
                 }
-            }).ConfigureAwait(false);
-            configLoadingTask = LoadAsync(preference, true);
-            await configLoadingTask;
+            }).Result;
+            Load(preference, true);
         }
 
-        internal async Task InitApp()
+        internal void InitApp()
         {
             Configs.Controller = this;
             TrackingStatus.Controller = this;
             TrackingStatus.DisplayingSignalList = new ObservableCollection<SignalProperty>(Signals.Select(kv => kv.Value).ToList());
 
-            await LoadAsync().ConfigureAwait(false);
+            Load();
 
             eye.PropertyChanged();
             lip.PropertyChanged();
@@ -176,7 +171,7 @@ namespace Azw.FacialOsc
                 }
                 mainWindow.lipAppFps.Text = data.ApplicationFps.ToString("0.000");
                 mainWindow.lipDeviceFps.Text = data.TrackingFps.ToString("0.000");
-                }
+            }
             );
             lip.StatusChangedHandler += (status, detail) =>
             {
@@ -188,9 +183,6 @@ namespace Azw.FacialOsc
 
         internal async Task PreInitWindowAsync()
         {
-            if (configLoadingTask == null) configLoadingTask = LoadAsync();
-            if (configLoadingTask != null && !configLoadingTask.IsCompleted) configLoadingTask.Wait();
-
             var version = await VersionCheck.CheckAsync().ConfigureAwait(false);
             if (version == null)
             {
@@ -341,11 +333,11 @@ namespace Azw.FacialOsc
 
         internal Task RevertConfigs()
         {
-            return InitApp();
+            return Task.Run(InitApp);
         }
         internal Task ResetAll()
         {
-            return LoadAsync(new PreferencesV2(), false);
+            return Task.Run(() => Load(new PreferencesV2(), false));
         }
 
         internal void Save()
@@ -393,6 +385,11 @@ namespace Azw.FacialOsc
                 Task.Run(() => eye.Dispose()),
                 Task.Run(() => lip.Dispose())
             );
+        }
+
+        internal void HandledException(string message, Exception exception)
+        {
+            log.AddLog(message, exception);
         }
 
         internal void UnhandledException(string message, Exception exception)
