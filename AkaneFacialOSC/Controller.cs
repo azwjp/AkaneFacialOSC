@@ -61,8 +61,12 @@ namespace Azw.FacialOsc
 
                 Configs.Language = ap.language;
 
-                TrackingStatus.LipType = tp.LipTracker;
-                TrackingStatus.EyeType = tp.EyeTracker;
+                TrackingStatus.LipType
+                    = lip.TrackingDevice
+                    = tp.LipTracker;
+                TrackingStatus.EyeType
+                    = eye.TrackingDevice
+                    = tp.EyeTracker;
                 TrackingStatus.MaxAngle = tp.maxAngle;
                 TrackingStatus.EyeTrackerTargetFps = tp.eyeFps;
                 TrackingStatus.LipTrackerTargetFps = tp.lipFps;
