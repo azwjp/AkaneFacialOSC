@@ -52,20 +52,10 @@ namespace Azw.FacialOsc.Tracking
 
         IEnumerable<OSCData> CalcLipData()
         {
-            Calc(FaceKey.Jaw_Right);
-            Calc(FaceKey.Jaw_Left);
             Calc(FaceKey.Jaw_Forward);
             Calc(FaceKey.Jaw_Open);
 
-            Calc(FaceKey.Mouth_Upper_Right);
-            Calc(FaceKey.Mouth_Upper_Left);
-            Calc(FaceKey.Mouth_Lower_Right);
-            Calc(FaceKey.Mouth_Lower_Left);
-
             Calc(FaceKey.Mouth_Ape_Shape);
-
-            Calc(FaceKey.Mouth_Upper_Overturn);
-            Calc(FaceKey.Mouth_Lower_Overturn);
 
             Calc(FaceKey.Mouth_Pout);
 
@@ -73,16 +63,10 @@ namespace Azw.FacialOsc.Tracking
             Calc(FaceKey.Mouth_Upper_UpLeft);
             Calc(FaceKey.Mouth_Lower_DownRight);
             Calc(FaceKey.Mouth_Lower_DownLeft);
-            Calc(FaceKey.Mouth_Upper_Inside);
-            Calc(FaceKey.Mouth_Lower_Inside);
             Calc(FaceKey.Mouth_Lower_Overlay);
 
             Calc(FaceKey.Tongue_LongStep1);
             Calc(FaceKey.Tongue_LongStep2);
-            Calc(FaceKey.Tongue_Down);
-            Calc(FaceKey.Tongue_Up);
-            Calc(FaceKey.Tongue_Right);
-            Calc(FaceKey.Tongue_Left);
             Calc(FaceKey.Tongue_Roll);
             Calc(FaceKey.Tongue_UpLeft_Morph);
             Calc(FaceKey.Tongue_UpRight_Morph);
@@ -90,7 +74,7 @@ namespace Azw.FacialOsc.Tracking
             Calc(FaceKey.Tongue_DownRight_Morph);
 
             // Calculated
-            CalcBipolar(FaceKey.Jaw_Left_Right, FaceKey.Jaw_Left, FaceKey.Jaw_Right);
+            CalcWithBipolar(FaceKey.Jaw_Left_Right, FaceKey.Jaw_Left, FaceKey.Jaw_Right);
             CalcWithAverageAndBipolar(
                 FaceKey.Mouth_Sad_Smile,
                 FaceKey.Mouth_Sad, FaceKey.Mouth_Smile,
@@ -104,8 +88,8 @@ namespace Azw.FacialOsc.Tracking
                 FaceKey.Mouth_Lower_Left, FaceKey.Mouth_Upper_Left, FaceKey.Mouth_Lower_Right, FaceKey.Mouth_Upper_Right
             );
             
-            CalcBipolar(FaceKey.Mouth_Upper_Inside_Overturn, FaceKey.Mouth_Upper_Inside, FaceKey.Mouth_Upper_Overturn);
-            CalcBipolar(FaceKey.Mouth_Lower_Inside_Overturn, FaceKey.Mouth_Lower_Inside, FaceKey.Mouth_Lower_Overturn);
+            CalcWithBipolar(FaceKey.Mouth_Upper_Inside_Overturn, FaceKey.Mouth_Upper_Inside, FaceKey.Mouth_Upper_Overturn);
+            CalcWithBipolar(FaceKey.Mouth_Lower_Inside_Overturn, FaceKey.Mouth_Lower_Inside, FaceKey.Mouth_Lower_Overturn);
 
             Calc(FaceKey.Cheek_Suck);
             CalcWithAverage(FaceKey.Cheek_Puff, FaceKey.Cheek_Puff_Left, FaceKey.Cheek_Puff_Right);
@@ -115,8 +99,8 @@ namespace Azw.FacialOsc.Tracking
 
             CalcAverage(FaceKey.Mouth_Lower_Down, FaceKey.Mouth_Lower_DownLeft, FaceKey.Mouth_Lower_DownRight);
 
-            CalcBipolar(FaceKey.Tongue_Left_Right, FaceKey.Tongue_Left, FaceKey.Tongue_Right);
-            CalcBipolar(FaceKey.Tongue_Down_Up, FaceKey.Tongue_Down, FaceKey.Tongue_Up);
+            CalcWithBipolar(FaceKey.Tongue_Left_Right, FaceKey.Tongue_Left, FaceKey.Tongue_Right);
+            CalcWithBipolar(FaceKey.Tongue_Down_Up, FaceKey.Tongue_Down, FaceKey.Tongue_Up);
 
             return calculated;
         }
@@ -181,9 +165,12 @@ namespace Azw.FacialOsc.Tracking
         {
             return Calc(key, data[key]);
         }
-        protected OSCData? CalcBipolar(FaceKey key, FaceKey lowerKey, FaceKey higherKey)
+        protected OSCData? CalcWithBipolar(FaceKey key, FaceKey lowerKey, FaceKey higherKey)
         {
             if (!data.ContainsKey(higherKey) || !data.ContainsKey(lowerKey)) return null;
+
+            Calc(higherKey);
+            Calc(lowerKey);
 
             var higherValue = data[higherKey];
             var lowerValue = data[lowerKey];
@@ -260,15 +247,9 @@ namespace Azw.FacialOsc.Tracking
 
             return new OSCData?[]
             {
-                // Single values
-                Calc(higherKey1),
-                Calc(higherKey2),
-                Calc(lowerKey1),
-                Calc(lowerKey2),
-
-                // Bipolar
-                CalcBipolar(key1, lowerKey1, higherKey1),
-                CalcBipolar(key2, lowerKey2, higherKey2),
+                // Single values  Bipolar
+                CalcWithBipolar(key1, lowerKey1, higherKey1),
+                CalcWithBipolar(key2, lowerKey2, higherKey2),
 
                 // Average
                 CalcAverage(higherKey, higherKey1, higherKey2),

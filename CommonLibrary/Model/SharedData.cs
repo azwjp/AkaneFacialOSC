@@ -114,7 +114,7 @@ namespace Azw.FacialOsc
                 }
             }
 
-            return (trackingData, values.Select((v, index) => ((FaceKey)index, v)).ToDictionary(e => e.Item1, e => e.v));
+            return (trackingData, values.Select((v, index) => ((FaceKey)index, v)).Where(e => e.v > float.MinValue).ToDictionary(e => e.Item1, e => e.v));
         }
         public void WriteProperties(SharedSignalProps props, Signal[] signals)
         {

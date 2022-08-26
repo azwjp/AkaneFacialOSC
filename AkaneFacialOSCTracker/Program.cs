@@ -70,10 +70,12 @@ tracker.UpdatedValueHandler += (instance, rawData) =>
         var (props, signals) = conf.GetProps();
 
         var facePreps = signals.Select((sig, index) => (sig, index)).ToDictionary(e => (FaceKey)e.index, e => e.sig);
-        var sendingData = new TrackingData(rawData, facePreps, props.MaxAngleRadian, trackingType).CalcAndGet();
-        osc.Send(sendingData);
-        var data = sendingData.OrderBy(o => (int)o.key).Select(o => o.value).ToArray();
-        conf.WriteTrackingValues(data);
+        var oscData = new TrackingData(rawData, facePreps, props.MaxAngleRadian, trackingType)
+                .CalcAndGet()
+                .ToDictionary(data => data.key, data => data);
+        osc.Send(oscData.Values);
+        var sharingData = Enum.GetValues(typeof(FaceKey)).Cast<FaceKey>().Select(key => oscData.ContainsKey(key) ? oscData[key].value : float.MinValue).ToArray();
+        conf.WriteTrackingValues(sharingData);
     }
     catch (Exception e)
     {
