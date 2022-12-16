@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using Azw.FacialOsc.Tracking;
+using Azw.FacialOsc.Common;
 
 namespace Azw.FacialOsc.Model
 {
@@ -139,6 +139,7 @@ namespace Azw.FacialOsc.Model
                 {
                     key = r.Key.ToString(),
                     range = r.ValueRange.ToString(),
+                    curve = r.Curve,
                     gain = r.Gain,
                     isClipping = r.IsClipping,
                     isSending = r.IsSending,
