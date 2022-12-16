@@ -1,5 +1,4 @@
 ﻿using Azw.FacialOsc.Tracking;
-using System;
 
 namespace Azw.FacialOsc
 {

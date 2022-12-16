@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 using ViveSR;
 using ViveSR.anipal;
 using ViveSR.anipal.Eye;

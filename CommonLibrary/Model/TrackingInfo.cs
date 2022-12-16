@@ -1,9 +1,6 @@
-using Azw.FacialOsc.Common.Model;
 using Azw.FacialOsc.Tracking;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Azw.FacialOsc
 {

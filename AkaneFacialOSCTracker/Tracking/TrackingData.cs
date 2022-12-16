@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Azw.FacialOsc.Common;
+﻿using Azw.FacialOsc.Common;
 using Azw.FacialOsc.Common.Model;
 
 namespace Azw.FacialOsc.Tracking

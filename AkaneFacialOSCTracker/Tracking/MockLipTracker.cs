@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Azw.FacialOsc.Tracking
+﻿namespace Azw.FacialOsc.Tracking
 {
     internal class MockLipTracker : Tracker
     {

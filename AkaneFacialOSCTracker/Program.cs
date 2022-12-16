@@ -1,11 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Azw.FacialOsc;
-using Azw.FacialOsc.Common;
-using Azw.FacialOsc.Common.Model;
 using Azw.FacialOsc.Service;
 using Azw.FacialOsc.Tracking;
 using System.Diagnostics;
-using System.IO.MemoryMappedFiles;
 
 var trackingType = (TrackingType)Enum.Parse(typeof(TrackingType), args[0]);
 Tracker tracker = trackingType switch

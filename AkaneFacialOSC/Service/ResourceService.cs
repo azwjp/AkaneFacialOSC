@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Azw.FacialOsc.Properties;
 
 namespace Azw.FacialOsc
