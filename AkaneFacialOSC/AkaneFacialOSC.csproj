@@ -9,7 +9,7 @@
 	<StartupObject>Azw.FacialOsc.App</StartupObject>
 	<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<PackageId>Azw.FacialOsc</PackageId>
-	<VersionPrefix>2.2.4</VersionPrefix>
+	<VersionPrefix>2.2.5</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <PlatformTarget>x64</PlatformTarget>
     <DebugType>portable</DebugType>
