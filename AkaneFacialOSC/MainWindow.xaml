@@ -22,7 +22,8 @@
         xmlns:properties="clr-namespace:Azw.FacialOsc.Properties"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         TitleCharacterCasing="Normal" 
-        Title="AkaneFacialOSC" Height="940" MinHeight="450" Width="940" MinWidth="940">
+        Title="AkaneFacialOSC" Height="940" MinHeight="450" Width="940" MinWidth="940"
+        SaveWindowPosition="True">
     <Window.Resources>
         <local:CenterToLabelConverter x:Key="CenterToLabel"/>
         <local:DeviceStatusToColorConverter x:Key="DeviceStatusToColor"/>
